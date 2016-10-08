@@ -1,6 +1,6 @@
-# gseproject
+# Examples
+This Branch only consists of examples based on JADE Framework
 
-![Build Status](https://travis-ci.org/gseteamproject/gseproject.svg?branch=master)
 
 ## Development Tools
 
@@ -10,7 +10,7 @@ Eclipse for Java
 
 Clone repository with this command
 
-`git clone https://github.com/gseteamproject/gseproject.git`
+`git clone https://github.com/gseteamproject/examples.git`
 
 After you have cloned repository you should set Workspace to repository's directory
 
