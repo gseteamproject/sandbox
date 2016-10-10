@@ -10,9 +10,7 @@
     <property name="source" value="1.8"/>
     <property name="encoding" value="windows-1251"/>
     <path id="smartmason.classpath">
-        <pathelement location="bin"/>
-        <pathelement location="lib/jade.jar"/>
-        <pathelement location="lib/testSuite.jar"/>
+        <pathelement location="bin"/>        
     </path>
     <target name="init">
         <mkdir dir="bin"/>
