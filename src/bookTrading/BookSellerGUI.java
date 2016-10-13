@@ -1,4 +1,4 @@
-package examples.bookTrading;
+package bookTrading;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

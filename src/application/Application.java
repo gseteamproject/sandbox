@@ -1,19 +1,26 @@
 package application;
 
-import examples.bookTrading.BookTitle;
+import bookTrading.BookTitle;
 import jade.Boot;
 
 public class Application {
+
 	public static void main(String[] p_args) {
+		Boot.main(bookTradingScenario());
+	}
+
+	/*
+	 * http://jade.tilab.com/doc/tutorials/JADEProgramming-Tutorial-for-
+	 * beginners.pdf
+	 */
+	public static String[] bookTradingScenario() {
 		String[] parameters = new String[2];
 		parameters[0] = "-gui";
-		parameters[1] = "reader:examples.bookTrading.BookBuyerAgent(" + BookTitle.LORD_OF_THE_RINGS + ");";
-		parameters[1] += "noviceProgrammer:examples.bookTrading.BookBuyerAgent(" + BookTitle.JAVA_TUTORIAL + ");";
-		parameters[1] += "advancedProgrammer:examples.bookTrading.BookBuyerAgent(" + BookTitle.JADE_PROGRAMMING_TUTORIAL
-				+ ");";
-		parameters[1] += "seller1:examples.bookTrading.BookSellerAgent;";
-		parameters[1] += "seller2:examples.bookTrading.BookSellerAgent;";
-
-		Boot.main(parameters);
+		parameters[1] = "reader:bookTrading.BookBuyerAgent(" + BookTitle.LORD_OF_THE_RINGS + ");";
+		parameters[1] += "noviceProgrammer:bookTrading.BookBuyerAgent(" + BookTitle.JAVA_TUTORIAL + ");";
+		parameters[1] += "advancedProgrammer:bookTrading.BookBuyerAgent(" + BookTitle.JADE_PROGRAMMING_TUTORIAL + ");";
+		parameters[1] += "seller1:bookTrading.BookSellerAgent;";
+		parameters[1] += "seller2:bookTrading.BookSellerAgent;";
+		return parameters;
 	}
 }

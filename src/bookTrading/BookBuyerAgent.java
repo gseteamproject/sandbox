@@ -1,4 +1,4 @@
-package examples.bookTrading;
+package bookTrading;
 
 import jade.core.AID;
 import jade.core.Agent;

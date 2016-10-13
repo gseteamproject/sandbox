@@ -1,4 +1,4 @@
-package examples.bookTrading;
+package bookTrading;
 
 public class BookTrading
 {

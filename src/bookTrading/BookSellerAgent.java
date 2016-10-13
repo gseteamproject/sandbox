@@ -1,4 +1,4 @@
-package examples.bookTrading;
+package bookTrading;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
