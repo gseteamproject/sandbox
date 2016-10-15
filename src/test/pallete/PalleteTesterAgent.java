@@ -43,8 +43,7 @@ public class PalleteTesterAgent extends TesterAgent {
 			AgentController rma = mc.createNewAgent("rma", "jade.tools.rma.rma", new Object[0]);
 			rma.start();
 
-			AgentController tester = mc.createNewAgent("tester",
-					"test.pallete.PalleteTesterAgent", args);
+			AgentController tester = mc.createNewAgent("tester", "test.pallete.PalleteTesterAgent", args);
 			tester.start();
 		} catch (Exception e) {
 			e.printStackTrace();

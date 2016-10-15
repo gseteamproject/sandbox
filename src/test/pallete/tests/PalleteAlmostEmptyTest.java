@@ -1,12 +1,12 @@
 package test.pallete.tests;
 
-import gseproject.palleteRobotCommunication.RobotRequest;
-import gseproject.palleteRobotCommunication.SourcePalleteReply;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import palleteRobotCommunication.RobotRequest;
+import palleteRobotCommunication.SourcePalleteReply;
 import test.common.Test;
 import test.common.TestException;
 import test.common.TestUtility;
@@ -20,7 +20,7 @@ public class PalleteAlmostEmptyTest extends Test {
 	
 	public Behaviour load(Agent a) throws TestException {
 		setTimeout(2000);
-		sourcePallete = TestUtility.createAgent(a, "test", "gseproject.palleteRobotCommunication.SourcePallete", new Object[]{1});
+		sourcePallete = TestUtility.createAgent(a, "test", "palleteRobotCommunication.SourcePallete", new Object[]{1});
 		CyclicBehaviour b = new CyclicBehaviour(a) {
 			private static final long serialVersionUID = -3423642459063630856L;
 
