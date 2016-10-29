@@ -23,6 +23,9 @@ Boston, MA  02111-1307, USA.
 
 package common.testSuite.gui;
 
+import java.awt.Component;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
 /**
  * @author  Alessandro Negri - UniPR
  * @version $Date: 2004-03-23 16:57:48 +0100 (mar, 23 mar 2004) $ $Revision: 350 $
@@ -115,7 +118,6 @@ public class ExitDialog extends javax.swing.JDialog {
         jButtonJADE.setToolTipText("Shutdown JADE");
         jButtonJADE.setMaximumSize(new java.awt.Dimension(159, 26));
         jButtonJADE.setMinimumSize(new java.awt.Dimension(159, 26));
-        jButtonJADE.setNextFocusableComponent(jButtonCancel);
         jButtonJADE.setPreferredSize(new java.awt.Dimension(159, 26));
         jButtonJADE.setSelected(true);
         jButtonJADE.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +136,6 @@ public class ExitDialog extends javax.swing.JDialog {
         jButtonFramework.setMnemonic('F');
         jButtonFramework.setText("Exit Test Suite");
         jButtonFramework.setToolTipText("Close the Test Suite without shutting down JADE");
-        jButtonFramework.setNextFocusableComponent(jButtonJADE);
         jButtonFramework.setRequestFocusEnabled(false);
         jButtonFramework.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,7 +153,6 @@ public class ExitDialog extends javax.swing.JDialog {
         jButtonCancel.setMnemonic('C');
         jButtonCancel.setText("Cancel");
         jButtonCancel.setToolTipText("Return to Test Suite Framework");
-        jButtonCancel.setNextFocusableComponent(jButtonFramework);
         jButtonCancel.setRequestFocusEnabled(false);
         jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,6 +177,8 @@ public class ExitDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         getContentPane().add(jExitIcon, gridBagConstraints);
+        getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{jButtonCancel, jButtonFramework, jButtonJADE}));
+        getContentPane().setFocusCycleRoot(true);
 
         pack();
     }//GEN-END:initComponents
