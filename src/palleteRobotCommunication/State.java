@@ -1,8 +1,8 @@
 package palleteRobotCommunication;
 
-import jade.content.Predicate;
+import jade.content.Concept;
 
-public class State implements Predicate {
+public class State implements Concept {
 
 	private static final long serialVersionUID = 2369398955920060920L;
 

@@ -1,39 +1,29 @@
 package palleteRobotCommunication;
 
-import jade.lang.acl.ACLMessage;
 /**
+ * This class can fill a message depending on its 3 states: 1. I am full 2. I am
+ * almost full 3. I am empty again
  * 
  * @author Tobias
- * This class can fill a message depending on its 3 states:
- * 	1. I am full
- * 	2. I am almost full
- * 	3. I am empty again
- * 
  */
 public class GoalPalleteAgent extends PalleteAgent {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected ACLMessage fillReply(ACLMessage msg) {
-		ACLMessage reply = msg.createReply();
-		if(this.remainingBlocks == this.capacity){
-			reply.setContent(GoalPalleteReply.FULL);
-		}
-		else if(this.remainingBlocks == 0){
-			reply.setContent(GoalPalleteReply.EMPTY_AGAIN);
+	protected State getPalleteState() {
+		State state = new State();
+		if (this.pallete.getCapacity() == this.pallete.getMaxCapacity()) {
+			state.setDescription(GoalPalleteReply.FULL);
+		} else if (this.pallete.getCapacity() == 0) {
+			state.setDescription(GoalPalleteReply.EMPTY_AGAIN);
 		} else {
-			reply.setContent(GoalPalleteReply.AMLOST_FULL);
+			state.setDescription(GoalPalleteReply.AMLOST_FULL);
 		}
-		return reply;
+		return state;
 	}
 
 	@Override
 	protected void trace(String message) {
 		System.out.println(getAID().getName() + " ( GoalPallete ): " + message);
 	}
-
 }

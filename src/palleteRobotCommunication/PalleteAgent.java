@@ -1,30 +1,42 @@
 package palleteRobotCommunication;
 
+import jade.content.ContentManager;
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
+import jade.content.onto.OntologyException;
+import jade.content.onto.basic.Action;
+import jade.content.onto.basic.Done;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
 public abstract class PalleteAgent extends Agent {
+
+	private static final long serialVersionUID = 756024496424346973L;
+
+	protected Pallete pallete = new Pallete();
+
+	private Codec codec = new SLCodec();
+	private Ontology ontology = PalleteOntology.getInstance();
+
 	/**
 	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	protected int capacity = 5;
-	protected int remainingBlocks;
-	
-	/**
-	 * 
-	 * @param msg the message which gets filled
+	 * @param msg
+	 *            the message which gets filled
 	 * @return filled message with the current state of the pallete
 	 */
-	protected abstract ACLMessage fillReply(ACLMessage msg);
+	protected abstract State getPalleteState();
 
 	protected abstract void trace(String message);
 
 	protected void setup() {
+		getContentManager().registerLanguage(codec);
+		getContentManager().registerOntology(ontology);
+
 		initializeData();
 		initializeBehaviour();
-		trace("I am a Pallete and I have " + remainingBlocks + " Blocks");
+		trace("I am a Pallete and I have " + pallete.getCapacity() + " Blocks");
 	}
 
 	/**
@@ -34,9 +46,9 @@ public abstract class PalleteAgent extends Agent {
 	private void initializeData() {
 		Object[] args = getArguments();
 		if (args != null && args.length > 0) {
-			this.remainingBlocks = Integer.parseInt(args[0].toString());
+			this.pallete.setCapacity(Integer.parseInt(args[0].toString()));
 		} else {
-			this.remainingBlocks = 5;
+			this.pallete.setCapacity(5);
 		}
 	}
 
@@ -47,12 +59,35 @@ public abstract class PalleteAgent extends Agent {
 			public void action() {
 				ACLMessage msg = receive();
 				if (msg != null) {
-					if (msg.getContent().equals(RobotRequest.WHAT_YOUR_STATE)) {
-						trace("got Message from Robot: " + msg.getContent());
-						trace("answering...");
-						ACLMessage reply = fillReply(msg);
-						myAgent.send(reply);
+					trace("got Message from Robot: " + msg.getContent());
+					ACLMessage reply = msg.createReply();
+					reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+					reply.setContent("");
+					try {
+						ContentManager cm = myAgent.getContentManager();
+						Action a = (Action) myAgent.getContentManager().extractContent(msg);
+						Question question = (Question) a.getAction();
+						if (question != null) {
+							a.setAction(getPalleteState());							
+							Done d = new Done(a);
+							cm.fillContent(reply, d);
+							reply.setPerformative(ACLMessage.INFORM);
+						}
+
+					} catch (OntologyException oe) {
+						oe.printStackTrace();
+					} catch (jade.content.lang.Codec.CodecException e) {
+						e.printStackTrace();
 					}
+					trace("answering: " + reply.getContent());
+					myAgent.send(reply);
+					/*
+					 * TODO: remove after testing
+					 * if (msg.getContent().equals(RobotRequest.WHAT_YOUR_STATE
+					 * )) { trace("got Message from Robot: " +
+					 * msg.getContent()); trace("answering..."); ACLMessage
+					 * reply = fillReply(msg); myAgent.send(reply); }
+					 */
 				}
 				block();
 			}

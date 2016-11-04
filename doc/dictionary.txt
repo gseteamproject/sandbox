@@ -12,3 +12,4 @@ dickinson
 bristol
 ontologies
 tobias
+pallete
