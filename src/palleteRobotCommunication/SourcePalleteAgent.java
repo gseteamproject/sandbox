@@ -11,7 +11,7 @@ import jade.lang.acl.ACLMessage;
  * 	3. I am not empty anymore
  * 
  */
-public class SourcePallete extends Pallete {
+public class SourcePalleteAgent extends PalleteAgent {
 
 	/**
 	 * 

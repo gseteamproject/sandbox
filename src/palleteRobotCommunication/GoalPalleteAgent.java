@@ -10,7 +10,7 @@ import jade.lang.acl.ACLMessage;
  * 	3. I am empty again
  * 
  */
-public class GoalPallete extends Pallete {
+public class GoalPalleteAgent extends PalleteAgent {
 
 	/**
 	 * 

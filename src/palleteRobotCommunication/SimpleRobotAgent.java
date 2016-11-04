@@ -10,7 +10,7 @@ import jade.lang.acl.ACLMessage;
  * @author Tobias
  *
  */
-public class SimpleRobot extends Agent {
+public class SimpleRobotAgent extends Agent {
 
 	/**
 	 * 

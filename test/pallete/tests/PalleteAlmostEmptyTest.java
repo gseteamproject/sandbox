@@ -20,7 +20,7 @@ public class PalleteAlmostEmptyTest extends Test {
 	
 	public Behaviour load(Agent a) throws TestException {
 		setTimeout(2000);
-		sourcePallete = TestUtility.createAgent(a, "test", "palleteRobotCommunication.SourcePallete", new Object[]{1});
+		sourcePallete = TestUtility.createAgent(a, "test", "palleteRobotCommunication.SourcePalleteAgent", new Object[]{1});
 		CyclicBehaviour b = new CyclicBehaviour(a) {
 			private static final long serialVersionUID = -3423642459063630856L;
 
