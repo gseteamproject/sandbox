@@ -50,6 +50,7 @@ public abstract class PalleteAgent extends Agent {
 		} else {
 			this.pallete.setCapacity(5);
 		}
+		this.pallete.setMaxCapacity(5);
 	}
 
 	private void initializeBehaviour() {
