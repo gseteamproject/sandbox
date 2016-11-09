@@ -10,6 +10,10 @@ import jade.content.onto.basic.Done;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import palleteRobotCommunication.domain.Pallete;
+import palleteRobotCommunication.domain.State;
+import palleteRobotCommunication.domain.WhatIsYourState;
+import palleteRobotCommunication.ontology.PalleteRobotOntology;
 
 public abstract class PalleteAgent extends Agent {
 
@@ -18,13 +22,10 @@ public abstract class PalleteAgent extends Agent {
 	protected Pallete pallete = new Pallete();
 
 	private Codec codec = new SLCodec();
-	private Ontology ontology = PalleteOntology.getInstance();
+	private Ontology ontology = PalleteRobotOntology.getInstance();
 
 	/**
-	 * 
-	 * @param msg
-	 *            the message which gets filled
-	 * @return filled message with the current state of the pallete
+	 * @return current state of the pallete
 	 */
 	protected abstract State getPalleteState();
 
@@ -63,13 +64,14 @@ public abstract class PalleteAgent extends Agent {
 					trace("got Message from Robot: " + msg.getContent());
 					ACLMessage reply = msg.createReply();
 					reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-					reply.setContent("");
+					reply.setContent(msg.getContent());
 					try {
 						ContentManager cm = myAgent.getContentManager();
 						Action a = (Action) myAgent.getContentManager().extractContent(msg);
-						Question question = (Question) a.getAction();
+						WhatIsYourState question = (WhatIsYourState) a.getAction();
 						if (question != null) {
-							a.setAction(getPalleteState());							
+							question.setState(getPalleteState());
+							a.setAction(question);
 							Done d = new Done(a);
 							cm.fillContent(reply, d);
 							reply.setPerformative(ACLMessage.INFORM);
@@ -82,13 +84,6 @@ public abstract class PalleteAgent extends Agent {
 					}
 					trace("answering: " + reply.getContent());
 					myAgent.send(reply);
-					/*
-					 * TODO: remove after testing
-					 * if (msg.getContent().equals(RobotRequest.WHAT_YOUR_STATE
-					 * )) { trace("got Message from Robot: " +
-					 * msg.getContent()); trace("answering..."); ACLMessage
-					 * reply = fillReply(msg); myAgent.send(reply); }
-					 */
 				}
 				block();
 			}

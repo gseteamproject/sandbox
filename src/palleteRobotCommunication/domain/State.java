@@ -1,4 +1,4 @@
-package palleteRobotCommunication;
+package palleteRobotCommunication.domain;
 
 import jade.content.Concept;
 

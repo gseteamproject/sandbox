@@ -74,8 +74,8 @@ public class ApplicationModel {
 
 	public String palleteRobotCommunication() {
 		String scenario = new String();
-		scenario = "sourcePallete:palleteRobotCommunication.SourcePallete(3);";
-		scenario += "simpleRobot:palleteRobotCommunication.SimpleRobot;";
+		scenario = "sourcePallete:palleteRobotCommunication.SourcePalleteAgent(3);";
+		scenario += "simpleRobot:palleteRobotCommunication.SimpleRobotAgent;";
 		return scenario;
 	}
 }

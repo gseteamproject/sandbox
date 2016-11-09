@@ -1,23 +1,26 @@
 package palleteRobotCommunication;
 
+import palleteRobotCommunication.domain.GoalPalleteStateVocabulary;
+import palleteRobotCommunication.domain.State;
+
 /**
  * This class can fill a message depending on its 3 states: 1. I am full 2. I am
  * almost full 3. I am empty again
  * 
  * @author Tobias
  */
-public class GoalPalleteAgent extends PalleteAgent {
+public class GoalPalleteAgent extends PalleteAgent implements GoalPalleteStateVocabulary {
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected State getPalleteState() {
 		State state = new State();
 		if (this.pallete.getCapacity() == this.pallete.getMaxCapacity()) {
-			state.setDescription(GoalPalleteReply.FULL);
+			state.setDescription(GoalPalleteStateVocabulary.FULL);
 		} else if (this.pallete.getCapacity() == 0) {
-			state.setDescription(GoalPalleteReply.EMPTY_AGAIN);
+			state.setDescription(GoalPalleteStateVocabulary.EMPTY_AGAIN);
 		} else {
-			state.setDescription(GoalPalleteReply.AMLOST_FULL);
+			state.setDescription(GoalPalleteStateVocabulary.AMLOST_FULL);
 		}
 		return state;
 	}

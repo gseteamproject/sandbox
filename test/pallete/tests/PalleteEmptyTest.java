@@ -17,21 +17,18 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import palleteRobotCommunication.PalleteOntology;
-import palleteRobotCommunication.Question;
-import palleteRobotCommunication.RobotRequest;
-import palleteRobotCommunication.SourcePalleteReply;
-import palleteRobotCommunication.State;
+import palleteRobotCommunication.ontology.PalleteRobotOntology;
+import palleteRobotCommunication.domain.SourcePalleteStateVocabulary;
+import palleteRobotCommunication.domain.WhatIsYourState;
 
 public class PalleteEmptyTest extends Test {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -8924145326674375016L;
+
 	private AID sourcePallete;
-	
+
 	Codec codec = new SLCodec();
-	Ontology ontology = PalleteOntology.getInstance();
+	Ontology ontology = PalleteRobotOntology.getInstance();
 
 	public Behaviour load(Agent a) throws TestException {
 		setTimeout(2000);
@@ -41,14 +38,10 @@ public class PalleteEmptyTest extends Test {
 			private static final long serialVersionUID = -3423642459063630856L;
 
 			public void onStart() {
-				/*ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-				msg.addReceiver(sourcePallete);
-				msg.setContent(RobotRequest.WHAT_YOUR_STATE);*/
 				ContentManager cm = myAgent.getContentManager();
 				cm.registerLanguage(codec);
 				cm.registerOntology(ontology);
-				Question question = new Question();
-				question.setText(RobotRequest.WHAT_YOUR_STATE);
+				WhatIsYourState question = new WhatIsYourState();
 
 				Action a = new Action();
 				a.setAction(question);
@@ -56,7 +49,7 @@ public class PalleteEmptyTest extends Test {
 
 				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 				msg.addReceiver(sourcePallete);
-				msg.setOntology(PalleteOntology.NAME);
+				msg.setOntology(PalleteRobotOntology.NAME);
 				msg.setLanguage(codec.getName());
 				try {
 					cm.fillContent(msg, a);
@@ -70,22 +63,16 @@ public class PalleteEmptyTest extends Test {
 			}
 
 			public void action() {
-				/*
-				 * ACLMessage msg = myAgent.receive(); if (msg != null &&
-				 * msg.getContent().equals(SourcePalleteReply.EMPTY)) {
-				 * passed("Reply correct."); }
-				 */
 				ACLMessage msg = myAgent.receive();
 				if (msg != null) {
 					try {
 						Done a = (Done) myAgent.getContentManager().extractContent(msg);
 						Concept c = (Concept) a.getAction();
-						State state = (State) ((Action) c).getAction();
-						if (state != null) {
-							if (state.getDescription().equals(SourcePalleteReply.EMPTY)) {
+						WhatIsYourState question = (WhatIsYourState) ((Action) c).getAction();
+						if (question != null) {
+							if (question.getState().getDescription().equals(SourcePalleteStateVocabulary.EMPTY)) {
 								passed("Reply correct");
-							}
-							else{
+							} else {
 								failed("Reply incorrect");
 							}
 						}
@@ -95,7 +82,6 @@ public class PalleteEmptyTest extends Test {
 					} catch (jade.content.lang.Codec.CodecException e) {
 						e.printStackTrace();
 					}
-					// passed("Reply correct.");
 				}
 			}
 		};
