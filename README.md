@@ -1,4 +1,5 @@
-# Examples
+# Examples ![BuildStatus](https://travis-ci.org/gseteamproject/Examples.svg?branch=master)
+
 This Branch only consists of examples based on JADE Framework
 
 
