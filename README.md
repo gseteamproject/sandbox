@@ -1,4 +1,6 @@
-# Examples ![BuildStatus](https://travis-ci.org/gseteamproject/Examples.svg?branch=master)
+# Examples 
+![BuildStatus](https://travis-ci.org/gseteamproject/Examples.svg?branch=master)
+[![Issue Count](https://codeclimate.com/github/gseteamproject/Examples/badges/issue_count.svg)](https://codeclimate.com/github/gseteamproject/Examples)
 
 This Branch only consists of examples based on JADE Framework
 
