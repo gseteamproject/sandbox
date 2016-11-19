@@ -477,7 +477,7 @@ public class TestUtility {
 		String startupTag = UUID.randomUUID().toString();
 		jvmArgs += " -Dstartup-tag="+startupTag;
 		
-		// FIXME: We should propagate all -Dkey=value properties...
+		// We should propagate all -Dkey=value properties...
 		if (System.getProperty("project-home") != null) {
 			jvmArgs = jvmArgs + " -Dproject-home="+System.getProperty("project-home");
 		}

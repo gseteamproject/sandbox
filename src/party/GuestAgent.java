@@ -64,8 +64,6 @@ import jade.domain.DFService;
 
 
 /**
- * TODO: Class comment.
- *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
  * @version CVS info: $Id: GuestAgent.java 5373 2004-09-22 13:07:26Z dominic $
  */

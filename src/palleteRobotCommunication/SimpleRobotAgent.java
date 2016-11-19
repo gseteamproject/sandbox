@@ -35,7 +35,6 @@ public class SimpleRobotAgent extends Agent {
 		getContentManager().registerLanguage(codec);
 		getContentManager().registerOntology(ontology);
 
-		initializeData();
 		initializeBehaviour();
 	}
 
@@ -89,9 +88,5 @@ public class SimpleRobotAgent extends Agent {
 			}
 		});
 
-	}
-
-	private void initializeData() {
-		// TODO Auto-generated method stub
 	}
 }
