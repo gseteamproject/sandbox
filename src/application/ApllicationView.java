@@ -115,6 +115,15 @@ public class ApllicationView extends JFrame {
 			}
 		});
 		panel_1.add(btnNewButton_9);
+		
+		JButton btnNewButton_10 = new JButton("Conversation");
+		btnNewButton_10.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				controller.executeScenario(model.conversation());
+				dispose();
+			}
+		});
+		panel_1.add(btnNewButton_10);
 
 		JPanel panel_2 = new JPanel();
 		getContentPane().add(panel_2, BorderLayout.SOUTH);

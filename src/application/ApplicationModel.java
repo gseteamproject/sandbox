@@ -78,4 +78,10 @@ public class ApplicationModel {
 		scenario += "simpleRobot:palleteRobotCommunication.SimpleRobotAgent;";
 		return scenario;
 	}
+
+	public String conversation() {
+		String scenario = new String();
+		scenario = "speaker:conversation.TalkingAgent;";
+		return scenario;
+	}
 }
