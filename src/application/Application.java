@@ -7,7 +7,7 @@ public class Application {
 
 	public static void main(String[] p_args) {
 		ApllicationView mainView = new ApllicationView();
-		mainView.setSize(450, 200);
+		mainView.setSize(500, 250);
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - mainView.getWidth()) / 2);
 		int y = (int) ((dimension.getHeight() - mainView.getHeight()) / 2);

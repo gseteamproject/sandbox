@@ -84,4 +84,10 @@ public class ApplicationModel {
 		scenario = "speaker:conversation.TalkingAgent;";
 		return scenario;
 	}
+
+	public String transportline() {
+		String scenario = new String();
+		scenario = "line1:transportsystem.TransportLineAgent;";
+		return scenario;
+	}
 }
