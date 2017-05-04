@@ -1,7 +1,7 @@
 package resourceAllocation.processors;
 
-import com.kmu.core.ProcessorAgent;
-import com.kmu.core.Worker;
+import resourceAllocation.core.ProcessorAgent;
+import resourceAllocation.core.Worker;
 import jade.core.behaviours.Behaviour;
 
 public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
