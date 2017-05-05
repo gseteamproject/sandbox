@@ -9,6 +9,7 @@ public class ShuttleAgent extends Agent{
 	protected void setup()
 	{
 		addBehaviour(new ShuttleAgentBehaviour());
+		
 	}
 
 
