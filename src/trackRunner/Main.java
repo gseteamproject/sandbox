@@ -1,18 +1,13 @@
+package trackRunner;
 
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
-import lejos.hardware.Button;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.Motor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
-import lejos.utility.Delay;
 
 public class Main {
 	
@@ -80,6 +75,7 @@ public class Main {
 				}
 			}
 		}
+		cs.close();
 	}
 	
 	public static void printData(Brick ev3, float[] data){
