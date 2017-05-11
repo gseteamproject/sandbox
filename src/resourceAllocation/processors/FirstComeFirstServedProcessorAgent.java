@@ -6,7 +6,9 @@ import jade.core.behaviours.Behaviour;
 
 public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
 
-    @Override
+	private static final long serialVersionUID = -6478478046825056806L;
+
+	@Override
     public void Serve(Worker[] agents) {
         addBehaviour(new ServerBehaviour(this, agents));
     }
@@ -42,7 +44,8 @@ public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
     }
 
     private class ServerBehaviour extends Behaviour {
-        private FirstComeFirstServedProcessorAgent _processorAgent;
+		private static final long serialVersionUID = -1575698282170078514L;
+		private FirstComeFirstServedProcessorAgent _processorAgent;
         private boolean _isDone = false;
         private Worker[] _agents;
 

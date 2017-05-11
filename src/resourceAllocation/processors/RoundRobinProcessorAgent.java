@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class RoundRobinProcessorAgent extends ProcessorAgent{
 
-    private float _quantumTime;
+	private static final long serialVersionUID = 6926436616157396556L;
+	private float _quantumTime;
 
     @Override
     public void setup(){
@@ -53,14 +54,15 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
     }
 
     private class ServerBehaviour extends Behaviour {
-        private RoundRobinProcessorAgent _processorAgent;
+		private static final long serialVersionUID = 8318480916613222738L;
+		private RoundRobinProcessorAgent _processorAgent;
         private boolean _isDone = false;
-        private Worker[] _agents;
+//        private Worker[] _agents;
         private ArrayList<WorkerContainer> _workersList;
 
         public ServerBehaviour(RoundRobinProcessorAgent processorAgent, Worker[] agents, float quantumTime){
             _processorAgent = processorAgent;
-            _agents = agents;
+//            _agents = agents;
             _workersList = new ArrayList<WorkerContainer>(agents.length);
 
             for(int i = 0; i < agents.length; ++i){
@@ -73,7 +75,8 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
 
         @Override
         public void action() {
-            ArrayList<WorkerContainer> workersList = (ArrayList<WorkerContainer>)_workersList.clone();
+            @SuppressWarnings("unchecked")
+			ArrayList<WorkerContainer> workersList = (ArrayList<WorkerContainer>)_workersList.clone();
             while(!workersList.isEmpty()) {
                 ArrayList<WorkerContainer> workersToDelete = new ArrayList<WorkerContainer>();
 

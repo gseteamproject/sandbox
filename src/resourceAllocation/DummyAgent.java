@@ -4,7 +4,9 @@ import jade.core.Agent;
 
 public class DummyAgent extends Agent {
 
-    @Override
+	private static final long serialVersionUID = -2959026186780910618L;
+
+	@Override
     public void setup(){
         Object[] args = getArguments();
 

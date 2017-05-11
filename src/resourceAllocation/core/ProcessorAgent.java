@@ -14,7 +14,8 @@ import java.util.List;
 
 public abstract class ProcessorAgent extends Agent{
 
-    private String _serviceType = "processor";
+	private static final long serialVersionUID = -8419853254184621035L;
+	private String _serviceType = "processor";
 
     @Override
     public void setup(){
@@ -40,7 +41,8 @@ public abstract class ProcessorAgent extends Agent{
 
     private class AgentFinderBehaviour extends WakerBehaviour{
 
-        private ProcessorAgent _processorAgent;
+		private static final long serialVersionUID = -5469211056131974701L;
+		private ProcessorAgent _processorAgent;
 
         public AgentFinderBehaviour(ProcessorAgent agent, long tick){
             super(agent, tick);

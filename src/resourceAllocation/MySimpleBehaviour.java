@@ -14,7 +14,8 @@ import java.io.IOException;
 
 public class MySimpleBehaviour extends Behaviour {
 
-    private long _time;
+	private static final long serialVersionUID = 4319624727651629807L;
+	private long _time;
     private int _step;
     private AID _processorAID;
     private MessageTemplate mt;

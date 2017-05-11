@@ -8,7 +8,10 @@ import java.util.ArrayList;
 
 public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 
-    @Override
+	private static final long serialVersionUID = -7482656135774231087L;
+
+
+	@Override
     public void Serve(Worker[] agents) {
         addBehaviour(new ServerBehaviour(this, agents));
     }
@@ -38,7 +41,8 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 
     private class ServerBehaviour extends Behaviour {
 
-        private boolean _isDone = false;
+		private static final long serialVersionUID = -6262507239330173556L;
+		private boolean _isDone = false;
         private ShortestJobFirstProcessorAgent _agent;
         private ArrayList<WorkerContainer> _workerContainersList;
 
