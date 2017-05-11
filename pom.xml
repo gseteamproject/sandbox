@@ -32,6 +32,11 @@
 			<version>2.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.bdeneuter</groupId>
+			<artifactId>lejos-ev3-api</artifactId>
+			<version>0.9.1-beta</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
