@@ -87,7 +87,7 @@ public class ApplicationModel {
 
 	public String transportline() {
 		String scenario = new String();
-		scenario = "line1:transportsystem.TransportLineAgent;";
+		scenario = "line:transportsystem.TransportLineAgent;";
 		return scenario;
 	}
 }
