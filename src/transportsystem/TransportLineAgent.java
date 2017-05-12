@@ -18,15 +18,31 @@ public class TransportLineAgent extends Agent {
 
 	private void createStationAgents() {
 		PlatformController container = getContainerController();
-		try {
-			for (int i = 1; i <= nStation; i++) {
-				// create a new agent
-				String localName = "Station_" + i;
-				AgentController station = container.createNewAgent(localName, "transportsystem.StationAgent", null);
-				station.start();
 
-				stationList.add(new AID(localName, AID.ISLOCALNAME));
-			}
+		try {
+			String localName;
+			AgentController station;
+			
+			localName= "Station_1";
+			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_2" });
+			station.start();
+			stationList.add(new AID(localName, AID.ISLOCALNAME));
+			
+			localName= "Station_2";
+			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_3" });
+			station.start();
+			stationList.add(new AID(localName, AID.ISLOCALNAME));
+			
+			localName= "Station_3";
+			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_4" });
+			station.start();
+			stationList.add(new AID(localName, AID.ISLOCALNAME));
+			
+			localName= "Station_4";
+			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_1" });
+			station.start();
+			stationList.add(new AID(localName, AID.ISLOCALNAME));
+
 		} catch (Exception e) {
 			System.err.println("Exception while adding station: " + e);
 			e.printStackTrace();
@@ -39,8 +55,9 @@ public class TransportLineAgent extends Agent {
 			for (int i = 1; i <= nShuttle; i++) {
 				// create a new agent
 				String localName = "Shuttle_" + i;
-				Object [] n = {"Station_1"};
-				AgentController shuttle = container.createNewAgent(localName, "transportsystem.ShuttleAgent", n);
+
+				AgentController shuttle = container.createNewAgent(localName, "transportsystem.ShuttleAgent",
+						new Object[] { "Station_1" });
 				shuttle.start();
 
 				shuttleList.add(new AID(localName, AID.ISLOCALNAME));
