@@ -17,11 +17,17 @@ public class TransportLineBehaviour extends CyclicBehaviour {
 			
 			
 			TransportLineAgent tla = (TransportLineAgent) myAgent;
+//			String targetShuttleName = "Shuttle_" + msg_received.getContent();
+			
 			for(AID shuttle: tla.shuttleList){
+				
+//				if(shuttle.getLocalName().equalsIgnoreCase(targetShuttleName))
+//				{
 				ACLMessage mesg = new ACLMessage(ACLMessage.INFORM);
 				mesg.addReceiver(shuttle);
 				mesg.setContent(msg_received.getContent());
 				tla.send(mesg);
+//				}
 			}
 			
 		} else {
