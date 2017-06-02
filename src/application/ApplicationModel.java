@@ -14,7 +14,7 @@ public class ApplicationModel {
 	}
 
 	public String employment() {
-		String scenario = new String();		
+		String scenario = new String();
 		scenario = "engager:employment.EngagerAgent;";
 		scenario += "requester:employment.RequesterAgent;";
 		return scenario;
@@ -79,9 +79,9 @@ public class ApplicationModel {
 		return scenario;
 	}
 
-	public String conversation() {
+	public String knowledge() {
 		String scenario = new String();
-		scenario = "speaker:conversation.TalkingAgent;";
+		scenario = "kp:" + knowledge.KnowledgeProcessorAgent.class.getName() + ";";
 		return scenario;
 	}
 

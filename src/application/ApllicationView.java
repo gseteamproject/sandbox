@@ -116,10 +116,10 @@ public class ApllicationView extends JFrame {
 		});
 		panel_1.add(btnNewButton_9);
 		
-		JButton btnNewButton_10 = new JButton("Conversation");
+		JButton btnNewButton_10 = new JButton("Knowledge");
 		btnNewButton_10.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				controller.executeScenario(model.conversation());
+				controller.executeScenario(model.knowledge());
 				dispose();
 			}
 		});
