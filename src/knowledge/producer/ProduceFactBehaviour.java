@@ -32,9 +32,8 @@ public class ProduceFactBehaviour extends Behaviour {
 			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
 			message.addReceiver(knowledgeProcessor);
 			message.setContent(fact);
-			String replyWith = Long.toString(System.currentTimeMillis());
-			message.setReplyWith(replyWith);
-			reply_template = MessageTemplate.MatchInReplyTo(replyWith);
+			message.setReplyWith(Long.toString(System.currentTimeMillis()));
+			reply_template = MessageTemplate.MatchInReplyTo(message.getReplyWith());
 			state = BehaviourState.waiting_for_reply;
 			myKnowledgeProducerAgent.send(message);
 			break;
