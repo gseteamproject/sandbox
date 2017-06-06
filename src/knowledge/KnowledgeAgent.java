@@ -54,7 +54,7 @@ public abstract class KnowledgeAgent extends Agent {
 		}
 	}
 
-	public void trace(String p_message) {
+	synchronized public void trace(String p_message) {
 		System.out.println(getAID().getName() + ": " + p_message);
 	}
 }
