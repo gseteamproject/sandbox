@@ -1,7 +1,5 @@
 package knowledge.producer;
 
-import java.util.Date;
-
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
@@ -28,20 +26,26 @@ public class ProduceFactBehaviour extends Behaviour {
 
 	@Override
 	public void action() {
+		KnowledgeProducerAgent myKnowledgeProducerAgent = (KnowledgeProducerAgent) myAgent;
 		switch (state) {
 		case sending_fact:
 			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
 			message.addReceiver(knowledgeProcessor);
 			message.setContent(fact);
-			Date replyByDate = new Date(System.currentTimeMillis());
-			message.setReplyByDate(replyByDate);
-			reply_template = MessageTemplate.MatchReplyByDate(replyByDate);
+			String replyWith = Long.toString(System.currentTimeMillis());
+			message.setReplyWith(replyWith);
+			reply_template = MessageTemplate.MatchInReplyTo(replyWith);
 			state = BehaviourState.waiting_for_reply;
-			myAgent.send(message);
+			myKnowledgeProducerAgent.send(message);
 			break;
 		case waiting_for_reply:
 			ACLMessage reply = myAgent.receive(reply_template);
 			if (reply != null) {
+				if (reply.getPerformative() == ACLMessage.CONFIRM) {
+					myKnowledgeProducerAgent.trace("knowledge processor liked my fact");
+				} else {
+					myKnowledgeProducerAgent.trace("knowledge processor does not liked my fact");
+				}
 				state = BehaviourState.done;
 			} else {
 				block();
