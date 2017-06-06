@@ -11,6 +11,7 @@ public class KnowledgeProcessorAgent extends Agent {
 
 	public HashMap<String, String> knowledge = new HashMap<String, String>();
 
+	@Override
 	protected void setup() {
 		addBehaviour(new ListenBehaviour());
 	}
