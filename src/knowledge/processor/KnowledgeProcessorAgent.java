@@ -1,4 +1,4 @@
-package knowledge;
+package knowledge.processor;
 
 import java.util.HashMap;
 

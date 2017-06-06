@@ -1,4 +1,4 @@
-package knowledge;
+package knowledge.processor;
 
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;

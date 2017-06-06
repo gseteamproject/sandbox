@@ -1,4 +1,4 @@
-package knowledge;
+package knowledge.processor;
 
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
