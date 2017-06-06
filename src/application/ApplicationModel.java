@@ -83,6 +83,8 @@ public class ApplicationModel {
 		String scenario = new String();
 		scenario = addAgent("kp", knowledge.processor.KnowledgeProcessorAgent.class);
 		scenario += addAgent("p1", knowledge.producer.KnowledgeProducerAgent.class, "animal=cat,cat=Lussy");
+		scenario += addAgent("c1", knowledge.consumer.KnowledgeConsumerAgent.class, "animal,cat");
+		scenario += addAgent("c2", knowledge.consumer.KnowledgeConsumerAgent.class, "cat,animal");
 		return scenario;
 	}
 
