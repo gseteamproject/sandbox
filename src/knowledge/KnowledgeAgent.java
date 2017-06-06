@@ -12,8 +12,11 @@ public abstract class KnowledgeAgent extends Agent {
 
 	abstract protected void initializeBehaviours();
 
+	abstract protected void initializeData();
+
 	@Override
 	protected void setup() {
+		initializeData();
 		initializeBehaviours();
 		registerServices();
 	}
@@ -25,15 +28,19 @@ public abstract class KnowledgeAgent extends Agent {
 
 	abstract protected ServiceDescription[] getAgentServiceDescriptions();
 
-	private void registerServices() {
+	private DFAgentDescription getDFAgentDescription() {
 		ServiceDescription[] agentServices = getAgentServiceDescriptions();
 		DFAgentDescription agentServicesDescription = new DFAgentDescription();
 		agentServicesDescription.setName(getAID());
 		for (ServiceDescription agentService : agentServices) {
 			agentServicesDescription.addServices(agentService);
 		}
+		return agentServicesDescription;
+	}
+
+	private void registerServices() {
 		try {
-			DFService.register(this, agentServicesDescription);
+			DFService.register(this, getDFAgentDescription());
 		} catch (FIPAException exception) {
 			exception.printStackTrace();
 		}

@@ -17,6 +17,10 @@ public class KnowledgeProcessorAgent extends KnowledgeAgent {
 	protected void initializeBehaviours() {
 		addBehaviour(new ListenBehaviour());
 	}
+	
+	@Override
+	protected void initializeData() {
+	}
 
 	@Override
 	protected ServiceDescription[] getAgentServiceDescriptions() {
