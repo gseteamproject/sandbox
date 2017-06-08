@@ -4,6 +4,7 @@ import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import knowledge.Knowledge;
 
 public class ProduceFactBehaviour extends Behaviour {
 
@@ -29,8 +30,9 @@ public class ProduceFactBehaviour extends Behaviour {
 		KnowledgeProducerAgent myKnowledgeProducerAgent = (KnowledgeProducerAgent) myAgent;
 		switch (state) {
 		case sending_fact:
-			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
 			message.addReceiver(knowledgeProcessor);
+			message.setConversationId(Knowledge.KNOWLEDGE_PRODUCE_FACT);
 			message.setContent(fact);
 			message.setReplyWith(Long.toString(System.currentTimeMillis()));
 			reply_template = MessageTemplate.MatchInReplyTo(message.getReplyWith());
@@ -40,7 +42,7 @@ public class ProduceFactBehaviour extends Behaviour {
 		case waiting_for_reply:
 			ACLMessage reply = myAgent.receive(reply_template);
 			if (reply != null) {
-				if (reply.getPerformative() == ACLMessage.CONFIRM) {
+				if (reply.getPerformative() == ACLMessage.INFORM) {
 					myKnowledgeProducerAgent.trace("knowledge processor liked my fact");
 				} else {
 					myKnowledgeProducerAgent.trace("knowledge processor does not liked my fact");

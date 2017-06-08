@@ -2,6 +2,7 @@ package knowledge.processor;
 
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import knowledge.Knowledge;
 
 public class ListenBehaviour extends CyclicBehaviour {
 
@@ -13,18 +14,13 @@ public class ListenBehaviour extends CyclicBehaviour {
 		if (message != null) {
 			KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
 
-			switch (message.getPerformative()) {
-			case ACLMessage.INFORM:
+			String conversationId = message.getConversationId();
+			if (conversationId.equals(Knowledge.KNOWLEDGE_PRODUCE_FACT)) {
 				myKnowledgeProcessorAgent.storeFact(message);
-				break;
-
-			case ACLMessage.REQUEST:
+			} else if (conversationId.equals(Knowledge.KNOWLEDGE_CONSUME_FACT)) {
 				myKnowledgeProcessorAgent.answerQuestion(message);
-				break;
-
-			default:
+			} else {
 				myKnowledgeProcessorAgent.notUnderStood(message);
-				break;
 			}
 		} else {
 			block();

@@ -17,7 +17,7 @@ public class StoreFactBehaviour extends OneShotBehaviour {
 	public void action() {
 		KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
 		ACLMessage reply = message.createReply();
-		
+
 		if (message.getContent() == null) {
 			myKnowledgeProcessorAgent.trace("incorrect fact (" + message.getContent() + ")");
 			reply.setPerformative(ACLMessage.FAILURE);
@@ -33,12 +33,12 @@ public class StoreFactBehaviour extends OneShotBehaviour {
 			myKnowledgeProcessorAgent.send(reply);
 			return;
 		}
-		
+
 		String key = strings[0].trim();
 		String value = strings[1].trim();
 		myKnowledgeProcessorAgent.knowledge.put(key, value);
 		myKnowledgeProcessorAgent.trace("stored fact ( key [" + key + "] value [" + value + "] )");
-		reply.setPerformative(ACLMessage.CONFIRM);
+		reply.setPerformative(ACLMessage.INFORM);
 		myKnowledgeProcessorAgent.send(reply);
 	}
 }

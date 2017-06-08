@@ -4,6 +4,7 @@ import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import knowledge.Knowledge;
 
 public class FindFactBehaviour extends Behaviour {
 
@@ -31,6 +32,7 @@ public class FindFactBehaviour extends Behaviour {
 		case sending_fact:
 			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
 			message.addReceiver(knowledgeProcessor);
+			message.setConversationId(Knowledge.KNOWLEDGE_CONSUME_FACT);
 			message.setContent(fact);
 			message.setReplyWith(Long.toString(System.currentTimeMillis()));
 			reply_template = MessageTemplate.MatchInReplyTo(message.getReplyWith());
