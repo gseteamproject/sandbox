@@ -1,37 +1,35 @@
 package knowledge.processor;
 
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
-public class StoreFactBehaviour extends OneShotBehaviour {
+public class StoreFactBehaviour extends AchieveREResponder {
 
 	private static final long serialVersionUID = -2485692838213609172L;
 
-	private ACLMessage message;
-
-	public StoreFactBehaviour(ACLMessage message) {
-		this.message = message;
+	public StoreFactBehaviour(Agent a, MessageTemplate mt) {
+		super(a, mt);
 	}
 
 	@Override
-	public void action() {
+	protected ACLMessage handleRequest(ACLMessage request) {
 		KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
-		ACLMessage reply = message.createReply();
+		ACLMessage reply = request.createReply();
 
-		if (message.getContent() == null) {
-			myKnowledgeProcessorAgent.trace("incorrect fact (" + message.getContent() + ")");
-			reply.setPerformative(ACLMessage.FAILURE);
+		if (request.getContent() == null) {
+			myKnowledgeProcessorAgent.trace("incorrect fact (" + request.getContent() + ")");
+			reply.setPerformative(ACLMessage.REFUSE);
 			reply.setContent("empty fact");
-			myKnowledgeProcessorAgent.send(reply);
-			return;
+			return reply;
 		}
-		String strings[] = message.getContent().split("=");
+		String strings[] = request.getContent().split("=");
 		if (strings.length < 2) {
-			myKnowledgeProcessorAgent.trace("incorrect fact (" + message.getContent() + ")");
-			reply.setPerformative(ACLMessage.FAILURE);
+			myKnowledgeProcessorAgent.trace("incorrect fact (" + request.getContent() + ")");
+			reply.setPerformative(ACLMessage.REFUSE);
 			reply.setContent("incorrect fact");
-			myKnowledgeProcessorAgent.send(reply);
-			return;
+			return reply;
 		}
 
 		String key = strings[0].trim();
@@ -39,6 +37,6 @@ public class StoreFactBehaviour extends OneShotBehaviour {
 		myKnowledgeProcessorAgent.knowledge.put(key, value);
 		myKnowledgeProcessorAgent.trace("stored fact ( key [" + key + "] value [" + value + "] )");
 		reply.setPerformative(ACLMessage.INFORM);
-		myKnowledgeProcessorAgent.send(reply);
+		return reply;
 	}
 }

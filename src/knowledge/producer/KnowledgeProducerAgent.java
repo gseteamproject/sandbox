@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jade.core.AID;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import knowledge.Knowledge;
 import knowledge.KnowledgeAgent;
 
@@ -39,8 +41,13 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 
 	synchronized public void produceFact(AID[] knowledgeProcessors) {
 		String fact = factsToProduce.get(0);
-		for(AID knowledgeProcessor: knowledgeProcessors) {
-			addBehaviour(new ProduceFactBehaviour(knowledgeProcessor, fact));
+		for (AID knowledgeProcessor : knowledgeProcessors) {
+			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+			message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			message.addReceiver(knowledgeProcessor);
+			message.setContent(fact);
+			message.setConversationId(Knowledge.KNOWLEDGE_PRODUCE_FACT);
+			addBehaviour(new ProduceFactBehaviour(this, message));
 		}
 		factsToProduce.remove(0);
 	}

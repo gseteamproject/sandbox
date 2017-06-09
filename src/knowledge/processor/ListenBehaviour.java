@@ -15,6 +15,9 @@ public class ListenBehaviour extends CyclicBehaviour {
 			KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
 
 			String conversationId = message.getConversationId();
+			if (conversationId.isEmpty()) {
+				myKnowledgeProcessorAgent.notUnderStood(message);
+			}
 			if (conversationId.equals(Knowledge.KNOWLEDGE_PRODUCE_FACT)) {
 				myKnowledgeProcessorAgent.storeFact(message);
 			} else if (conversationId.equals(Knowledge.KNOWLEDGE_CONSUME_FACT)) {

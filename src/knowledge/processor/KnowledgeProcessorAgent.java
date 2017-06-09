@@ -2,8 +2,11 @@ package knowledge.processor;
 
 import java.util.HashMap;
 
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 import knowledge.Knowledge;
 import knowledge.KnowledgeAgent;
 
@@ -17,7 +20,7 @@ public class KnowledgeProcessorAgent extends KnowledgeAgent {
 	protected void initializeBehaviours() {
 		addBehaviour(new ListenBehaviour());
 	}
-	
+
 	@Override
 	protected void initializeData() {
 	}
@@ -36,6 +39,10 @@ public class KnowledgeProcessorAgent extends KnowledgeAgent {
 	}
 
 	synchronized public void storeFact(ACLMessage message) {
-		addBehaviour(new StoreFactBehaviour(message));
+		MessageTemplate mt = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
+		mt = MessageTemplate.and(mt, MessageTemplate.MatchConversationId(message.getConversationId()));
+		addBehaviour(new StoreFactBehaviour(this, mt));
+		message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+		putBack(message);
 	}
 }
