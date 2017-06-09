@@ -1,4 +1,4 @@
-package transportsystem;
+package transportsystem.transportline;
 
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;

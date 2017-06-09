@@ -90,7 +90,7 @@ public class ApplicationModel {
 
 	public String transportline() {
 		String scenario = new String();
-		scenario = addAgent("line", transportsystem.TransportLineAgent.class);
+		scenario = addAgent("line", transportsystem.transportline.TransportLineAgent.class);
 		return scenario;
 	}
 

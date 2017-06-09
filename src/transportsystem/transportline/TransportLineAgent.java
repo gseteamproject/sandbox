@@ -1,4 +1,4 @@
-package transportsystem;
+package transportsystem.transportline;
 
 import java.util.Vector;
 
@@ -24,22 +24,22 @@ public class TransportLineAgent extends Agent {
 			AgentController station;
 			
 			localName= "Station_1";
-			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_2" });
+			station=container.createNewAgent(localName, "transportsystem.station.StationAgent", new Object[] { "Station_2" });
 			station.start();
 			stationList.add(new AID(localName, AID.ISLOCALNAME));
 			
 			localName= "Station_2";
-			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_3" });
+			station=container.createNewAgent(localName, "transportsystem.station.StationAgent", new Object[] { "Station_3" });
 			station.start();
 			stationList.add(new AID(localName, AID.ISLOCALNAME));
 			
 			localName= "Station_3";
-			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_4" });
+			station=container.createNewAgent(localName, "transportsystem.station.StationAgent", new Object[] { "Station_4" });
 			station.start();
 			stationList.add(new AID(localName, AID.ISLOCALNAME));
 			
 			localName= "Station_4";
-			station=container.createNewAgent(localName, "transportsystem.StationAgent", new Object[] { "Station_1" });
+			station=container.createNewAgent(localName, "transportsystem.station.StationAgent", new Object[] { "Station_1" });
 			station.start();
 			stationList.add(new AID(localName, AID.ISLOCALNAME));
 
@@ -56,7 +56,7 @@ public class TransportLineAgent extends Agent {
 				// create a new agent
 				String localName = "Shuttle_" + i;
 
-				AgentController shuttle = container.createNewAgent(localName, "transportsystem.ShuttleAgent",
+				AgentController shuttle = container.createNewAgent(localName, "transportsystem.shuttle.ShuttleAgent",
 						new Object[] { "Station_1" });
 				shuttle.start();
 

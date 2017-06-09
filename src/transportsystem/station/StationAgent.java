@@ -1,4 +1,4 @@
-package transportsystem;
+package transportsystem.station;
 
 import jade.core.Agent;
 
