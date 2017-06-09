@@ -69,7 +69,7 @@ public class TransportLineAgent extends Agent {
 	}
 
 	protected void setup() {
-		addBehaviour(new TransportLineBehaviour());
+		addBehaviour(new ListenBehaviour());
 
 		createStationAgents();
 		createShuttleAgents();
