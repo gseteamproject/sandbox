@@ -1,4 +1,4 @@
-package knowledge.processor;
+package knowledge;
 
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -15,11 +15,11 @@ public class NotUnderstoodBehaviour extends OneShotBehaviour {
 
 	@Override
 	public void action() {
-		KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
-		myKnowledgeProcessorAgent.trace("not understood (" + message.getContent() + ")");
+		KnowledgeAgent myKnowledgeAgent = (KnowledgeAgent) myAgent;
+		myKnowledgeAgent.trace("not understood (" + message.getContent() + ")");
 		ACLMessage reply = message.createReply();
 		reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-		myKnowledgeProcessorAgent.send(reply);
+		myKnowledgeAgent.send(reply);
 	}
 
 }

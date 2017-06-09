@@ -31,10 +31,6 @@ public class KnowledgeProcessorAgent extends KnowledgeAgent {
 		return agentServices;
 	}
 
-	synchronized public void notUnderStood(ACLMessage message) {
-		addBehaviour(new NotUnderstoodBehaviour(message));
-	}
-
 	synchronized public void answerQuestion(ACLMessage message) {
 		addBehaviour(new AnswerQuestionBehaviour(message));
 	}

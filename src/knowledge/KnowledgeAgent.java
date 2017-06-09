@@ -5,6 +5,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 
 public abstract class KnowledgeAgent extends Agent {
 
@@ -56,5 +57,9 @@ public abstract class KnowledgeAgent extends Agent {
 
 	synchronized public void trace(String p_message) {
 		System.out.println(getAID().getName() + ": " + p_message);
+	}
+	
+	synchronized public void notUnderStood(ACLMessage message) {
+		addBehaviour(new NotUnderstoodBehaviour(message));
 	}
 }
