@@ -9,9 +9,9 @@ import knowledge.Knowledge;
 import knowledge.KnowledgeAgent;
 
 public class KnowledgeConsumerAgent extends KnowledgeAgent {
-	
+
 	private static final long serialVersionUID = 1069538812627168203L;
-	
+
 	public List<String> questions = new ArrayList<String>();
 
 	@Override
@@ -36,12 +36,20 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 		agentServices[0].setType(Knowledge.KNOWLEDGE_SERVICE_CONSUMING);
 		return agentServices;
 	}
-	
+
 	synchronized public void findFact(AID[] knowledgeProcessors) {
 		String fact = questions.get(0);
-		for(AID knowledgeProcessor: knowledgeProcessors) {
+		for (AID knowledgeProcessor : knowledgeProcessors) {
 			addBehaviour(new FindFactBehaviour(knowledgeProcessor, fact));
 		}
 		questions.remove(0);
+	}
+
+	public AID[] findKnowledgeProcessors() {
+		ServiceDescription requiredService = new ServiceDescription();
+		requiredService.setType(Knowledge.KNOWLEDGE_SERVICE_PROCESSING);
+		ServiceDescription requiredServices[] = new ServiceDescription[] { requiredService };
+
+		return findAgentsProvidingServices(requiredServices);
 	}
 }

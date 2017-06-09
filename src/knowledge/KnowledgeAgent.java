@@ -1,5 +1,6 @@
 package knowledge;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -55,10 +56,28 @@ public abstract class KnowledgeAgent extends Agent {
 		}
 	}
 
+	public AID[] findAgentsProvidingServices(ServiceDescription[] requiredServices) {
+		DFAgentDescription agentDescriptionTemplate = new DFAgentDescription();
+		for (ServiceDescription requiredService : requiredServices) {
+			agentDescriptionTemplate.addServices(requiredService);
+		}
+		AID[] foundAgents = null;
+		try {
+			DFAgentDescription[] agentsProvidingServices = DFService.search(this, agentDescriptionTemplate);
+			foundAgents = new AID[agentsProvidingServices.length];
+			for (int i = 0; i < agentsProvidingServices.length; i++) {
+				foundAgents[i] = agentsProvidingServices[i].getName();
+			}
+		} catch (FIPAException exception) {
+			exception.printStackTrace();
+		}
+		return foundAgents;
+	}
+
 	synchronized public void trace(String p_message) {
 		System.out.println(getAID().getName() + ": " + p_message);
 	}
-	
+
 	synchronized public void notUnderStood(ACLMessage message) {
 		addBehaviour(new NotUnderstoodBehaviour(message));
 	}

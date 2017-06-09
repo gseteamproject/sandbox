@@ -51,4 +51,12 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 		}
 		factsToProduce.remove(0);
 	}
+
+	public AID[] findKnowledgeProcessors() {
+		ServiceDescription requiredService = new ServiceDescription();
+		requiredService.setType(Knowledge.KNOWLEDGE_SERVICE_PROCESSING);
+		ServiceDescription requiredServices[] = new ServiceDescription[] { requiredService };
+
+		return findAgentsProvidingServices(requiredServices);
+	}
 }
