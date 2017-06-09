@@ -20,4 +20,8 @@ After you have cloned repository you should set Workspace to repository's direct
 
 ## Running
 
-Executable scenarios are located in *Example.java files
+There is two possible ways to execute example-scenarios:
+
+* Execute command **Run As->Java Application** on **application/Application.java**
+
+* Execute comman **mvn package** and after compliting there will be executable jar into **target** folder
