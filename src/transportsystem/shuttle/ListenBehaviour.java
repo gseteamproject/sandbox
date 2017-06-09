@@ -17,6 +17,7 @@ public class ListenBehaviour extends CyclicBehaviour {
 			if(conversation.equals(TransportSystem.TRANSPORTSYSTEM_SHUTTLE_ORDER)) {
 				myShuttleAgent.registerOrder(message);				
 			} else {
+			
 				myShuttleAgent.notUnderstood(message);
 			}
 		} else {

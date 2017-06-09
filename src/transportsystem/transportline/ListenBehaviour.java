@@ -1,9 +1,9 @@
 package transportsystem.transportline;
 
-import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import knowledge.Knowledge;
+import transportsystem.TransportSystem;
+
 
 public class ListenBehaviour extends CyclicBehaviour {
 
@@ -15,12 +15,18 @@ public class ListenBehaviour extends CyclicBehaviour {
 		ACLMessage message = myAgent.receive();
 		
 		if (message != null){
-			System.out.println(myAgent.getLocalName()+ " Получен заказ: " + message.getContent());
-			
+			TransportLineAgent myTransportLineAgent = (TransportLineAgent) myAgent;
+			myTransportLineAgent.trace(" Получен заказ: " + message.getContent());
 			String conversationId = message.getConversationId();
-			//if(conversationId.equals(TransportSystem.TRANSPORT_SHUTTLE)){
-				
-			//}
+			if(conversationId.equals(TransportSystem.TRANSPORTSYSTEM_TRANSPORTLINE_ORDER)){
+				myTransportLineAgent.registerOrder(message);				
+			} 
+			if(conversationId.equals(TransportSystem.TRANSPORTSYSTEM_SHUTTLE_ORDER)){
+				myTransportLineAgent.putBack(message);
+			}
+			else {
+				myTransportLineAgent.notUnderstood(message);
+			}
 			
 		}
 		else{

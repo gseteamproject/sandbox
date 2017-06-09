@@ -4,8 +4,10 @@ import java.util.Vector;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.PlatformController;
+
 
 public class TransportLineAgent extends Agent {
 
@@ -75,4 +77,15 @@ public class TransportLineAgent extends Agent {
 		createShuttleAgents();
 
 	}
+	public void trace(String text) {
+		System.out.println(getLocalName() + ": " + text);
+	}
+	public void registerOrder(ACLMessage message) {
+		addBehaviour(new RegisterOrderBehaviour(message));
+	}
+	
+	public void notUnderstood(ACLMessage message) {
+		addBehaviour(new NotUnderstoodBehaviour(message));
+	}
+
 }
