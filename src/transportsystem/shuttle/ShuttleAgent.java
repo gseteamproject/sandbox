@@ -2,7 +2,6 @@ package transportsystem.shuttle;
 
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
-import transportsystem.TransportSystem;
 
 public class ShuttleAgent extends Agent {
 
@@ -24,14 +23,6 @@ public class ShuttleAgent extends Agent {
 	}
 
 	public void moveToStation(ACLMessage message) {
-
-		trace(" Выполняю задание: " + message.getContent());
-		String targetStationName = "Station_" + message.getContent();
-		System.out.println(ownerStationName);
-		if (!targetStationName.equalsIgnoreCase(ownerStationName)) {
-			trace(TransportSystem.zapros);
-		} else {
-			trace(" Заказ " + message.getContent() + " Выполнен!");
-		}
+		addBehaviour(new MoveToStationBehaviour(message));
 	}
 }
