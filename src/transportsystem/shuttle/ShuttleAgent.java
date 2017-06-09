@@ -22,7 +22,11 @@ public class ShuttleAgent extends Agent {
 		System.out.println(getLocalName() + ": " + text);
 	}
 
-	public void moveToStation(ACLMessage message) {
-		addBehaviour(new MoveToStationBehaviour(message));
+	public void registerOrder(ACLMessage message) {
+		addBehaviour(new RegisterOrderBehaviour(message));
+	}
+
+	public void notUnderstood(ACLMessage message) {
+		addBehaviour(new NotUnderstoodBehaviour(message));
 	}
 }

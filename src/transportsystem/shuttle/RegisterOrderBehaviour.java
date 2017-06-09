@@ -4,13 +4,13 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import transportsystem.TransportSystem;
 
-public class MoveToStationBehaviour extends OneShotBehaviour {
+public class RegisterOrderBehaviour extends OneShotBehaviour {
 
 	private static final long serialVersionUID = -4030745960752872811L;
 
 	private ACLMessage message;
 
-	public MoveToStationBehaviour(ACLMessage message) {
+	public RegisterOrderBehaviour(ACLMessage message) {
 		this.message = message;
 	}
 
@@ -25,5 +25,8 @@ public class MoveToStationBehaviour extends OneShotBehaviour {
 		} else {
 			myShuttleAgent.trace(" Заказ " + message.getContent() + " Выполнен!");
 		}
+		ACLMessage reply = message.createReply();
+		reply.setPerformative(ACLMessage.INFORM);
+		myShuttleAgent.send(reply);
 	}
 }
