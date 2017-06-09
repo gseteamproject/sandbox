@@ -3,6 +3,7 @@ package knowledge.consumer;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
+import knowledge.KnowledgeAgent;
 
 public class FindFactBehaviour extends AchieveREInitiator {
 
@@ -14,13 +15,13 @@ public class FindFactBehaviour extends AchieveREInitiator {
 
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		KnowledgeConsumerAgent myKnowledgeProducerAgent = (KnowledgeConsumerAgent) myAgent;
-		myKnowledgeProducerAgent.trace("knowledge processor liked my question");
+		KnowledgeAgent myKnowledgeAgent = (KnowledgeAgent) myAgent;
+		myKnowledgeAgent.trace("knowledge processor liked my question");
 	}
 
 	@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		KnowledgeConsumerAgent myKnowledgeProducerAgent = (KnowledgeConsumerAgent) myAgent;
-		myKnowledgeProducerAgent.trace("knowledge processor does not liked my question");
+		KnowledgeAgent myKnowledgeAgent = (KnowledgeAgent) myAgent;
+		myKnowledgeAgent.trace("knowledge processor does not liked my question");
 	}
 }
