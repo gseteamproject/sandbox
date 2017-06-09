@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jade.core.AID;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import knowledge.Knowledge;
 import knowledge.KnowledgeAgent;
 
@@ -40,7 +42,12 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 	synchronized public void findFact(AID[] knowledgeProcessors) {
 		String fact = questions.get(0);
 		for (AID knowledgeProcessor : knowledgeProcessors) {
-			addBehaviour(new FindFactBehaviour(knowledgeProcessor, fact));
+			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+			message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			message.addReceiver(knowledgeProcessor);
+			message.setContent(fact);
+			message.setConversationId(Knowledge.KNOWLEDGE_CONSUME_FACT);
+			addBehaviour(new FindFactBehaviour(this, message));
 		}
 		questions.remove(0);
 	}

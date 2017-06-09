@@ -1,35 +1,35 @@
 package knowledge.processor;
 
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
-public class AnswerQuestionBehaviour extends OneShotBehaviour {
+public class AnswerQuestionBehaviour extends AchieveREResponder {
 
 	private static final long serialVersionUID = -6512614753440637766L;
 
-	private ACLMessage message;
-
-	public AnswerQuestionBehaviour(ACLMessage message) {
-		this.message = message;
+	public AnswerQuestionBehaviour(Agent a, MessageTemplate mt) {
+		super(a, mt);
 	}
 
 	@Override
-	public void action() {
+	protected ACLMessage handleRequest(ACLMessage request) {
 		KnowledgeProcessorAgent myKnowledgeProcessorAgent = (KnowledgeProcessorAgent) myAgent;
-		ACLMessage reply = message.createReply();
+		ACLMessage reply = request.createReply();
 
-		if (message.getContent() == null) {
-			myKnowledgeProcessorAgent.trace("incorrect question (" + message.getContent() + ")");
+		if (request.getContent() == null) {
+			myKnowledgeProcessorAgent.trace("incorrect question (" + request.getContent() + ")");
 			reply.setContent("emty question");
-			reply.setPerformative(ACLMessage.FAILURE);
+			reply.setPerformative(ACLMessage.REFUSE);
 			myKnowledgeProcessorAgent.send(reply);
-			return;
+			return reply;
 		}
-		String key = message.getContent().trim();
+		String key = request.getContent().trim();
 		String value = myKnowledgeProcessorAgent.knowledge.get(key);
 		myKnowledgeProcessorAgent.trace("answer question ( key [" + key + "] value [" + value + "] )");
 		reply.setContent(value);
 		reply.setPerformative(ACLMessage.INFORM);
-		myKnowledgeProcessorAgent.send(reply);
+		return reply;
 	}
 }
