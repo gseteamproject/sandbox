@@ -1,6 +1,8 @@
 package knowledge.processor;
 
 import jade.content.ContentManager;
+import jade.content.lang.Codec.CodecException;
+import jade.content.onto.OntologyException;
 import jade.content.onto.basic.Action;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -26,30 +28,18 @@ public class StoreFactBehaviour extends AchieveREResponder {
 		Action a = null;
 		try {
 			a = (Action) cm.extractContent(request);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (CodecException | OntologyException e) {
+			myKnowledgeProcessorAgent.trace("incorrect fact (" + request.getContent() + ")");
+			reply.setPerformative(ACLMessage.REFUSE);
+			reply.setContent(e.getMessage());
+			return reply;
 		}
+
 		Register r = (Register) a.getAction();
-		Fact f = r.getFact();
+		Fact fact = r.getFact();
 
-//		if (request.getContent() == null) {
-//			myKnowledgeProcessorAgent.trace("incorrect fact (" + request.getContent() + ")");
-//			reply.setPerformative(ACLMessage.REFUSE);
-//			reply.setContent("empty fact");
-//			return reply;
-//		}
-//		String strings[] = request.getContent().split("=");
-//		if (strings.length < 2) {
-//			myKnowledgeProcessorAgent.trace("incorrect fact (" + request.getContent() + ")");
-//			reply.setPerformative(ACLMessage.REFUSE);
-//			reply.setContent("incorrect fact");
-//			return reply;
-//		}
-
-//		String key = strings[0].trim();
-//		String value = strings[1].trim();
-		String key = f.getKey();
-		String value = f.getValue();
+		String key = fact.getKey();
+		String value = fact.getValue();
 		myKnowledgeProcessorAgent.knowledge.put(key, value);
 		myKnowledgeProcessorAgent.trace("stored fact ( key [" + key + "] value [" + value + "] )");
 		reply.setPerformative(ACLMessage.INFORM);

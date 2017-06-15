@@ -26,4 +26,11 @@ public class Fact implements Concept {
 		this.value = value;
 	}
 
+	public Fact() {
+	}
+
+	public Fact(String key, String value) {
+		setKey(key);
+		setValue(value);
+	}
 }

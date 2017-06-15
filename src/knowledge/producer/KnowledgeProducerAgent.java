@@ -3,6 +3,8 @@ package knowledge.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import jade.content.lang.Codec.CodecException;
+import jade.content.onto.OntologyException;
 import jade.content.onto.basic.Action;
 import jade.core.AID;
 import jade.domain.FIPANames;
@@ -18,7 +20,7 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 
 	private static final long serialVersionUID = -8333173138628880437L;
 
-	public List<String> factsToProduce = new ArrayList<String>();
+	public List<Fact> factsToProduce = new ArrayList<Fact>();
 
 	@Override
 	protected void initializeBehaviours() {
@@ -29,7 +31,13 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 	protected void initializeData() {
 		Object[] args = getArguments();
 		for (Object arg : args) {
-			factsToProduce.add(arg.toString());
+			String s[] = arg.toString().split("=");
+			if (s.length < 2) {
+				trace("incorrect fact (" +arg.toString() +")");
+				continue;
+			}
+			Fact fact = new Fact(s[0], s[1]);
+			factsToProduce.add(fact);
 			trace("got fact (" + arg.toString() + ")");
 		}
 	}
@@ -44,19 +52,15 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 	}
 
 	synchronized public void produceFact(AID[] knowledgeProcessors) {
-		String fact = factsToProduce.get(0);
+		Fact fact = factsToProduce.get(0);
 		for (AID knowledgeProcessor : knowledgeProcessors) {
 			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
 			message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			message.addReceiver(knowledgeProcessor);
 			message.setConversationId(Knowledge.KNOWLEDGE_PRODUCE_FACT);
 
-			String strings[] = fact.split("=");
-			Fact f = new Fact();
-			f.setKey(strings[0]);
-			f.setValue(strings[1]);
 			Register r = new Register();
-			r.setFact(f);
+			r.setFact(fact);
 			Action a = new Action();
 			a.setActor(knowledgeProcessor);
 			a.setAction(r);
@@ -65,7 +69,7 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 			message.setOntology(KnowledgeOntology.ONTOLOGY_NAME);
 			try {
 				getContentManager().fillContent(message, a);
-			} catch (Exception e) {
+			} catch (CodecException | OntologyException e) {
 				e.printStackTrace();
 			}
 
