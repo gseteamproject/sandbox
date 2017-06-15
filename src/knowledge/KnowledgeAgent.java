@@ -1,5 +1,8 @@
 package knowledge;
 
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -7,6 +10,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import knowledge.ontology.KnowledgeOntology;
 
 public abstract class KnowledgeAgent extends Agent {
 
@@ -20,6 +24,8 @@ public abstract class KnowledgeAgent extends Agent {
 	protected void setup() {
 		initializeData();
 		initializeBehaviours();
+		registerLanguage();
+		registerOntology();
 		registerServices();
 	}
 
@@ -54,6 +60,18 @@ public abstract class KnowledgeAgent extends Agent {
 		} catch (FIPAException exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	private Codec codec = new SLCodec();
+
+	private void registerLanguage() {
+		getContentManager().registerLanguage(codec);
+	}
+
+	private Ontology ontology = KnowledgeOntology.getInstance();
+
+	private void registerOntology() {
+		getContentManager().registerOntology(ontology);
 	}
 
 	public AID[] findAgentsProvidingServices(ServiceDescription[] requiredServices) {
