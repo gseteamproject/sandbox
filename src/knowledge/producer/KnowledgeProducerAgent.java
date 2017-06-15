@@ -3,12 +3,16 @@ package knowledge.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import jade.content.onto.basic.Action;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import knowledge.Knowledge;
 import knowledge.KnowledgeAgent;
+import knowledge.ontology.Fact;
+import knowledge.ontology.KnowledgeOntology;
+import knowledge.ontology.Register;
 
 public class KnowledgeProducerAgent extends KnowledgeAgent {
 
@@ -45,8 +49,26 @@ public class KnowledgeProducerAgent extends KnowledgeAgent {
 			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
 			message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			message.addReceiver(knowledgeProcessor);
-			message.setContent(fact);
 			message.setConversationId(Knowledge.KNOWLEDGE_PRODUCE_FACT);
+
+			String strings[] = fact.split("=");
+			Fact f = new Fact();
+			f.setKey(strings[0]);
+			f.setValue(strings[1]);
+			Register r = new Register();
+			r.setFact(f);
+			Action a = new Action();
+			a.setActor(knowledgeProcessor);
+			a.setAction(r);
+
+			message.setLanguage(FIPANames.ContentLanguage.FIPA_SL);
+			message.setOntology(KnowledgeOntology.ONTOLOGY_NAME);
+			try {
+				getContentManager().fillContent(message, a);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			addBehaviour(new ProduceFactBehaviour(this, message));
 		}
 		factsToProduce.remove(0);
