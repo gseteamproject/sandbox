@@ -39,6 +39,8 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 		return agentServices;
 	}
 
+	// TODO: change INTERACTION_PROTOCOL to QUERY_IF
+	// TODO: ontology to implement = Predicate - HAS_FACT ( name, FACT) => YES (name, FACT) = NO (name, FACT) 
 	synchronized public void findFact(AID[] knowledgeProcessors) {
 		String fact = questions.get(0);
 		for (AID knowledgeProcessor : knowledgeProcessors) {
