@@ -19,8 +19,7 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 
 	private static final long serialVersionUID = 1069538812627168203L;
 
-	// TODO : change String to Fact
-	public List<String> questions = new ArrayList<String>();
+	public List<Fact> questions = new ArrayList<Fact>();
 
 	@Override
 	protected void initializeBehaviours() {
@@ -31,7 +30,8 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 	protected void initializeData() {
 		Object[] args = getArguments();
 		for (Object arg : args) {
-			questions.add(arg.toString());
+			Fact fact = new Fact(arg.toString(), null);
+			questions.add(fact);
 			trace("got question (" + arg.toString() + ")");
 		}
 	}
@@ -46,7 +46,7 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 	}
 
 	synchronized public void findFact(AID[] knowledgeProcessors) {
-		String fact = questions.get(0);
+		Fact fact = questions.get(0);
 		for (AID knowledgeProcessor : knowledgeProcessors) {
 			ACLMessage message = new ACLMessage(ACLMessage.QUERY_IF);
 			message.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
@@ -54,7 +54,7 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 			message.setConversationId(Knowledge.KNOWLEDGE_CONSUME_FACT);
 
 			Question q = new Question();
-			q.setFact(new Fact(fact, ""));
+			q.setFact(fact);
 
 			message.setLanguage(FIPANames.ContentLanguage.FIPA_SL);
 			message.setOntology(KnowledgeOntology.ONTOLOGY_NAME);
