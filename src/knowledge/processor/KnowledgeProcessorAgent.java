@@ -35,10 +35,10 @@ public class KnowledgeProcessorAgent extends KnowledgeAgent {
 	}
 
 	synchronized public void answerQuestion(ACLMessage message) {
-		MessageTemplate mt = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
+		MessageTemplate mt = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_QUERY);
 		mt = MessageTemplate.and(mt, MessageTemplate.MatchConversationId(message.getConversationId()));
 		addBehaviour(new AnswerQuestionBehaviour(this, mt));
-		message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+		message.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
 		putBack(message);
 	}
 

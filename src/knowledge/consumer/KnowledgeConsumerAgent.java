@@ -39,13 +39,12 @@ public class KnowledgeConsumerAgent extends KnowledgeAgent {
 		return agentServices;
 	}
 
-	// TODO: change INTERACTION_PROTOCOL to QUERY_IF
 	// TODO: ontology to implement = Predicate - HAS_FACT ( name, FACT) => YES (name, FACT) = NO (name, FACT) 
 	synchronized public void findFact(AID[] knowledgeProcessors) {
 		String fact = questions.get(0);
 		for (AID knowledgeProcessor : knowledgeProcessors) {
-			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
-			message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			ACLMessage message = new ACLMessage(ACLMessage.QUERY_IF);
+			message.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
 			message.addReceiver(knowledgeProcessor);
 			message.setContent(fact);
 			message.setConversationId(Knowledge.KNOWLEDGE_CONSUME_FACT);
