@@ -6,6 +6,7 @@ import jade.content.onto.OntologyException;
 import jade.content.schema.AgentActionSchema;
 import jade.content.schema.ConceptSchema;
 import jade.content.schema.ObjectSchema;
+import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
 
 public class KnowledgeOntology extends Ontology {
@@ -20,6 +21,9 @@ public class KnowledgeOntology extends Ontology {
 
 	public static final String REGISTER = "Register";
 	public static final String REGISTER_FACT = "fact";
+
+	public static final String QUESTION = "Question";
+	public static final String QUESTION_FACT = "fact";
 
 	private static Ontology theInstance = new KnowledgeOntology();
 
@@ -39,6 +43,10 @@ public class KnowledgeOntology extends Ontology {
 			add(new AgentActionSchema(REGISTER), Register.class);
 			AgentActionSchema as = (AgentActionSchema) getSchema(REGISTER);
 			as.add(REGISTER_FACT, (ConceptSchema) getSchema(FACT));
+
+			add(new PredicateSchema(QUESTION), Question.class);
+			PredicateSchema ps = (PredicateSchema) getSchema(QUESTION);
+			ps.add(QUESTION_FACT, (ConceptSchema) getSchema(FACT));
 		} catch (OntologyException e) {
 			e.printStackTrace();
 		}
