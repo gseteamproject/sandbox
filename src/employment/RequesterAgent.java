@@ -27,6 +27,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import employment.ontology.Address;
+import employment.ontology.Company;
+import employment.ontology.EmploymentOntology;
+import employment.ontology.Engage;
+import employment.ontology.Person;
+import employment.ontology.WorksFor;
 import jade.content.abs.AbsContentElementList;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;

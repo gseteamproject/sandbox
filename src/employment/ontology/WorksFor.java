@@ -21,50 +21,31 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-package employment;
+package employment.ontology;
 
-import jade.content.Concept;
+import jade.content.Predicate;
 
-public class Address implements Concept {
+public class WorksFor implements Predicate {
 
-	private static final long serialVersionUID = -2168010044789974751L;
-	private String _street; // Street name
-	private Long _number; // Street number
-	private String _city; // City
+	private static final long serialVersionUID = 3509985858888183106L;
+	private Company _company; // Company employer
+	private Person _person; // Person employee
 
-	// Methods required to use this class to represent the ADDRESS role
-	public void setStreet(String street) {
-		_street = street;
+	// These methods are used by the JADE-framework
+	public void setPerson(Person person) {
+		_person = person;
 	}
 
-	public String getStreet() {
-		return _street;
+	public Person getPerson() {
+		return _person;
 	}
 
-	public void setNumber(Long number) {
-		_number = number;
+	public void setCompany(Company company) {
+		_company = company;
 	}
 
-	public Long getNumber() {
-		return _number;
+	public Company getCompany() {
+		return _company;
 	}
 
-	public void setCity(String city) {
-		_city = city;
-	}
-
-	public String getCity() {
-		return _city;
-	}
-
-	// Other application specific methods
-	public boolean equals(Address a) {
-		if (!_street.equalsIgnoreCase(a.getStreet()))
-			return false;
-		if (_number.longValue() != a.getNumber().longValue())
-			return false;
-		if (!_city.equalsIgnoreCase(a.getCity()))
-			return false;
-		return true;
-	}
 }

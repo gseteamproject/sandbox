@@ -23,6 +23,14 @@ Boston, MA  02111-1307, USA.
 
 package employment;
 
+import employment.ontology.Address;
+import employment.ontology.Company;
+import employment.ontology.EmploymentOntology;
+import employment.ontology.Engage;
+import employment.ontology.EngagementError;
+import employment.ontology.Person;
+import employment.ontology.PersonTooOld;
+import employment.ontology.WorksFor;
 import jade.content.ContentElementList;
 import jade.content.Predicate;
 import jade.content.abs.AbsPredicate;

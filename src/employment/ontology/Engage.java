@@ -21,15 +21,15 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-package employment;
+package employment.ontology;
 
-import jade.content.Predicate;
+import jade.content.Concept;
 
-public class WorksFor implements Predicate {
+public class Engage implements Concept {
 
-	private static final long serialVersionUID = 3509985858888183106L;
-	private Company _company; // Company employer
-	private Person _person; // Person employee
+	private static final long serialVersionUID = 2938064801139320352L;
+	private Company _company; // Company engager
+	private Person _person; // Person engaged
 
 	// These methods are used by the JADE-framework
 	public void setPerson(Person person) {

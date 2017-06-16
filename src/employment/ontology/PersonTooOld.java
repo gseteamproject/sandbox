@@ -21,35 +21,10 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-package employment;
+package employment.ontology;
 
-import jade.content.Concept;
+import jade.content.Predicate;
 
-public class Company implements Concept {
-
-	private static final long serialVersionUID = 2808327924390254837L;
-	private String _name; // Company's name
-	private Address _address; // Headquarter's address
-
-	// Methods required to use this class to represent the COMPANY role
-	public void setName(String name) {
-		_name = name;
-	}
-
-	public String getName() {
-		return _name;
-	}
-
-	public void setAddress(Address address) {
-		_address = address;
-	}
-
-	public Address getAddress() {
-		return _address;
-	}
-
-	// Other application specific methods
-	public boolean equals(Company c) {
-		return (_name.equalsIgnoreCase(c.getName()));
-	}
+public class PersonTooOld implements Predicate {
+	private static final long serialVersionUID = -3883615930141706392L;
 }

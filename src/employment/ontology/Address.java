@@ -21,10 +21,50 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-package employment;
+package employment.ontology;
 
-import jade.content.Predicate;
+import jade.content.Concept;
 
-public class PersonTooOld implements Predicate {
-	private static final long serialVersionUID = -3883615930141706392L;
+public class Address implements Concept {
+
+	private static final long serialVersionUID = -2168010044789974751L;
+	private String _street; // Street name
+	private Long _number; // Street number
+	private String _city; // City
+
+	// Methods required to use this class to represent the ADDRESS role
+	public void setStreet(String street) {
+		_street = street;
+	}
+
+	public String getStreet() {
+		return _street;
+	}
+
+	public void setNumber(Long number) {
+		_number = number;
+	}
+
+	public Long getNumber() {
+		return _number;
+	}
+
+	public void setCity(String city) {
+		_city = city;
+	}
+
+	public String getCity() {
+		return _city;
+	}
+
+	// Other application specific methods
+	public boolean equals(Address a) {
+		if (!_street.equalsIgnoreCase(a.getStreet()))
+			return false;
+		if (_number.longValue() != a.getNumber().longValue())
+			return false;
+		if (!_city.equalsIgnoreCase(a.getCity()))
+			return false;
+		return true;
+	}
 }
