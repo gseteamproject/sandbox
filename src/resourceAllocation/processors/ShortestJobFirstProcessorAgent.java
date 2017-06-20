@@ -11,7 +11,6 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 
 	private static final long serialVersionUID = -7482656135774231087L;
 
-
 	@Override
     public void Serve(Worker[] agents) {
         addBehaviour(new ServerBehaviour(this, agents));
@@ -35,9 +34,9 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
         waitingTimeAverage = waitingTime / workerContainers.length;
         leadTimeAverage = leadTime / workerContainers.length;
 
-        System.out.println("\nР’СЂРµРјСЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕСЃС‚Р°РІРёР»Рѕ " + loadTime + " СЃРµРєСѓРЅРґ.");
-        System.out.println("\nРЎСЂРµРґРЅРµРµ РїРѕР»РЅРѕРµ РІСЂРµРјСЏ РѕР¶РёРґР°РЅРёСЏ СЃРѕСЃС‚Р°РІРёР»Рѕ " + waitingTimeAverage + " СЃРµРєСѓРЅРґ.");
-        System.out.println("\nРЎСЂРµРґРЅРµРµ РїРѕР»РЅРѕРµ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ СЃРѕСЃС‚Р°РІРёР»Рѕ " + leadTimeAverage + " СЃРµРєСѓРЅРґ.");
+        System.out.println("\nВремя обработки составило " + loadTime + " секунд.");
+        System.out.println("\nСреднее полное время ожидания составило " + waitingTimeAverage + " секунд.");
+        System.out.println("\nСреднее полное время выполнения составило " + leadTimeAverage + " секунд.");
     }
 
     private class ServerBehaviour extends Behaviour {
@@ -69,7 +68,7 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
                     _workerContainersList.get(j).WaitingTime += currentWorker.getTime();
                 }
 
-                System.out.println("РђРіРµРЅС‚ " + currentWorker.getAgent().getName() + " Р±С‹Р» РѕР±СЃР»СѓР¶РµРЅ Р·Р° " + currentWorker.getTime() + " СЃРµРєСѓРЅРґ.");
+                System.out.println("Агент " + currentWorker.getAgent().getName() + " был обслужен за " + currentWorker.getTime() + " секунд.");
             }
 
             _agent.ShowStatistics(_workerContainersList.toArray(new WorkerContainer[0]));
@@ -93,13 +92,7 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 		public final static Comparator<WorkerContainer> compareByWorkerTime = new Comparator<WorkerContainer>() {
 			@Override
 			public int compare(WorkerContainer o1, WorkerContainer o2) {
-				if (o1.Worker.getTime() < o2.Worker.getTime()) {
-					return -1;
-				} else if (o1.Worker.getTime() > o2.Worker.getTime()) {
-					return 1;
-				} else {
-					return 0;
-				}
+				return (int) (o1.Worker.getTime() - o2.Worker.getTime());
 			}
 		};
 	}

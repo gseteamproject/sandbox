@@ -13,7 +13,7 @@ public class DummyAgent extends Agent {
         if (args != null && args.length > 0) {
             long time = (long) Long.parseLong((String)args[0]);
 
-            System.out.println("РђРіРµРЅС‚ " + getAID().getName() + " РіРѕС‚РѕРІ Рє РІС‹РїРѕР»РЅРµРЅРёСЋ РїСЂРѕС†РµСЃСЃР°, РєРѕС‚РѕСЂС‹Р№ Р·Р°РЅРёРјР°РµС‚ " + time + " РјРёР»Р»РёСЃРµРєСѓРЅРґ.");
+            System.out.println("Агент " + getAID().getName() + " готов к выполнению процесса, который занимает " + time + " миллисекунд.");
 
             MySimpleBehaviour behaviour = new MySimpleBehaviour(this, time);
             addBehaviour(behaviour);
