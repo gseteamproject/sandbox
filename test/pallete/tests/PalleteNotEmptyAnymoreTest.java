@@ -22,10 +22,9 @@ import palleteRobotCommunication.domain.SourcePalleteStateVocabulary;
 import palleteRobotCommunication.domain.WhatIsYourState;
 
 public class PalleteNotEmptyAnymoreTest extends Test {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 638845521637985899L;
+
 	private AID sourcePallete;
 
 	Codec codec = new SLCodec();

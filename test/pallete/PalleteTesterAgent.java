@@ -11,19 +11,12 @@ import jade.wrapper.AgentController;
 
 public class PalleteTesterAgent extends TesterAgent {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4152023188919425834L;
 
 	@Override
 	protected TestGroup getTestGroup() {
 		TestGroup tg = new TestGroup("pallete/palleteTestsList.xml") {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
+			private static final long serialVersionUID = 3695791829666231156L;
 		};
 		return tg;
 	}

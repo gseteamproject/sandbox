@@ -22,10 +22,9 @@ import palleteRobotCommunication.domain.SourcePalleteStateVocabulary;
 import palleteRobotCommunication.domain.WhatIsYourState;
 
 public class PalleteAlmostEmptyTest extends Test {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -7605911029923355560L;
+
 	private AID sourcePallete;
 
 	Codec codec = new SLCodec();
@@ -42,7 +41,7 @@ public class PalleteAlmostEmptyTest extends Test {
 				ContentManager cm = myAgent.getContentManager();
 				cm.registerLanguage(codec);
 				cm.registerOntology(ontology);
-				
+
 				WhatIsYourState question = new WhatIsYourState();
 				Action a = new Action();
 				a.setAction(question);
