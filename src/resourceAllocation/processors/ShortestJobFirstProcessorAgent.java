@@ -5,6 +5,7 @@ import resourceAllocation.core.Worker;
 import jade.core.behaviours.Behaviour;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 
@@ -25,10 +26,10 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
         float waitingTime = 0;
         float waitingTimeAverage = 0;
 
-        for (int i = 0; i < workerContainers.length; ++i){
-            loadTime += workerContainers[i].Worker.getTime();
-            leadTime += workerContainers[i].Worker.getTime() + workerContainers[i].WaitingTime;
-            waitingTime += workerContainers[i].WaitingTime;
+        for (WorkerContainer workerContainer : workerContainers){
+            loadTime += workerContainer.Worker.getTime();
+            leadTime += workerContainer.Worker.getTime() + workerContainer.WaitingTime;
+            waitingTime += workerContainer.WaitingTime;
         }
 
         waitingTimeAverage = waitingTime / workerContainers.length;
@@ -46,29 +47,15 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
         private ShortestJobFirstProcessorAgent _agent;
         private ArrayList<WorkerContainer> _workerContainersList;
 
-        public ServerBehaviour(ShortestJobFirstProcessorAgent agent, Worker[] agents){
+        public ServerBehaviour(ShortestJobFirstProcessorAgent agent, Worker[] workers){
             _agent = agent;
             _workerContainersList = new ArrayList<WorkerContainer>();
 
-            for (int i = 0; i < agents.length; ++i){
-                Worker currentWorker = agents[i];
-                WorkerContainer workerContainer = new WorkerContainer();
-                workerContainer.Worker = currentWorker;
+			for (Worker worker : workers) {
+				_workerContainersList.add(new WorkerContainer(worker));
+			}
 
-                _workerContainersList.add(workerContainer);
-            }
-
-            // TODO: replace lambda with function call
-            _workerContainersList.sort((o1, o2) -> {
-                if (o1.Worker.getTime() < o2.Worker.getTime()){
-                    return -1;
-                } else if (o1.Worker.getTime() > o2.Worker.getTime()){
-                    return 1;
-                }
-                else{
-                    return 0;
-                }
-            });
+            _workerContainersList.sort(WorkerContainer.compareByWorkerTime);
         }
 
         @Override
@@ -95,9 +82,25 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
         }
     }
 
+	private static class WorkerContainer {
+		public float WaitingTime = 0;
+		public Worker Worker;
 
-    private class WorkerContainer{
-        public float WaitingTime = 0;
-        public Worker Worker;
-    }
+		public WorkerContainer(Worker worker) {
+			this.Worker = worker;
+		}
+
+		public final static Comparator<WorkerContainer> compareByWorkerTime = new Comparator<WorkerContainer>() {
+			@Override
+			public int compare(WorkerContainer o1, WorkerContainer o2) {
+				if (o1.Worker.getTime() < o2.Worker.getTime()) {
+					return -1;
+				} else if (o1.Worker.getTime() > o2.Worker.getTime()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		};
+	}
 }
