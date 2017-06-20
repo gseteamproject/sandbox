@@ -11,26 +11,42 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<!-- original site -->
+		<!-- <dependency> <groupId>com.tilab.jade</groupId> <artifactId>jade</artifactId> 
+			<version>4.5.0</version> </dependency> -->
+		<!-- mirror -->
 		<dependency>
-			<groupId>com.tilab.jade</groupId>
+			<groupId>net.sf.ingenias</groupId>
 			<artifactId>jade</artifactId>
-			<version>4.5.0</version>
+			<version>4.3</version>
 		</dependency>
+
+		<!-- original site -->
+		<!-- <dependency> <groupId>com.tilab.jade</groupId> <artifactId>jade-test-suite</artifactId> 
+			<version>1.13.0</version> </dependency> -->
+		<!-- mirror -->
 		<dependency>
-			<groupId>com.tilab.jade</groupId>
-			<artifactId>jade-test-suite</artifactId>
-			<version>1.13.0</version>
+			<groupId>net.sf.ingenias</groupId>
+			<artifactId>jadeTools</artifactId>
+			<version>3.7</version>
 		</dependency>
+
+		<!-- original site -->
+		<!-- <dependency> <groupId>com.tilab.jade</groupId> <artifactId>jade-xml-codec</artifactId> 
+			<version>1.11.0</version> </dependency> -->
+		<!-- mirror -->
 		<dependency>
-			<groupId>com.tilab.jade</groupId>
-			<artifactId>jade-xml-codec</artifactId>
-			<version>1.11.0</version>
+			<groupId>net.sf.ingenias</groupId>
+			<artifactId>jadeMisc</artifactId>
+			<version>3.7</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.github.bdeneuter</groupId>
 			<artifactId>lejos-ev3-api</artifactId>
 			<version>0.9.1-beta</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
