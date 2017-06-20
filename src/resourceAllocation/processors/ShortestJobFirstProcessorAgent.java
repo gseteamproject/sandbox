@@ -34,9 +34,9 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
         waitingTimeAverage = waitingTime / workerContainers.length;
         leadTimeAverage = leadTime / workerContainers.length;
 
-        System.out.println("\nВремя обработки составило " + loadTime + " секунд.");
-        System.out.println("\nСреднее полное время ожидания составило " + waitingTimeAverage + " секунд.");
-        System.out.println("\nСреднее полное время выполнения составило " + leadTimeAverage + " секунд.");
+        System.out.println("\nFull processing time is " + loadTime + " seconds.");
+        System.out.println("\nAverage waiting time is " + waitingTimeAverage + " seconds.");
+        System.out.println("\nAverage processing time is " + leadTimeAverage + " seconds.");
     }
 
     private class ServerBehaviour extends Behaviour {
@@ -68,7 +68,7 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
                     _workerContainersList.get(j).WaitingTime += currentWorker.getTime();
                 }
 
-                System.out.println("Агент " + currentWorker.getAgent().getName() + " был обслужен за " + currentWorker.getTime() + " секунд.");
+                System.out.println("Agent " + currentWorker.getAgent().getName() + " was processed in " + currentWorker.getTime() + " seconds.");
             }
 
             _agent.ShowStatistics(_workerContainersList.toArray(new WorkerContainer[0]));
