@@ -58,6 +58,7 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
                 _workerContainersList.add(workerContainer);
             }
 
+            // TODO: replace lambda with function call
             _workerContainersList.sort((o1, o2) -> {
                 if (o1.Worker.getTime() < o2.Worker.getTime()){
                     return -1;
