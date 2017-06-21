@@ -39,7 +39,7 @@ public class FindFactBehaviour extends AchieveREInitiator {
 				myKnowledgeAgent.trace("unexpected response");
 			}
 		} catch (CodecException | OntologyException e) {
-			e.printStackTrace();
+			myKnowledgeAgent.trace(e.getMessage());
 		}
 	}
 

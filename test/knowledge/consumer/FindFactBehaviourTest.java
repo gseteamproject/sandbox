@@ -1,7 +1,10 @@
 package knowledge.consumer;
 
+import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.api.Action;
+import org.jmock.api.Invocation;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
@@ -156,6 +159,68 @@ public class FindFactBehaviourTest {
 				will(returnValue(question));
 
 				oneOf(knowledgeAgent_mock).trace("no answer for question ( key [key] )");
+			}
+		});
+
+		findFactBehaviour.handleInform(informMessage_mock);
+	}
+
+	@Test
+	public void handleInform_CodecException() throws CodecException, OntologyException {
+		ACLMessage informMessage_mock = context.mock(ACLMessage.class, "inform message");
+		ContentManager contentManager_mock = context.mock(ContentManager.class);
+
+		context.checking(new Expectations() {
+			{
+				oneOf(knowledgeAgent_mock).trace("knowledge processor liked my question");
+
+				oneOf(knowledgeAgent_mock).getContentManager();
+				will(returnValue(contentManager_mock));
+
+				oneOf(contentManager_mock).extractAbsContent(informMessage_mock);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation arg0) throws Throwable {
+						throw new CodecException("Unknown language");
+					}
+				});
+
+				oneOf(knowledgeAgent_mock).trace("Unknown language");
+			}
+		});
+
+		findFactBehaviour.handleInform(informMessage_mock);
+	}
+
+	@Test
+	public void handleInform_OntologyException() throws CodecException, OntologyException {
+		ACLMessage informMessage_mock = context.mock(ACLMessage.class, "inform message");
+		ContentManager contentManager_mock = context.mock(ContentManager.class);
+
+		context.checking(new Expectations() {
+			{
+				oneOf(knowledgeAgent_mock).trace("knowledge processor liked my question");
+
+				oneOf(knowledgeAgent_mock).getContentManager();
+				will(returnValue(contentManager_mock));
+
+				oneOf(contentManager_mock).extractAbsContent(informMessage_mock);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation arg0) throws Throwable {
+						throw new OntologyException("Unknown ontology");
+					}
+				});
+
+				oneOf(knowledgeAgent_mock).trace("Unknown ontology");
 			}
 		});
 
