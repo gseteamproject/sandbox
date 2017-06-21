@@ -1,3 +1,4 @@
+
 import jade.Boot;
 
 public class StartTesterAgent {
