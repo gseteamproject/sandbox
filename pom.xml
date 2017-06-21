@@ -22,11 +22,8 @@
 			<version>4.5.0</version>
 		</dependency>
 		<!-- mirror -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.sf.ingenias</groupId> -->
-		<!-- <artifactId>jade</artifactId> -->
-		<!-- <version>4.3</version> -->
-		<!-- </dependency> -->
+		<!-- <dependency> <groupId>net.sf.ingenias</groupId> <artifactId>jade</artifactId> 
+			<version>4.3</version> </dependency> -->
 
 		<!-- original site -->
 		<dependency>
