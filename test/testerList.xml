@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+	<!DOCTYPE TesterList [
+		<!ELEMENT TesterList (Tester)*>
+		<!ELEMENT Tester (ClassName, Description, TestsListRif)>
+		<!ATTLIST Tester 
+		    name     CDATA    #REQUIRED
+		    skip     CDATA    #REQUIRED
+		>
+		<!ELEMENT ClassName (#PCDATA)>
+		<!ELEMENT Description (#PCDATA)>
+		<!ELEMENT TestsListRif (#PCDATA)>
+	]>
+	<TesterList> 
+		<Tester name="Inter Platform Communication" skip="false">
+			<ClassName>test.interPlatform.InterPlatformCommunicationTesterAgent</ClassName>
+			<Description> This item includes tests related to agent communication across different platforms. </Description>
+			<TestsListRif>test/interPlatform/interPlatformTestsList.xml</TestsListRif>
+		</Tester>
+		<Tester name="Pallete communication" skip="false">
+			<ClassName>pallete.PalleteTesterAgent</ClassName>
+			<Description></Description>
+			<TestsListRif>pallete/palleteTestsList.xml</TestsListRif>
+		</Tester>
+	</TesterList>

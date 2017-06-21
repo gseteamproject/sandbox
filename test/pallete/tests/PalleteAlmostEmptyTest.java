@@ -30,6 +30,7 @@ public class PalleteAlmostEmptyTest extends Test {
 	Codec codec = new SLCodec();
 	Ontology ontology = PalleteRobotOntology.getInstance();
 
+	@Override
 	public Behaviour load(Agent a) throws TestException {
 		setTimeout(2000);
 		sourcePallete = TestUtility.createAgent(a, "test", "palleteRobotCommunication.SourcePalleteAgent",
@@ -37,6 +38,7 @@ public class PalleteAlmostEmptyTest extends Test {
 		CyclicBehaviour b = new CyclicBehaviour(a) {
 			private static final long serialVersionUID = -3423642459063630856L;
 
+			@Override
 			public void onStart() {
 				ContentManager cm = myAgent.getContentManager();
 				cm.registerLanguage(codec);
@@ -62,6 +64,7 @@ public class PalleteAlmostEmptyTest extends Test {
 				myAgent.send(msg);
 			}
 
+			@Override
 			public void action() {
 				ACLMessage msg = myAgent.receive();
 				if (msg != null) {
@@ -89,6 +92,7 @@ public class PalleteAlmostEmptyTest extends Test {
 		return b;
 	}
 
+	@Override
 	public void clean(Agent a) {
 		try {
 			TestUtility.killAgent(a, sourcePallete);
