@@ -10,15 +10,16 @@
 		<!ELEMENT Description (#PCDATA)>
 		<!ELEMENT TestsListRif (#PCDATA)>
 	]>
-	<TesterList> 
-		<Tester name="Inter Platform Communication" skip="false">
-			<ClassName>test.interPlatform.InterPlatformCommunicationTesterAgent</ClassName>
-			<Description> This item includes tests related to agent communication across different platforms. </Description>
-			<TestsListRif>test/interPlatform/interPlatformTestsList.xml</TestsListRif>
-		</Tester>
-		<Tester name="Pallete communication" skip="false">
-			<ClassName>pallete.PalleteTesterAgent</ClassName>
-			<Description></Description>
-			<TestsListRif>pallete/palleteTestsList.xml</TestsListRif>
-		</Tester>
-	</TesterList>
+<TesterList>
+	<Tester name="Inter Platform Communication" skip="false">
+		<ClassName>test.interPlatform.InterPlatformCommunicationTesterAgent</ClassName>
+		<Description> This item includes tests related to agent communication
+			across different platforms. </Description>
+		<TestsListRif>test/interPlatform/interPlatformTestsList.xml</TestsListRif>
+	</Tester>
+	<Tester name="Pallete communication" skip="false">
+		<ClassName>pallete.PalleteTesterAgent</ClassName>
+		<Description></Description>
+		<TestsListRif>pallete/palleteTestsList.xml</TestsListRif>
+	</Tester>
+</TesterList>
