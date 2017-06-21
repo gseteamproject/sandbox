@@ -23,13 +23,13 @@ Boston, MA  02111-1307, USA.
 
 package interPlatform.tests;
 
-import common.Test;
-import common.TestException;
-import common.TestUtility;
 import interPlatform.InterPlatformCommunicationTesterAgent;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
+import test.common.Test;
+import test.common.TestException;
+import test.common.TestUtility;
 
 /**
  * Test sending a message with the payload encoded using a given charset.
@@ -45,7 +45,7 @@ public class TestCharset extends Test {
   
   private static final String RESPONDER_NAME = "responder";
 	private final String CONV_ID = "conv_ID"+hashCode();
-	private final String CONTENT = "éèçàûï";
+	private final String CONTENT = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	private boolean pass = false;
   private String charset;
   

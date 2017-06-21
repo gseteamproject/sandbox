@@ -27,14 +27,14 @@ import jade.core.Agent;
 import jade.core.Runtime;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
-import common.JadeController;
-import common.Test;
-import common.TestException;
-import common.TestGroup;
-import common.TestUtility;
-import common.TesterAgent;
 import jade.core.AID;
 import jade.wrapper.*;
+import test.common.JadeController;
+import test.common.Test;
+import test.common.TestException;
+import test.common.TestGroup;
+import test.common.TestUtility;
+import test.common.TesterAgent;
 import jade.util.leap.*;
 
 /**

@@ -23,15 +23,15 @@ Boston, MA  02111-1307, USA.
 
 package interPlatform.tests;
 
-import common.Test;
-import common.TestException;
-import common.TestUtility;
 import interPlatform.InterPlatformCommunicationTesterAgent;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
 import jade.domain.FIPAAgentManagement.*;
 import jade.util.leap.Iterator;
+import test.common.Test;
+import test.common.TestException;
+import test.common.TestUtility;
 
 /**
    Test the correct transfer of the Message Envelope in communication 

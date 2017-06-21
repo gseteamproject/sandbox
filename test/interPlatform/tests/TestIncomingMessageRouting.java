@@ -23,14 +23,14 @@ Boston, MA  02111-1307, USA.
 
 package interPlatform.tests;
 
-import common.JadeController;
-import common.Test;
-import common.TestException;
-import common.TestUtility;
 import interPlatform.InterPlatformCommunicationTesterAgent;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
+import test.common.JadeController;
+import test.common.Test;
+import test.common.TestException;
+import test.common.TestUtility;
 
 /**
    Test the "incoming message routing" mechanism i.e. the case where

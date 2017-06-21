@@ -1,8 +1,5 @@
 package pallete.tests;
 
-import common.Test;
-import common.TestException;
-import common.TestUtility;
 import jade.content.Concept;
 import jade.content.ContentManager;
 import jade.content.lang.Codec;
@@ -18,6 +15,9 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import palleteRobotCommunication.ontology.PalleteRobotOntology;
+import test.common.Test;
+import test.common.TestException;
+import test.common.TestUtility;
 import palleteRobotCommunication.domain.SourcePalleteStateVocabulary;
 import palleteRobotCommunication.domain.WhatIsYourState;
 

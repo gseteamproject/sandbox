@@ -1,13 +1,13 @@
 package pallete;
 
-import common.Test;
-import common.TestGroup;
-import common.TesterAgent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
+import test.common.Test;
+import test.common.TestGroup;
+import test.common.TesterAgent;
 
 public class PalleteTesterAgent extends TesterAgent {
 
