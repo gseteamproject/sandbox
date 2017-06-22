@@ -1,8 +1,9 @@
-package resourceAllocation;
+package resourceAllocation.core;
 
 import jade.core.Agent;
+import resourceAllocation.MySimpleBehaviour;
 
-public class DummyAgent extends Agent {
+public class WorkerAgent extends Agent {
 
 	private static final long serialVersionUID = -2959026186780910618L;
 
