@@ -16,8 +16,7 @@ public class WorkerAgent extends Agent {
 
             System.out.println("Agent " + getAID().getName() + " is ready to perform the process that lasts " + time + " seconds.");
 
-            MySimpleBehaviour behaviour = new MySimpleBehaviour(this, time);
-            addBehaviour(behaviour);
+            addBehaviour(new MySimpleBehaviour(time));
         }
     }
 }

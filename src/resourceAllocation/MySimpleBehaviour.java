@@ -1,7 +1,6 @@
 package resourceAllocation;
 
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -21,8 +20,7 @@ public class MySimpleBehaviour extends Behaviour {
     private MessageTemplate mt;
 
 
-    public MySimpleBehaviour(Agent agent, long time){
-        myAgent = agent;
+    public MySimpleBehaviour(long time){
         _time = time;
     }
 
