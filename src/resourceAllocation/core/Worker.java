@@ -9,9 +9,12 @@ public class Worker {
 	final public long processingTime;
 	final public String _replyWith;
 
-	public long waitingTime = 0;
-	public long startedAt;
-	public long finishedAt;
+	public long startedAt = 0;
+	public long finishedAt = 0;
+
+	public long remainingTime = 0;
+
+	public long processSwitching = 0;
 
 	public Worker(AID agent, long time, String replyWith) {
 		_agent = agent;
@@ -25,4 +28,12 @@ public class Worker {
 			return (int) (o1.processingTime - o2.processingTime);
 		}
 	};
+
+	public long getWaitingTime() {
+		return finishedAt - processingTime;
+	}
+
+	public long getFullTime() {
+		return finishedAt - startedAt;
+	}
 }
