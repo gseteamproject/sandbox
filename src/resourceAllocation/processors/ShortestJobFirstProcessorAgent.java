@@ -15,29 +15,6 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 		addBehaviour(new ServerBehaviour(this, agents));
 	}
 
-	public void ShowStatistics(Worker[] workers) {
-		float loadTime = 0;
-
-		float leadTime = 0;
-		float leadTimeAverage = 0;
-
-		float waitingTime = 0;
-		float waitingTimeAverage = 0;
-
-		for (Worker worker : workers) {
-			loadTime += worker._time;
-			leadTime += worker._time + worker.waitingTime;
-			waitingTime += worker.waitingTime;
-		}
-
-		waitingTimeAverage = waitingTime / workers.length;
-		leadTimeAverage = leadTime / workers.length;
-
-		System.out.println("\nFull processing time is " + loadTime + " seconds.");
-		System.out.println("\nAverage waiting time is " + waitingTimeAverage + " seconds.");
-		System.out.println("\nAverage processing time is " + leadTimeAverage + " seconds.");
-	}
-
 	private class ServerBehaviour extends OneShotBehaviour {
 
 		private static final long serialVersionUID = -6262507239330173556L;
@@ -62,11 +39,11 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 				Worker currentWorker = _workerContainersList.get(i);
 
 				for (int j = i + 1; j < _workerContainersList.size(); ++j) {
-					_workerContainersList.get(j).waitingTime += currentWorker._time;
+					_workerContainersList.get(j).waitingTime += currentWorker.processingTime;
 				}
 
 				System.out.println("Agent " + currentWorker._agent.getName() + " was processed in "
-						+ currentWorker._time + " seconds.");
+						+ currentWorker.processingTime + " seconds.");
 			}
 
 			_agent.ShowStatistics(_workerContainersList.toArray(new Worker[0]));

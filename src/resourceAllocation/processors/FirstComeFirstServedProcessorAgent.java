@@ -24,12 +24,12 @@ public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
         for (int i = 0; i < agents.length; ++i){
             Worker worker = agents[i];
 
-            workingTime += waitingTime + worker._time;
+            workingTime += waitingTime + worker.processingTime;
 
             System.out.println("Время ожидания для агента " + worker._agent.getName() + " составило " + waitingTime + " секунд.");
 
             if (i < agents.length - 1){
-                waitingTime += worker._time;
+                waitingTime += worker.processingTime;
                 totalWaitingTime += waitingTime;
             }
 
@@ -58,7 +58,7 @@ public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
         public void action() {
             for(int i = 0; i < _agents.length; ++i){
                 Worker worker = _agents[i];
-                System.out.println("Работник " + worker._agent.getName() + " был обслужен за " + worker._time + " секунд.");
+                System.out.println("Работник " + worker._agent.getName() + " был обслужен за " + worker.processingTime + " секунд.");
             }
 
             _processorAgent.ShowStatistics(_agents);

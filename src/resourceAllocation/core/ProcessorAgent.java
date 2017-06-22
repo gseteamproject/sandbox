@@ -12,72 +12,90 @@ import jade.lang.acl.UnreadableException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ProcessorAgent extends Agent{
+public abstract class ProcessorAgent extends Agent {
 
 	private static final long serialVersionUID = -8419853254184621035L;
 	private String _serviceType = "processor";
 
-    @Override
-    public void setup(){
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType(_serviceType);
-        sd.setName("ProcessingService");
+	public void ShowStatistics(Worker[] workers) {
+		float processingTimeTotal = 0;
+		float waitingTimeTotal = 0;
+		float fullTimeTotal = 0;
 
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-        dfd.addServices(sd);
+		for (Worker worker : workers) {
+			processingTimeTotal += worker.processingTime;
+			waitingTimeTotal += worker.waitingTime;
+			fullTimeTotal += worker.processingTime + worker.waitingTime;
+		}
 
-        try {
-            DFService.register(this, dfd);
-        } catch (FIPAException e) {
-            e.printStackTrace();
-        }
+		float processingTimeAverage = processingTimeTotal / workers.length;
+		float waitingTimeAverage = waitingTimeTotal / workers.length;
+		float fullTimeAverage = fullTimeTotal / workers.length;
 
-        addBehaviour(new AgentFinderBehaviour(this, 1000));
-    }
+		System.out.println(String.format("Processing time - average: %5s total: %5s", processingTimeAverage, processingTimeTotal));
+		System.out.println(String.format("Waiting time - average: %5s total: %5s", waitingTimeAverage, waitingTimeTotal));
+		System.out.println(String.format("Full time - average: %5s total: %5s", fullTimeAverage, fullTimeTotal));
+	}
 
-    public abstract void Serve(Worker[] agents);
+	@Override
+	public void setup() {
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(_serviceType);
+		sd.setName("ProcessingService");
 
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(getAID());
+		dfd.addServices(sd);
 
-    private class AgentFinderBehaviour extends WakerBehaviour{
+		try {
+			DFService.register(this, dfd);
+		} catch (FIPAException e) {
+			e.printStackTrace();
+		}
+
+		addBehaviour(new AgentFinderBehaviour(this, 1000));
+	}
+
+	public abstract void Serve(Worker[] agents);
+
+	private class AgentFinderBehaviour extends WakerBehaviour {
 
 		private static final long serialVersionUID = -5469211056131974701L;
 		private ProcessorAgent _processorAgent;
 
-        public AgentFinderBehaviour(ProcessorAgent agent, long tick){
-            super(agent, tick);
-            _processorAgent = agent;
-        }
+		public AgentFinderBehaviour(ProcessorAgent agent, long tick) {
+			super(agent, tick);
+			_processorAgent = agent;
+		}
 
-        @Override
-        public void onWake() {
-            List<Worker> foundWorkers = new ArrayList<Worker>();
+		@Override
+		public void onWake() {
+			List<Worker> foundWorkers = new ArrayList<Worker>();
 
-            boolean replyStackIsNotEmpty = true;
+			boolean replyStackIsNotEmpty = true;
 
-            while (replyStackIsNotEmpty){
-                ACLMessage aclMessage = myAgent.receive();
-                if (aclMessage != null){
-                    try {
-                        long time = (long) aclMessage.getContentObject();
+			while (replyStackIsNotEmpty) {
+				ACLMessage aclMessage = myAgent.receive();
+				if (aclMessage != null) {
+					try {
+						long time = (long) aclMessage.getContentObject();
 
-                        Worker worker = new Worker(aclMessage.getSender(), time, aclMessage.getReplyWith());
-                        foundWorkers.add(worker);
+						Worker worker = new Worker(aclMessage.getSender(), time, aclMessage.getReplyWith());
+						foundWorkers.add(worker);
 
-                    } catch (UnreadableException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else{
-                    replyStackIsNotEmpty = false;
-                }
-            }
+					} catch (UnreadableException e) {
+						e.printStackTrace();
+					}
+				} else {
+					replyStackIsNotEmpty = false;
+				}
+			}
 
-            if (foundWorkers.isEmpty()){
-                this.reset();
-            }
+			if (foundWorkers.isEmpty()) {
+				this.reset();
+			}
 
-            _processorAgent.Serve(foundWorkers.toArray(new Worker[0]));
-        }
-    }
+			_processorAgent.Serve(foundWorkers.toArray(new Worker[0]));
+		}
+	}
 }

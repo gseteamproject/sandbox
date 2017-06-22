@@ -28,7 +28,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
         float waitingTimeAverage = 0;
 
         for (int i = 0; i < workerContainers.length; ++i){
-            loadTime += workerContainers[i].Worker._time;
+            loadTime += workerContainers[i].Worker.processingTime;
             leadTime += workerContainers[i].LeadTime;
             waitingTime += workerContainers[i].WaitingTime;
         }
@@ -68,7 +68,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
             for(int i = 0; i < agents.length; ++i){
                 WorkerContainer wc = new WorkerContainer();
                 wc.Worker = agents[i];
-                wc.TimeRemaining = agents[i]._time;
+                wc.TimeRemaining = agents[i].processingTime;
                 _workersList.add(wc);
             }
         }
