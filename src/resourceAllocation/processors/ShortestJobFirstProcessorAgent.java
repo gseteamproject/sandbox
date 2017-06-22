@@ -29,9 +29,6 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 				for (int j = i + 1; j < workers.size(); ++j) {
 					workers.get(j).waitingTime += currentWorker.processingTime;
 				}
-
-				System.out.println("Agent " + currentWorker._agent.getName() + " was processed in "
-						+ currentWorker.processingTime + " seconds.");
 			}
 
 			showStatistics();

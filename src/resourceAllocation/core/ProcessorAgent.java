@@ -28,6 +28,8 @@ public abstract class ProcessorAgent extends Agent {
 			processingTimeTotal += worker.processingTime;
 			waitingTimeTotal += worker.waitingTime;
 			fullTimeTotal += worker.processingTime + worker.waitingTime;
+
+			System.out.println(worker._agent.getName() + " started at " + worker.waitingTime + " and lasted " + worker.processingTime);
 		}
 
 		float processingTimeAverage = processingTimeTotal / workers.size();
