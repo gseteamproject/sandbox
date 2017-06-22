@@ -23,12 +23,13 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 		public void action() {
 			workers.sort(Worker.compareByTime);
 
-			for (int i = 0; i < workers.size(); ++i) {
-				Worker currentWorker = workers.get(i);
+			long time = 0;
 
-				for (int j = i + 1; j < workers.size(); ++j) {
-					workers.get(j).waitingTime += currentWorker.processingTime;
-				}
+			for (Worker worker : workers) {
+				worker.waitingTime = time;
+				worker.startedAt = time;
+				time += worker.processingTime;
+				worker.finishedAt = time;
 			}
 
 			showStatistics();

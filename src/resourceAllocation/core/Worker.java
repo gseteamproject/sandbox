@@ -9,7 +9,9 @@ public class Worker {
 	final public long processingTime;
 	final public String _replyWith;
 
-	public float waitingTime = 0;
+	public long waitingTime = 0;
+	public long startedAt;
+	public long finishedAt;
 
 	public Worker(AID agent, long time, String replyWith) {
 		_agent = agent;

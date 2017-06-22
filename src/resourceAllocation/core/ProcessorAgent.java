@@ -16,7 +16,7 @@ public abstract class ProcessorAgent extends Agent {
 
 	private static final long serialVersionUID = -8419853254184621035L;
 	private String _serviceType = "processor";
-	
+
 	public List<Worker> workers;
 
 	public void showStatistics() {
@@ -29,16 +29,20 @@ public abstract class ProcessorAgent extends Agent {
 			waitingTimeTotal += worker.waitingTime;
 			fullTimeTotal += worker.processingTime + worker.waitingTime;
 
-			System.out.println(worker._agent.getName() + " started at " + worker.waitingTime + " and lasted " + worker.processingTime);
+			System.out.println(worker._agent.getName() + " started at " + worker.startedAt + " and finished at "
+					+ worker.finishedAt);
 		}
 
 		float processingTimeAverage = processingTimeTotal / workers.size();
 		float waitingTimeAverage = waitingTimeTotal / workers.size();
 		float fullTimeAverage = fullTimeTotal / workers.size();
 
-		System.out.println(String.format("Processing time - average: %4.1f total: %4.1f", processingTimeAverage, processingTimeTotal));
-		System.out.println(String.format("Waiting time    - average: %4.1f total: %4.1f", waitingTimeAverage, waitingTimeTotal));
-		System.out.println(String.format("Full time       - average: %4.1f total: %4.1f", fullTimeAverage, fullTimeTotal));
+		System.out.println(String.format("Processing time - average: %4.1f total: %4.1f", processingTimeAverage,
+				processingTimeTotal));
+		System.out.println(
+				String.format("Waiting time    - average: %4.1f total: %4.1f", waitingTimeAverage, waitingTimeTotal));
+		System.out.println(
+				String.format("Full time       - average: %4.1f total: %4.1f", fullTimeAverage, fullTimeTotal));
 	}
 
 	@Override
