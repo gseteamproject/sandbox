@@ -28,7 +28,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
         float waitingTimeAverage = 0;
 
         for (int i = 0; i < workerContainers.length; ++i){
-            loadTime += workerContainers[i].Worker.getTime();
+            loadTime += workerContainers[i].Worker._time;
             leadTime += workerContainers[i].LeadTime;
             waitingTime += workerContainers[i].WaitingTime;
         }
@@ -68,7 +68,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
             for(int i = 0; i < agents.length; ++i){
                 WorkerContainer wc = new WorkerContainer();
                 wc.Worker = agents[i];
-                wc.TimeRemaining = agents[i].getTime();
+                wc.TimeRemaining = agents[i]._time;
                 _workersList.add(wc);
             }
         }
@@ -107,7 +107,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
                         workersList.get(j).WaitingTime += timeInWork;
                     }
 
-                    System.out.println("Агент " + currentWorker.getAgent().getName() + " был обслужен за " + timeInWork + " секунд, осталось " + currentWorkerContainer.TimeRemaining + " секунд.");
+                    System.out.println("Агент " + currentWorker._agent.getName() + " был обслужен за " + timeInWork + " секунд, осталось " + currentWorkerContainer.TimeRemaining + " секунд.");
 
                     if (currentWorkerContainer.TimeRemaining <= 0){
                         workersToDelete.add(currentWorkerContainer);

@@ -25,8 +25,8 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 		float waitingTimeAverage = 0;
 
 		for (Worker worker : workers) {
-			loadTime += worker.getTime();
-			leadTime += worker.getTime() + worker.waitingTime;
+			loadTime += worker._time;
+			leadTime += worker._time + worker.waitingTime;
 			waitingTime += worker.waitingTime;
 		}
 
@@ -62,11 +62,11 @@ public class ShortestJobFirstProcessorAgent extends ProcessorAgent {
 				Worker currentWorker = _workerContainersList.get(i);
 
 				for (int j = i + 1; j < _workerContainersList.size(); ++j) {
-					_workerContainersList.get(j).waitingTime += currentWorker.getTime();
+					_workerContainersList.get(j).waitingTime += currentWorker._time;
 				}
 
-				System.out.println("Agent " + currentWorker.getAgent().getName() + " was processed in "
-						+ currentWorker.getTime() + " seconds.");
+				System.out.println("Agent " + currentWorker._agent.getName() + " was processed in "
+						+ currentWorker._time + " seconds.");
 			}
 
 			_agent.ShowStatistics(_workerContainersList.toArray(new Worker[0]));
