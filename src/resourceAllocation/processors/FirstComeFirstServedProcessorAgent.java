@@ -1,8 +1,5 @@
 package resourceAllocation.processors;
 
-import resourceAllocation.core.ProcessorAgent;
-import resourceAllocation.core.Worker;
-
 import jade.core.behaviours.OneShotBehaviour;
 
 public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {

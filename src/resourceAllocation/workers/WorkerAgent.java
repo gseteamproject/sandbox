@@ -1,7 +1,6 @@
-package resourceAllocation.core;
+package resourceAllocation.workers;
 
 import jade.core.Agent;
-import resourceAllocation.MySimpleBehaviour;
 
 public class WorkerAgent extends Agent {
 
@@ -16,7 +15,7 @@ public class WorkerAgent extends Agent {
 
             System.out.println("Agent " + getAID().getName() + " is ready to perform the process that lasts " + time + " seconds.");
 
-            addBehaviour(new MySimpleBehaviour(time));
+            addBehaviour(new LookForProcessor(time));
         }
     }
 }

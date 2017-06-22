@@ -1,4 +1,4 @@
-package resourceAllocation;
+package resourceAllocation.workers;
 
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
@@ -11,7 +11,7 @@ import jade.lang.acl.MessageTemplate;
 
 import java.io.IOException;
 
-public class MySimpleBehaviour extends Behaviour {
+public class LookForProcessor extends Behaviour {
 
 	private static final long serialVersionUID = 4319624727651629807L;
 	private long _time;
@@ -20,7 +20,7 @@ public class MySimpleBehaviour extends Behaviour {
     private MessageTemplate mt;
 
 
-    public MySimpleBehaviour(long time){
+    public LookForProcessor(long time){
         _time = time;
     }
 
@@ -79,14 +79,3 @@ public class MySimpleBehaviour extends Behaviour {
         return _step == 3;
     }
 }
-
-/*    @Override
-    public void action() {
-        //System.out.print("Agent " + getAgent().getName() + " work started. Time to finish: " + _time);
-        try {
-            Thread.sleep(_time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //System.out.print("Agent " + getAgent().getName() + " work finished.");
-    }*/

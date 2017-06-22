@@ -1,4 +1,4 @@
-package resourceAllocation.core;
+package resourceAllocation.processors;
 
 import java.util.Comparator;
 

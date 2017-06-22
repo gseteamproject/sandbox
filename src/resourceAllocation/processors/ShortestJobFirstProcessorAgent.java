@@ -1,7 +1,5 @@
 package resourceAllocation.processors;
 
-import resourceAllocation.core.ProcessorAgent;
-import resourceAllocation.core.Worker;
 import jade.core.behaviours.OneShotBehaviour;
 
 

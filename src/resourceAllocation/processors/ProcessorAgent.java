@@ -1,4 +1,4 @@
-package resourceAllocation.core;
+package resourceAllocation.processors;
 
 import jade.core.Agent;
 import jade.core.behaviours.WakerBehaviour;
@@ -64,11 +64,9 @@ public abstract class ProcessorAgent extends Agent {
 	private class AgentFinderBehaviour extends WakerBehaviour {
 
 		private static final long serialVersionUID = -5469211056131974701L;
-		private ProcessorAgent _processorAgent;
 
 		public AgentFinderBehaviour(ProcessorAgent agent, long tick) {
 			super(agent, tick);
-			_processorAgent = agent;
 		}
 
 		@Override
@@ -98,7 +96,7 @@ public abstract class ProcessorAgent extends Agent {
 				this.reset();
 			}
 
-			_processorAgent.serve();
+			serve();
 		}
 	}
 }
