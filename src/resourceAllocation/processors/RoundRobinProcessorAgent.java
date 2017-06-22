@@ -5,6 +5,7 @@ import resourceAllocation.core.Worker;
 import jade.core.behaviours.Behaviour;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoundRobinProcessorAgent extends ProcessorAgent{
 
@@ -42,7 +43,7 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
     }
 
     @Override
-    public void Serve(Worker[] agents) {
+    public void serve(List<Worker> agents) {
         addBehaviour(new ServerBehaviour(this, agents, _quantumTime));
     }
 
@@ -57,18 +58,16 @@ public class RoundRobinProcessorAgent extends ProcessorAgent{
 		private static final long serialVersionUID = 8318480916613222738L;
 		private RoundRobinProcessorAgent _processorAgent;
         private boolean _isDone = false;
-//        private Worker[] _agents;
         private ArrayList<WorkerContainer> _workersList;
 
-        public ServerBehaviour(RoundRobinProcessorAgent processorAgent, Worker[] agents, float quantumTime){
+        public ServerBehaviour(RoundRobinProcessorAgent processorAgent, List<Worker> agents, float quantumTime){
             _processorAgent = processorAgent;
-//            _agents = agents;
-            _workersList = new ArrayList<WorkerContainer>(agents.length);
+            _workersList = new ArrayList<WorkerContainer>(agents.size());
 
-            for(int i = 0; i < agents.length; ++i){
+            for(Worker worker : agents){
                 WorkerContainer wc = new WorkerContainer();
-                wc.Worker = agents[i];
-                wc.TimeRemaining = agents[i].processingTime;
+                wc.Worker = worker;
+                wc.TimeRemaining = worker.processingTime;
                 _workersList.add(wc);
             }
         }

@@ -16,8 +16,10 @@ public abstract class ProcessorAgent extends Agent {
 
 	private static final long serialVersionUID = -8419853254184621035L;
 	private String _serviceType = "processor";
+	
+	public List<Worker> workers;
 
-	public void ShowStatistics(Worker[] workers) {
+	public void showStatistics() {
 		float processingTimeTotal = 0;
 		float waitingTimeTotal = 0;
 		float fullTimeTotal = 0;
@@ -28,13 +30,13 @@ public abstract class ProcessorAgent extends Agent {
 			fullTimeTotal += worker.processingTime + worker.waitingTime;
 		}
 
-		float processingTimeAverage = processingTimeTotal / workers.length;
-		float waitingTimeAverage = waitingTimeTotal / workers.length;
-		float fullTimeAverage = fullTimeTotal / workers.length;
+		float processingTimeAverage = processingTimeTotal / workers.size();
+		float waitingTimeAverage = waitingTimeTotal / workers.size();
+		float fullTimeAverage = fullTimeTotal / workers.size();
 
-		System.out.println(String.format("Processing time - average: %5s total: %5s", processingTimeAverage, processingTimeTotal));
-		System.out.println(String.format("Waiting time - average: %5s total: %5s", waitingTimeAverage, waitingTimeTotal));
-		System.out.println(String.format("Full time - average: %5s total: %5s", fullTimeAverage, fullTimeTotal));
+		System.out.println(String.format("Processing time - average: %4.1f total: %4.1f", processingTimeAverage, processingTimeTotal));
+		System.out.println(String.format("Waiting time    - average: %4.1f total: %4.1f", waitingTimeAverage, waitingTimeTotal));
+		System.out.println(String.format("Full time       - average: %4.1f total: %4.1f", fullTimeAverage, fullTimeTotal));
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public abstract class ProcessorAgent extends Agent {
 		addBehaviour(new AgentFinderBehaviour(this, 1000));
 	}
 
-	public abstract void Serve(Worker[] agents);
+	public abstract void serve(List<Worker> agents);
 
 	private class AgentFinderBehaviour extends WakerBehaviour {
 
@@ -70,7 +72,7 @@ public abstract class ProcessorAgent extends Agent {
 
 		@Override
 		public void onWake() {
-			List<Worker> foundWorkers = new ArrayList<Worker>();
+			workers = new ArrayList<Worker>();
 
 			boolean replyStackIsNotEmpty = true;
 
@@ -81,7 +83,7 @@ public abstract class ProcessorAgent extends Agent {
 						long time = (long) aclMessage.getContentObject();
 
 						Worker worker = new Worker(aclMessage.getSender(), time, aclMessage.getReplyWith());
-						foundWorkers.add(worker);
+						workers.add(worker);
 
 					} catch (UnreadableException e) {
 						e.printStackTrace();
@@ -91,11 +93,11 @@ public abstract class ProcessorAgent extends Agent {
 				}
 			}
 
-			if (foundWorkers.isEmpty()) {
+			if (workers.isEmpty()) {
 				this.reset();
 			}
 
-			_processorAgent.Serve(foundWorkers.toArray(new Worker[0]));
+			_processorAgent.serve(workers);
 		}
 	}
 }

@@ -2,6 +2,9 @@ package resourceAllocation.processors;
 
 import resourceAllocation.core.ProcessorAgent;
 import resourceAllocation.core.Worker;
+
+import java.util.List;
+
 import jade.core.behaviours.Behaviour;
 
 public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
@@ -9,11 +12,11 @@ public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
 	private static final long serialVersionUID = -6478478046825056806L;
 
 	@Override
-    public void Serve(Worker[] agents) {
+    public void serve(List<Worker> agents) {
         addBehaviour(new ServerBehaviour(this, agents));
     }
 
-    public void ShowStatistics(Worker[] agents){
+    public void ShowStatistics(List<Worker> agents){
         float totalWaitingTime = 0;
         float waitingTime = 0;
         float waitingAverageTime = 0;
@@ -21,43 +24,43 @@ public class FirstComeFirstServedProcessorAgent extends ProcessorAgent {
         float workingTime = 0;
         float workingAverageTime = 0;
 
-        for (int i = 0; i < agents.length; ++i){
-            Worker worker = agents[i];
+        for (int i = 0; i < agents.size(); ++i){
+            Worker worker = agents.get(i);
 
             workingTime += waitingTime + worker.processingTime;
 
             System.out.println("Время ожидания для агента " + worker._agent.getName() + " составило " + waitingTime + " секунд.");
 
-            if (i < agents.length - 1){
+            if (i < agents.size() - 1){
                 waitingTime += worker.processingTime;
                 totalWaitingTime += waitingTime;
             }
 
         }
 
-        waitingAverageTime = totalWaitingTime / agents.length;
-        workingAverageTime = workingTime / agents.length;
+        waitingAverageTime = totalWaitingTime / agents.size();
+        workingAverageTime = workingTime / agents.size();
 
         System.out.println("\nВремя обработки составило " + waitingTime + " секунд.");
         System.out.println("\nСреднее полное время ожидания составило " + waitingAverageTime + " секунд.");
         System.out.println("\nСреднее полное время выполнения составило " + workingAverageTime + " секунд.");
     }
+    
 
     private class ServerBehaviour extends Behaviour {
 		private static final long serialVersionUID = -1575698282170078514L;
 		private FirstComeFirstServedProcessorAgent _processorAgent;
         private boolean _isDone = false;
-        private Worker[] _agents;
+        private List<Worker> _agents;
 
-        public ServerBehaviour(FirstComeFirstServedProcessorAgent processorAgent, Worker[] agents){
+        public ServerBehaviour(FirstComeFirstServedProcessorAgent processorAgent, List<Worker> agents){
             _processorAgent = processorAgent;
             _agents = agents;
         }
 
         @Override
         public void action() {
-            for(int i = 0; i < _agents.length; ++i){
-                Worker worker = _agents[i];
+            for(Worker worker : _agents){
                 System.out.println("Работник " + worker._agent.getName() + " был обслужен за " + worker.processingTime + " секунд.");
             }
 
