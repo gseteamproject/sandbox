@@ -81,7 +81,7 @@ public class TransportLineAgent extends Agent {
 		System.out.println(getLocalName() + ": " + text);
 	}
 	public void registerOrder(ACLMessage message) {
-		addBehaviour(new RegisterOrderBehaviour(message));
+		addBehaviour(new RegisterOrderBehaviour());
 	}
 	
 	public void notUnderstood(ACLMessage message) {

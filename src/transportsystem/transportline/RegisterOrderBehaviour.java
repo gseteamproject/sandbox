@@ -11,7 +11,6 @@ public class RegisterOrderBehaviour extends Behaviour {
 
 	private static final long serialVersionUID = 4248106735454710868L;
 
-	private ACLMessage message;
 	private BehaviourState state = BehaviourState.sending_order;
 
 	private MessageTemplate reply_template;
@@ -20,11 +19,6 @@ public class RegisterOrderBehaviour extends Behaviour {
 		sending_order, waiting_for_reply, done
 	};
 	
-	
-	public RegisterOrderBehaviour(ACLMessage message) {
-		this.message = message;
-	}
-
 	@Override
 	public void action() {
 		TransportLineAgent myTransportLineAgent = (TransportLineAgent) myAgent;
