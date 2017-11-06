@@ -1,16 +1,10 @@
 package requester_responder;
 
-import jade.Boot;
+import application.ApplicationController;
+import application.ApplicationModel;
 
 public class RunScenario {
-
 	public static void main(String[] args) {
-		String[] parameters = new String[2];
-		parameters[0] = "-gui";
-		parameters[1] = Vocabulary.REQUESTER_AGENT_NAME + ":" + requester_responder.RequesterAgent.class.getName()
-				+ ";";
-		parameters[1] += Vocabulary.RESPONDER_AGENT_NAME + ":" + requester_responder.ResponderAgent.class.getName()
-				+ ";";
-		Boot.main(parameters);
+		new ApplicationController().executeScenario(new ApplicationModel().requestResponder());
 	}
 }
