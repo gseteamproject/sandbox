@@ -12,11 +12,11 @@ import javax.swing.JLabel;
 public class ApllicationView extends JFrame {
 
 	private static final long serialVersionUID = 6171506567231436384L;
-	
+
 	final ApplicationController controller = new ApplicationController();
 	final ApplicationModel model = new ApplicationModel();
 
-	public ApllicationView() {		
+	public ApllicationView() {
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.NORTH);
 
@@ -29,7 +29,7 @@ public class ApllicationView extends JFrame {
 		JButton btnNewButton = new JButton("Book Trading");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.executeScenario(model.bookTrading());				
+				controller.executeScenario(model.bookTrading());
 				dispose();
 			}
 		});
@@ -115,29 +115,38 @@ public class ApllicationView extends JFrame {
 			}
 		});
 		panel_1.add(btnNewButton_9);
-		
+
 		JButton btnNewButton_10 = new JButton("Knowledge");
-		btnNewButton_10.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
+		btnNewButton_10.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				controller.executeScenario(model.knowledge());
 				dispose();
 			}
 		});
 		panel_1.add(btnNewButton_10);
-		
+
 		JButton btnNewButton_11 = new JButton("Transport Line");
-		btnNewButton_11.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
+		btnNewButton_11.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				controller.executeScenario(model.transportline());
 				dispose();
 			}
 		});
 		panel_1.add(btnNewButton_11);
 
+		JButton btnNewButton_12 = new JButton("Request-Responder");
+		btnNewButton_12.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.executeScenario(model.requestResponder());
+				dispose();
+			}
+		});
+		panel_1.add(btnNewButton_12);
+
 		JPanel panel_2 = new JPanel();
 		getContentPane().add(panel_2, BorderLayout.SOUTH);
 
 		JLabel lblNewLabel_1 = new JLabel("Don't forget to turn off JADE through GUI");
 		panel_2.add(lblNewLabel_1);
-	}	
+	}
 }

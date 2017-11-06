@@ -1,97 +1,79 @@
 package application;
 
 import bookTrading.BookTitle;
+import requester_responder.Vocabulary;
 
 public class ApplicationModel {
 	public String bookTrading() {
-		String scenario = new String();
-		scenario = addAgent("reader", bookTrading.BookBuyerAgent.class, BookTitle.LORD_OF_THE_RINGS);
-		scenario += addAgent("noviceProgrammer", bookTrading.BookBuyerAgent.class, BookTitle.JAVA_TUTORIAL);
-		scenario += addAgent("advancedProgrammer", bookTrading.BookBuyerAgent.class, BookTitle.JADE_PROGRAMMING_TUTORIAL);
-		scenario += addAgent("seller1", bookTrading.BookSellerAgent.class);
-		scenario += addAgent("seller2", bookTrading.BookSellerAgent.class);
-		return scenario;
+		return addAgent("reader", bookTrading.BookBuyerAgent.class, BookTitle.LORD_OF_THE_RINGS)
+				+ addAgent("noviceProgrammer", bookTrading.BookBuyerAgent.class, BookTitle.JAVA_TUTORIAL)
+				+ addAgent("advancedProgrammer", bookTrading.BookBuyerAgent.class, BookTitle.JADE_PROGRAMMING_TUTORIAL)
+				+ addAgent("seller1", bookTrading.BookSellerAgent.class)
+				+ addAgent("seller2", bookTrading.BookSellerAgent.class);
 	}
 
 	public String employment() {
-		String scenario = new String();
-		scenario = addAgent("engager", employment.EngagerAgent.class);
-		scenario += addAgent("requester", employment.RequesterAgent.class);
-		return scenario;
+		return addAgent("engager", employment.EngagerAgent.class)
+				+ addAgent("requester", employment.RequesterAgent.class);
 	}
 
 	public String party() {
-		String scenario = new String();
-		scenario = addAgent("host", party.HostAgent.class);
-		return scenario;
+		return addAgent("host", party.HostAgent.class);
 	}
 
 	public String yellowPages() {
-		String scenario = new String();
-		scenario = addAgent("provider-1", yellowPages.DFRegisterAgent.class, "my-forecast");
-		scenario += addAgent("searcher", yellowPages.DFSearchAgent.class);
-		scenario += addAgent("subscriber", yellowPages.DFSubscribeAgent.class);
-		scenario += addAgent("provider-2", yellowPages.DFRegisterAgent.class, "forecast-1");
-		return scenario;
+		return addAgent("provider-1", yellowPages.DFRegisterAgent.class, "my-forecast")
+				+ addAgent("searcher", yellowPages.DFSearchAgent.class)
+				+ addAgent("subscriber", yellowPages.DFSubscribeAgent.class)
+				+ addAgent("provider-2", yellowPages.DFRegisterAgent.class, "forecast-1");
 	}
 
 	public String contractNet() {
-		String scenario = new String();
-		scenario = addAgent("r1", protocols.ContractNetResponderAgent.class);
-		scenario += addAgent("r2", protocols.ContractNetResponderAgent.class);
-		scenario += addAgent("i", protocols.ContractNetInitiatorAgent.class, "r1,r2");
-		return scenario;
+		return addAgent("r1", protocols.ContractNetResponderAgent.class)
+				+ addAgent("r2", protocols.ContractNetResponderAgent.class)
+				+ addAgent("i", protocols.ContractNetInitiatorAgent.class, "r1,r2");
 	}
 
 	public String broker() {
-		String scenario = new String();
-		scenario = addAgent("r", protocols.FIPARequestResponderAgent.class);
-		scenario += addAgent("b", protocols.BrokerAgent.class, "r");
-		scenario += addAgent("i", protocols.FIPARequestInitiatorAgent.class, "b");
-		return scenario;
+		return addAgent("r", protocols.FIPARequestResponderAgent.class)
+				+ addAgent("b", protocols.BrokerAgent.class, "r")
+				+ addAgent("i", protocols.FIPARequestInitiatorAgent.class, "b");
 	}
 
 	public String fipaRequest() {
-		String scenario = new String();
-		scenario = addAgent("r1", protocols.FIPARequestResponderAgent.class);
-		scenario += addAgent("r2", protocols.FIPARequestResponderAgent.class);
-		scenario += addAgent("i", protocols.FIPARequestInitiatorAgent.class, "r1,r2");
-		return scenario;
+		return addAgent("r1", protocols.FIPARequestResponderAgent.class)
+				+ addAgent("r2", protocols.FIPARequestResponderAgent.class)
+				+ addAgent("i", protocols.FIPARequestInitiatorAgent.class, "r1,r2");
 	}
 
 	public String timeServer() {
-		String scenario = new String();
-		scenario = addAgent("server", timeServer.TimeServerAgent.class);
-		scenario += addAgent("client", timeServer.TimeClientAgent.class);
-		return scenario;
+		return addAgent("server", timeServer.TimeServerAgent.class)
+				+ addAgent("client", timeServer.TimeClientAgent.class);
 	}
 
 	public String thanksAgent() {
-		String scenario = new String();
-		scenario = addAgent("thanksAgent", thanksAgent.ThanksAgent.class);
-		return scenario;
+		return addAgent("thanksAgent", thanksAgent.ThanksAgent.class);
 	}
 
 	public String palleteRobotCommunication() {
-		String scenario = new String();
-		scenario = addAgent("sourcePallete", palleteRobotCommunication.SimpleRobotAgent.class, "3");
-		scenario += addAgent("simpleRobot", palleteRobotCommunication.SimpleRobotAgent.class);
-		return scenario;
+		return addAgent("sourcePallete", palleteRobotCommunication.SimpleRobotAgent.class, "3")
+				+ addAgent("simpleRobot", palleteRobotCommunication.SimpleRobotAgent.class);
 	}
 
 	public String knowledge() {
-		String scenario = new String();
-		scenario = addAgent("kp", knowledge.processor.KnowledgeProcessorAgent.class);
-		scenario += addAgent("p1", knowledge.producer.KnowledgeProducerAgent.class, "animal=cat,cat=Lussy");
-		scenario += addAgent("c1", knowledge.consumer.KnowledgeConsumerAgent.class, "animal,cat");
-		scenario += addAgent("c2", knowledge.consumer.KnowledgeConsumerAgent.class, "cat,animal");
-		return scenario;
+		return addAgent("kp", knowledge.processor.KnowledgeProcessorAgent.class)
+				+ addAgent("p1", knowledge.producer.KnowledgeProducerAgent.class, "animal=cat,cat=Lussy")
+				+ addAgent("c1", knowledge.consumer.KnowledgeConsumerAgent.class, "animal,cat")
+				+ addAgent("c2", knowledge.consumer.KnowledgeConsumerAgent.class, "cat,animal");
 	}
 
 	public String transportline() {
-		String scenario = new String();
-		scenario = addAgent("line", transportsystem.transportline.TransportLineAgent.class);
-		return scenario;
+		return addAgent("line", transportsystem.transportline.TransportLineAgent.class);
+	}
+
+	public String requestResponder() {
+		return addAgent(Vocabulary.REQUESTER_AGENT_NAME, requester_responder.RequesterAgent.class)
+				+ addAgent(Vocabulary.RESPONDER_AGENT_NAME, requester_responder.ResponderAgent.class);
 	}
 
 	private String addAgent(String agentName, Class<?> agentClass) {
