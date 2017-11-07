@@ -1,12 +1,15 @@
 package requester_responder.responder;
 
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.DataStore;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.lang.acl.ACLMessage;
+import requester_responder.Vocabulary;
 
 public class Activity extends ParallelBehaviour {
+	
+	public Machine getMachine() {
+		return (Machine) getDataStore().get(Vocabulary.MACHINE_OBJECT_KEY);
+	}
 
 	public void setResult(ACLMessage result) {
 		ActivityResponder parent = (ActivityResponder) getParent();
@@ -20,12 +23,7 @@ public class Activity extends ParallelBehaviour {
 
 	public Activity(Agent a) {
 		super(a, WHEN_ANY);
-
-		DataStore thisDataStore = getDataStore();
-
-		Behaviour work = new Work();
-		work.setDataStore(thisDataStore);
-		addSubBehaviour(work);
+		addSubBehaviour(new Work());
 	}
 
 	private static final long serialVersionUID = 8349072518409058029L;

@@ -9,9 +9,12 @@ public class Work extends OneShotBehaviour {
 	public void action() {
 		Activity parent = (Activity) getParent();
 
+		Machine machine = parent.getMachine();
+		machine.execute();
+
 		ACLMessage inform = parent.getRequest().createReply();
 		inform.setPerformative(ACLMessage.INFORM);
-		inform.setContent("already");
+		inform.setContent(machine.getDuration());
 
 		parent.setResult(inform);
 	}

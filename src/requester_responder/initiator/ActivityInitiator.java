@@ -30,26 +30,26 @@ public class ActivityInitiator extends AchieveREInitiator {
 
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		System.out.println(String.format("%s agreed to do. Approximate completition time: %s",
-				agree.getSender().getLocalName(), agree.getContent()));
+		System.out.println(String.format("%s: agreed (estimated time: %s)", agree.getSender().getLocalName(),
+				agree.getContent()));
 	}
 
 	@Override
 	protected void handleRefuse(ACLMessage refuse) {
 		System.out.println(
-				String.format("%s refused to do. Reason: %s", refuse.getSender().getLocalName(), refuse.getContent()));
+				String.format("%s: refused (reason: %s)", refuse.getSender().getLocalName(), refuse.getContent()));
 	}
 
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println(String.format("%s succesfully finished. Completition time: %s",
-				inform.getSender().getLocalName(), inform.getContent()));
+		System.out.println(
+				String.format("%s: finished (time: %s)", inform.getSender().getLocalName(), inform.getContent()));
 	}
 
 	@Override
 	protected void handleFailure(ACLMessage failure) {
 		System.out.println(
-				String.format("%s failed. Reason: %s", failure.getSender().getLocalName(), failure.getContent()));
+				String.format("%s: failed (reason: %s)", failure.getSender().getLocalName(), failure.getContent()));
 	}
 
 	private static final long serialVersionUID = 1991081910743783420L;

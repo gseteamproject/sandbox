@@ -1,28 +1,25 @@
 package requester_responder.responder;
 
-import java.util.Random;
-
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
+import requester_responder.Vocabulary;
 
 public class Decision extends OneShotBehaviour {
-
-	private final Random randomizer = new Random();
 
 	@Override
 	public void action() {
 		ActivityResponder parent = (ActivityResponder) getParent();
 		ACLMessage request = (ACLMessage) getDataStore().get(parent.REQUEST_KEY);
 
-		int decision = randomizer.nextInt(100);
+		Machine machine = (Machine) getDataStore().get(Vocabulary.MACHINE_OBJECT_KEY);
 
 		ACLMessage response = request.createReply();
-		if (decision > 50) {
+		if (machine.willExecute()) {
 			response.setPerformative(ACLMessage.AGREE);
-			response.setContent("now");
+			response.setContent(machine.getDurationEstimated());
 		} else {
 			response.setPerformative(ACLMessage.REFUSE);
-			response.setContent("busy doing another job");
+			response.setContent(machine.getReason());
 		}
 
 		getDataStore().put(parent.RESPONSE_KEY, response);
