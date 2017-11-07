@@ -10,7 +10,7 @@ public class ActivityResponder extends AchieveREResponder {
 		super(a, AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST));
 		
 		registerHandleRequest(new Decision());
-		registerPrepareResultNotification(new Work());
+		registerPrepareResultNotification(new Activity(a));
 	}
 
 	private static final long serialVersionUID = 4274732602764953111L;
