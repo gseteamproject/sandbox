@@ -12,7 +12,6 @@ import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREResponder;
 
 public class ResponderAgent extends Agent {
-
 	@Override
 	protected void setup() {
 		addBehaviour(new ActivityResponder());
@@ -45,6 +44,7 @@ public class ResponderAgent extends Agent {
 				addSubBehaviour(tbf.wrap(new Work()));
 				addSubBehaviour(new Success());
 				addSubBehaviour(new Failure());
+				addSubBehaviour(new Deadline());
 				addSubBehaviour(new Status());
 			}
 
@@ -86,8 +86,18 @@ public class ResponderAgent extends Agent {
 				private static final long serialVersionUID = 4747926179706803322L;
 			}
 
-			private class Failure extends WakerBehaviour {
-				public Failure() {
+			private class Failure extends OneShotBehaviour {
+				@Override
+				public void action() {
+					// add waiting for failed message
+					// send failure message
+				}
+
+				private static final long serialVersionUID = 5490644595414249038L;
+			}
+
+			private class Deadline extends WakerBehaviour {
+				public Deadline() {
 					super(null, 5000);
 					// send failure message
 				}
