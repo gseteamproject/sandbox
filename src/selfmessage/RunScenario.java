@@ -7,7 +7,8 @@ public class RunScenario {
 		String[] parameters = new String[2];
 		parameters[0] = "-gui";
 		parameters[1] = "responder:" + selfmessage.ResponderAgent.class.getName() + ";";
-		parameters[1] += "requester:" + selfmessage.RequesterAgent.class.getName();
+		parameters[1] += "requester:" + selfmessage.RequesterAgent.class.getName() + ";";
+		parameters[1] += "sniffer:jade.tools.sniffer.Sniffer(re*);";
 		Boot.main(parameters);
 	}
 }
