@@ -1,6 +1,7 @@
 package selfmessage;
 
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.core.behaviours.SimpleBehaviour;
@@ -13,6 +14,15 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
 
 public class ResponderAgent extends Agent {
+	final private long DEADLINE_TIMEOUT = 60000;
+	final private long WORK_TIMEOUT = 3000;
+
+	private interface Operation {
+		public void execute();
+
+		public void terminate();
+	}
+
 	@Override
 	protected void setup() {
 		addBehaviour(new ActivityResponder());
@@ -54,6 +64,8 @@ public class ResponderAgent extends Agent {
 			private TickerBehaviour status = new Status();
 			private WakerBehaviour deadline = new Deadline();
 
+			private Operation operation = new WaitForOutsideMessageOperation();
+
 			public Execution() {
 				super(null, WHEN_ALL);
 				addSubBehaviour(tbf.wrap(new Work()));
@@ -62,21 +74,67 @@ public class ResponderAgent extends Agent {
 				addSubBehaviour(deadline);
 			}
 
+			private class WaitForOutsideMessageOperation implements Operation {
+				private Behaviour behaviour = new WaitingForOutsideMessage();
+
+				public void execute() {
+					addBehaviour(behaviour);
+
+				}
+
+				public void terminate() {
+					removeBehaviour(behaviour);
+				}
+			}
+
+			@SuppressWarnings("unused")
+			private class ThreadSleepOperation implements Operation {
+				@Override
+				public void execute() {
+					try {
+						Thread.sleep(WORK_TIMEOUT);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+				@Override
+				public void terminate() {
+					Thread.currentThread().interrupt();
+				}
+			}
+
+			private class WaitingForOutsideMessage extends SimpleBehaviour {
+				private boolean isCompleted = false;
+
+				@Override
+				public void action() {
+					ACLMessage in = myAgent.receive(MessageTemplate.MatchConversationId("operation-completed"));
+					if (in != null) {
+						System.out.println("operation execution success");
+						ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+						msg.addReceiver(getAgent().getAID());
+						msg.setConversationId("work-result");
+						msg.setContent("success");
+						send(msg);
+					} else {
+						block();
+					}
+				}
+
+				@Override
+				public boolean done() {
+					return isCompleted;
+				}
+
+				private static final long serialVersionUID = 6789536725790655909L;
+			}
+
 			private class Work extends OneShotBehaviour {
 				@Override
 				public void action() {
 					System.out.println("operation execution ...");
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					System.out.println("operation execution success");
-					ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-					msg.addReceiver(getAgent().getAID());
-					msg.setConversationId("work-result");
-					msg.setContent("success");
-					send(msg);
+					operation.execute();
 				}
 
 				private static final long serialVersionUID = 2388791988973959654L;
@@ -129,12 +187,14 @@ public class ResponderAgent extends Agent {
 
 			private class Deadline extends WakerBehaviour {
 				public Deadline() {
-					super(null, 5000);
+					super(null, DEADLINE_TIMEOUT);
 				}
 
 				@Override
 				protected void onWake() {
-					System.out.println("operation execution success");
+					operation.terminate();
+
+					System.out.println("operation execution failure");
 					ACLMessage msg = new ACLMessage(ACLMessage.FAILURE);
 					msg.addReceiver(getAgent().getAID());
 					msg.setConversationId("work-result");
