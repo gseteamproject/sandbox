@@ -96,6 +96,11 @@ public class ResponderAgent extends Agent {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+					msg.addReceiver(getAgent().getAID());
+					msg.setConversationId("work-result");
+					msg.setContent("success");
+					send(msg);
 				}
 
 				@Override
