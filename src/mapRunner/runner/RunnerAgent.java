@@ -45,7 +45,7 @@ public class RunnerAgent extends Agent {
 						respondCancel(msg);
 					} else {
 						respondAgree(msg);
-						planMovement(Integer.parseInt(msg.getContent()));
+						planMovement(msg);
 					}
 				} else {
 					respondNotUnderstood(msg);
@@ -55,9 +55,9 @@ public class RunnerAgent extends Agent {
 			}
 		}
 
-		private void planMovement(int target) {
+		private void planMovement(ACLMessage msg) {
 			MoveToTargetBehaviour b = new MoveToTargetBehaviour();
-			b.target = target;
+			b.request = msg;
 			addBehaviour(tbf.wrap(b));
 		}
 
@@ -76,7 +76,6 @@ public class RunnerAgent extends Agent {
 		private void respondAgree(ACLMessage msg) {
 			ACLMessage reply = msg.createReply();
 			reply.setPerformative(ACLMessage.AGREE);
-			reply.setContent("agree");
 			myAgent.send(reply);
 		}
 
@@ -91,13 +90,20 @@ public class RunnerAgent extends Agent {
 	class MoveToTargetBehaviour extends OneShotBehaviour {
 		private static final long serialVersionUID = 5468774161513653773L;
 
-		public int target;
+		public ACLMessage request;
 
 		@Override
 		public void action() {
 			isBusy = true;
-			runner.move(target);
+			runner.move(Integer.parseInt(request.getContent()));
+			respondInform(request);
 			isBusy = false;
+		}
+
+		private void respondInform(ACLMessage msg) {
+			ACLMessage reply = msg.createReply();
+			reply.setPerformative(ACLMessage.INFORM);
+			myAgent.send(reply);
 		}
 	}
 }
