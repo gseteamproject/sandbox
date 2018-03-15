@@ -10,7 +10,7 @@ public class RunnerAgent extends Agent {
 
 	private static final long serialVersionUID = -4794511877491259752L;
 
-	private Runner runner = new Runner();
+	private LegoRunner runner = new LegoRunner();
 
 	private boolean isBusy;
 
