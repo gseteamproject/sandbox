@@ -10,7 +10,7 @@ public class PeripheralContainer {
 			"-container",
 			"-host", "localhost",
 			"-local-host", "localhost",
-			ArgumentBuilder.agent("runner", mapRunner.runner.RunnerAgent.class)
+			ArgumentBuilder.agent("runner", mapRunner.runner.RunnerAgent.class, "debug")
 		};
 		Boot.main(parameters);
 	}

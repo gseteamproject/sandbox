@@ -10,7 +10,7 @@ public class RunnerAgent extends Agent {
 
 	private static final long serialVersionUID = -4794511877491259752L;
 
-	private LegoRunner runner = new LegoRunner();
+	private Runner runner;
 
 	private boolean isBusy;
 
@@ -18,6 +18,13 @@ public class RunnerAgent extends Agent {
 
 	@Override
 	protected void setup() {
+		String runnerType = (String) getArguments()[0];
+		if (runnerType.contentEquals("debug")) {
+			runner = new DebugRunner();
+		} else {
+			runner = new LegoRunner();
+		}
+
 		addBehaviour(new WaitForTargetBehaviour());
 	}
 
@@ -51,7 +58,8 @@ public class RunnerAgent extends Agent {
 		}
 
 		private boolean isConversationAboutTarget(ACLMessage msg) {
-			return msg.getConversationId().compareTo("target") == 0;
+			String theme = msg.getConversationId();
+			return theme != null && msg.getConversationId().compareTo("target") == 0;
 		}
 
 		private void respondNoUnderstood(ACLMessage msg) {

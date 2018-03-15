@@ -62,6 +62,7 @@ public class LegoRunner implements Runner {
 		}
 	}
 
+	@Override
 	public void move(int circleAmount) {
 		/*
 		 * здесь надо разместить код из trackRunner учитывающий подсчёт зеленых меток
