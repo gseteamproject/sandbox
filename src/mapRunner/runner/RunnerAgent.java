@@ -18,14 +18,18 @@ public class RunnerAgent extends Agent {
 
 	@Override
 	protected void setup() {
+		setupRunner();
+
+		addBehaviour(new WaitForTargetBehaviour());
+	}
+
+	private void setupRunner() {
 		String runnerType = (String) getArguments()[0];
 		if (runnerType.contentEquals("debug")) {
 			runner = new DebugRunner();
 		} else {
 			runner = new LegoRunner();
 		}
-
-		addBehaviour(new WaitForTargetBehaviour());
 	}
 
 	class WaitForTargetBehaviour extends CyclicBehaviour {
@@ -38,13 +42,13 @@ public class RunnerAgent extends Agent {
 			if (msg != null) {
 				if (isConversationAboutTarget(msg)) {
 					if (isBusy) {
-						respondBusy(msg);
+						respondCancel(msg);
 					} else {
 						respondAgree(msg);
 						planMovement(Integer.parseInt(msg.getContent()));
 					}
 				} else {
-					respondNoUnderstood(msg);
+					respondNotUnderstood(msg);
 				}
 			} else {
 				block();
@@ -62,7 +66,7 @@ public class RunnerAgent extends Agent {
 			return theme != null && msg.getConversationId().compareTo("target") == 0;
 		}
 
-		private void respondNoUnderstood(ACLMessage msg) {
+		private void respondNotUnderstood(ACLMessage msg) {
 			ACLMessage reply = msg.createReply();
 			reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
 			reply.setContent("conversationId = target, content = x");
@@ -76,7 +80,7 @@ public class RunnerAgent extends Agent {
 			myAgent.send(reply);
 		}
 
-		private void respondBusy(ACLMessage msg) {
+		private void respondCancel(ACLMessage msg) {
 			ACLMessage reply = msg.createReply();
 			reply.setPerformative(ACLMessage.CANCEL);
 			reply.setContent("busy");
