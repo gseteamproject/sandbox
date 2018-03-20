@@ -14,18 +14,11 @@ public class LegoRunner implements Runner {
 	/*
 	 * здесь размещается код для работы с лего
 	 */
-	final static float GreenUpperLimit = 0.5f;
-	final static float GreenBottonLimit = 0.2f;
+	//final static float GreenUpperLimit = 0.45f;
+	//final static float GreenBottonLimit = 0.2f;
 	final static int ForwardSpeed = 300;
 	final static int RotationSpeed = 100;
 
-	Brick ev3 = BrickFinder.getLocal();
-
-	EV3ColorSensor cs = new EV3ColorSensor(ev3.getPort("S1"));
-	SensorMode sensor = cs.getRedMode();
-
-	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
-	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
 
 	public static void printData(Brick ev3, float[] data) {
 		GraphicsLCD lcd = ev3.getGraphicsLCD();
@@ -61,15 +54,39 @@ public class LegoRunner implements Runner {
 			right.backward();
 		}
 	}
+	
+	Brick ev3 = BrickFinder.getLocal();
 
+	EV3ColorSensor cs = new EV3ColorSensor(ev3.getPort("S1"));
+	SensorMode sensor = cs.getColorIDMode();
+	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
+	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
+	
+	public boolean notWorkSpace(float[] data) {
+		boolean res = false;
+		switch ((int)data[0] ) {
+		case lejos.robotics.Color.BLACK: res = true;
+		case lejos.robotics.Color.GREEN: res = true;
+		}
+		return(res);
+	}
+	
+	public boolean alarmColour(float[] data) {
+		boolean res = false;
+		switch ((int)data[0]) {
+		case lejos.robotics.Color.GREEN: res = true;
+		}
+		return(res);
+	}
+	
 	@Override
 	public void move(int circleAmount) {
 		/*
 		 * здесь надо разместить код из trackRunner учитывающий подсчёт зеленых меток
 		 * 
 		 * количество меток которые надо проверить определяется параметром circleAmount
-		 */
-
+		 */		
+		
 		left.setSpeed(ForwardSpeed);
 		right.setSpeed(ForwardSpeed);
 
@@ -77,7 +94,7 @@ public class LegoRunner implements Runner {
 		int turningTime = 1000;
 
 		boolean turningMode = false;
-		boolean greenFlag = false;
+		boolean alarmFlag = false;
 		long startTime = 0;
 		long greenCounter = 0;
 
@@ -89,19 +106,19 @@ public class LegoRunner implements Runner {
 
 			printData(ev3, data);
 
-			float reflectedLight = data[0];
+	//		float reflectedLight = data[0];
 
-			if (reflectedLight < GreenUpperLimit) {
+			if (notWorkSpace(data)) {
 				if (turningMode) {
 					stopMoving(left, right);
 				}
 
 				/* Начало магии */
-				if (reflectedLight > GreenBottonLimit) {
-					greenFlag = true;
+				if (alarmColour(data)) {
+					alarmFlag = true;
 				} else {
-					if (greenFlag) {
-						greenFlag = false;
+					if (alarmFlag) {
+						alarmFlag = false;
 						greenCounter++;
 					}
 				}
