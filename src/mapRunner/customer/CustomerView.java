@@ -38,7 +38,7 @@ public class CustomerView extends javax.swing.JFrame {
 
         lTarget.setText("Target");
 
-        tfTarget.setText("1");
+        tfTarget.setText("A");
 
         bRun.setText("run");
         bRun.addActionListener(new java.awt.event.ActionListener() {

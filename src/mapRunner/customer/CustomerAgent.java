@@ -5,6 +5,9 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import mapRunner.common.HandlePendingMessageBehaviour;
+import mapRunner.ontology.Vocabulary;
 
 public class CustomerAgent extends Agent {
 
@@ -18,6 +21,7 @@ public class CustomerAgent extends Agent {
 
 		displayForm();
 		addBehaviour(new HandleStatusReportsBehaviour());
+		addBehaviour(new HandlePendingMessageBehaviour());
 	}
 
 	@Override
@@ -52,7 +56,7 @@ public class CustomerAgent extends Agent {
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(new AID((agent), AID.ISLOCALNAME));
-			msg.setConversationId("target");
+			msg.setConversationId(Vocabulary.CONVERSATION_ID_TARGET);
 			msg.setContent(target);
 			send(msg);
 		}
@@ -62,34 +66,29 @@ public class CustomerAgent extends Agent {
 
 		private static final long serialVersionUID = -8458168586548894275L;
 
+		MessageTemplate messageTemplate = MessageTemplate.MatchConversationId(Vocabulary.CONVERSATION_ID_TARGET);
+
 		@Override
 		public void action() {
-			ACLMessage msg = myAgent.receive();
+			ACLMessage msg = myAgent.receive(messageTemplate);
 			if (msg != null) {
-				if (isConversationAboutTarget(msg)) {
-					switch (msg.getPerformative()) {
-					case ACLMessage.AGREE:
-						view.showStatus("moving");
-						break;
-					case ACLMessage.INFORM:
-						view.showStatus("done");
-						break;
-					case ACLMessage.CANCEL:
-						view.showStatus("busy");
-						break;
-					default:
-						view.showStatus("error");
-						break;
-					}
+				switch (msg.getPerformative()) {
+				case ACLMessage.AGREE:
+					view.showStatus("moving");
+					break;
+				case ACLMessage.INFORM:
+					view.showStatus("done");
+					break;
+				case ACLMessage.CANCEL:
+					view.showStatus("busy");
+					break;
+				default:
+					view.showStatus("error");
+					break;
 				}
 			} else {
 				block();
 			}
-		}
-
-		private boolean isConversationAboutTarget(ACLMessage msg) {
-			String theme = msg.getConversationId();
-			return theme != null && msg.getConversationId().compareTo("target") == 0;
 		}
 	}
 }
