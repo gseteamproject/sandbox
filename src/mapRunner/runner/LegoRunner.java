@@ -11,16 +11,10 @@ import lejos.robotics.RegulatedMotor;
 
 public class LegoRunner implements Runner {
 
-	/*
-	 * здесь размещается код для работы с лего
-	 */
-	//final static float GreenUpperLimit = 0.45f;
-	//final static float GreenBottonLimit = 0.2f;
 	final static int ForwardSpeed = 300;
 	final static int RotationSpeed = 100;
 
-
-	public static void printData(Brick ev3, float[] data) {
+	public void printData(float[] data) {
 		GraphicsLCD lcd = ev3.getGraphicsLCD();
 		lcd.setFont(Font.getSmallFont());
 
@@ -31,19 +25,19 @@ public class LegoRunner implements Runner {
 		lcd.refresh();
 	}
 
-	public static void moveForward(RegulatedMotor left, RegulatedMotor right) {
+	public void moveForward() {
 		right.setSpeed(ForwardSpeed);
 		left.setSpeed(ForwardSpeed);
 		left.forward();
 		right.forward();
 	}
 
-	public static void stopMoving(RegulatedMotor left, RegulatedMotor right) {
+	public void stopMoving() {
 		left.stop(true);
 		right.stop(true);
 	}
 
-	public static void turnDirection(RegulatedMotor left, RegulatedMotor right, Direction direction) {
+	public void turnDirection(Direction direction) {
 		right.setSpeed(RotationSpeed);
 		left.setSpeed(RotationSpeed);
 		if (direction == Direction.LEFT) {
@@ -54,39 +48,42 @@ public class LegoRunner implements Runner {
 			right.backward();
 		}
 	}
-	
+
 	Brick ev3 = BrickFinder.getLocal();
 
 	EV3ColorSensor cs = new EV3ColorSensor(ev3.getPort("S1"));
 	SensorMode sensor = cs.getColorIDMode();
 	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
-	
+
 	public boolean notWorkSpace(float[] data) {
-		boolean res = false;
-		switch ((int)data[0] ) {
-		case lejos.robotics.Color.BLACK: res = true;
-		case lejos.robotics.Color.GREEN: res = true;
+		int colorId = (int) data[0];
+		switch (colorId) {
+		case lejos.robotics.Color.BLACK:
+			return true;
+		case lejos.robotics.Color.GREEN:
+			return true;
 		}
-		return(res);
+		return false;
 	}
-	
+
 	public boolean alarmColour(float[] data) {
-		boolean res = false;
-		switch ((int)data[0]) {
-		case lejos.robotics.Color.GREEN: res = true;
+		int colorId = (int) data[0];
+		switch (colorId) {
+		case lejos.robotics.Color.GREEN:
+			return true;
 		}
-		return(res);
+		return false;
 	}
-	
+
 	@Override
 	public void move(int circleAmount) {
 		/*
 		 * здесь надо разместить код из trackRunner учитывающий подсчёт зеленых меток
 		 * 
 		 * количество меток которые надо проверить определяется параметром circleAmount
-		 */		
-		
+		 */
+
 		left.setSpeed(ForwardSpeed);
 		right.setSpeed(ForwardSpeed);
 
@@ -104,13 +101,11 @@ public class LegoRunner implements Runner {
 			float[] data = new float[sensor.sampleSize()];
 			sensor.fetchSample(data, 0);
 
-			printData(ev3, data);
-
-	//		float reflectedLight = data[0];
+			printData(data);
 
 			if (notWorkSpace(data)) {
 				if (turningMode) {
-					stopMoving(left, right);
+					stopMoving();
 				}
 
 				/* Начало магии */
@@ -124,13 +119,13 @@ public class LegoRunner implements Runner {
 				}
 				/* Конец магии */
 
-				moveForward(left, right);
+				moveForward();
 				turningTime = 200;
 				turningMode = false;
 				startTime = currentTime;
 			} else {
 				if (currentTime - startTime > turningTime) {
-					stopMoving(left, right);
+					stopMoving();
 
 					if (turningMode) {
 						if (lastDirection == Direction.RIGHT) {
@@ -144,7 +139,7 @@ public class LegoRunner implements Runner {
 
 					startTime = currentTime;
 					turningTime += 300;
-					turnDirection(left, right, lastDirection);
+					turnDirection(lastDirection);
 					turningMode = true;
 				}
 			}
