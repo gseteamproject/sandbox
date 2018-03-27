@@ -6,8 +6,11 @@ import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 public class LegoRunner implements Runner {
 
@@ -53,6 +56,10 @@ public class LegoRunner implements Runner {
 
 	EV3ColorSensor cs = new EV3ColorSensor(ev3.getPort("S1"));
 	SensorMode sensor = cs.getColorIDMode();
+
+	EV3GyroSensor qs = new EV3GyroSensor(ev3.getPort("S2"));
+	SampleProvider sensor2 = qs.getAngleMode();
+	
 	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
 
@@ -74,6 +81,30 @@ public class LegoRunner implements Runner {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void rotate(int degrees) {
+		int controlTime = 100;	
+		float[] firstData = new float[sensor2.sampleSize()];
+		sensor2.fetchSample(firstData, 0);
+		Direction moveDirection = Direction.RIGHT;		
+		if (degrees > 0) {
+			moveDirection = Direction.LEFT;
+		}
+		else {
+			moveDirection = Direction.RIGHT;
+		}		
+		while (!ev3.getKey("Escape").isDown()){
+			float[] data = new float[sensor2.sampleSize()];
+			sensor2.fetchSample(data, 0);
+			printData(data);
+			if (Math.abs(data[0]-firstData[0]) >= Math.abs(degrees)) {
+				break;
+			}
+			turnDirection(moveDirection);
+			Delay.msDelay(controlTime);
+		}
 	}
 
 	@Override

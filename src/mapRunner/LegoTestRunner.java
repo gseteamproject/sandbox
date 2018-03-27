@@ -8,5 +8,11 @@ public class LegoTestRunner {
 		LegoRunner runner = new LegoRunner();
 
 		runner.move(3);
+		/*
+		runner.rotate(90);
+		runner.rotate(-90);
+		runner.rotate(180);
+		runner.rotate(-450);
+		*/
 	}
 }
