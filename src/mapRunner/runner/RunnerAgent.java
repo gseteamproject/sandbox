@@ -1,13 +1,25 @@
 package mapRunner.runner;
 
+import java.util.Iterator;
+
+import jade.content.ContentElement;
+import jade.content.ContentManager;
+import jade.content.lang.Codec.CodecException;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.OntologyException;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ThreadedBehaviourFactory;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mapRunner.common.HandlePendingMessageBehaviour;
+import mapRunner.map.PathToTarget;
+import mapRunner.map.path.Command;
+import mapRunner.map.path.Point;
+import mapRunner.ontology.MapRunnerOntology;
 import mapRunner.ontology.Vocabulary;
 
 public class RunnerAgent extends Agent {
@@ -22,7 +34,7 @@ public class RunnerAgent extends Agent {
 
 	private ACLMessage targetRequest;
 
-	private ACLMessage pathRespond;
+	private PathToTarget predicate;
 
 	@Override
 	protected void setup() {
@@ -31,6 +43,9 @@ public class RunnerAgent extends Agent {
 		addBehaviour(new WaitForTargetBehaviour());
 		addBehaviour(new WaitForPathBehaviour());
 		addBehaviour(new HandlePendingMessageBehaviour());
+
+		getContentManager().registerLanguage(new SLCodec());
+		getContentManager().registerOntology(MapRunnerOntology.getInstance());
 	}
 
 	private void setupRunner() {
@@ -76,6 +91,8 @@ public class RunnerAgent extends Agent {
 				} else {
 					targetRequest = msg;
 					respondAgree(targetRequest);
+					predicate = new PathToTarget();
+					predicate.getTarget().setId(msg.getContent());
 					requestPath();
 				}
 			} else {
@@ -96,8 +113,15 @@ public class RunnerAgent extends Agent {
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			msg.addReceiver(new AID(("map"), AID.ISLOCALNAME));
-			msg.setConversationId("path");
-			msg.setContent(targetRequest.getContent());
+			msg.setConversationId(Vocabulary.CONVERSATION_ID_PATH);
+			msg.setLanguage(FIPANames.ContentLanguage.FIPA_SL);
+			msg.setOntology(MapRunnerOntology.NAME);
+			try {
+				getContentManager().fillContent(msg, predicate);
+			} catch (CodecException | OntologyException e) {
+				e.printStackTrace();
+				return;
+			}
 			send(msg);
 		}
 	}
@@ -115,7 +139,24 @@ public class RunnerAgent extends Agent {
 				if (isBusy) {
 					respondCancel(msg);
 				} else {
-					pathRespond = msg;
+					ACLMessage reply = msg.createReply();
+					ContentManager cm = getContentManager();
+					ContentElement ce = null;
+					try {
+						ce = cm.extractContent(msg);
+					} catch (CodecException | OntologyException e) {
+						e.printStackTrace();
+						reply.setPerformative(ACLMessage.FAILURE);
+						reply.setContent(e.getMessage());
+						send(reply);
+						return;
+					}
+					if (!(ce instanceof PathToTarget)) {
+						reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+						send(reply);
+						return;
+					}
+					predicate = (PathToTarget) ce;
 					performMovement();
 				}
 			} else {
@@ -136,7 +177,25 @@ public class RunnerAgent extends Agent {
 		@Override
 		public void action() {
 			isBusy = true;
-			runner.move(Integer.parseInt(pathRespond.getContent()));
+
+			Iterator<?> iterator = predicate.getPath().points.iterator();
+			while (iterator.hasNext()) {
+				Point point = (Point) iterator.next();
+				switch (point.command) {
+				case Command.FORWARD:
+					runner.move(point.amount);
+					break;
+				case Command.ROTATE_LEFT_90_DEGREE:
+					runner.rotate(90 * point.amount);
+					break;
+				case Command.ROTATE_RIGHT_90_DEGREE:
+					runner.rotate(-90 * point.amount);
+					break;
+				case Command.ROTATE_180_DEGREE:
+					runner.rotate(180 * point.amount);
+					break;
+				}
+			}
 			respondInform(targetRequest);
 			isBusy = false;
 		}
