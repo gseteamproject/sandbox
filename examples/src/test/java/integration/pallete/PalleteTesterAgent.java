@@ -1,4 +1,4 @@
-package pallete;
+package integration.pallete;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;

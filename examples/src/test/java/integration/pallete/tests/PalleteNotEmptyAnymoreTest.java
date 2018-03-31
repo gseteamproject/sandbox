@@ -1,4 +1,4 @@
-package pallete.tests;
+package integration.pallete.tests;
 
 import jade.content.Concept;
 import jade.content.ContentManager;
@@ -21,9 +21,9 @@ import test.common.TestUtility;
 import palleteRobotCommunication.domain.SourcePalleteStateVocabulary;
 import palleteRobotCommunication.domain.WhatIsYourState;
 
-public class PalleteAlmostEmptyTest extends Test {
+public class PalleteNotEmptyAnymoreTest extends Test {
 
-	private static final long serialVersionUID = -7605911029923355560L;
+	private static final long serialVersionUID = 638845521637985899L;
 
 	private AID sourcePallete;
 
@@ -34,17 +34,17 @@ public class PalleteAlmostEmptyTest extends Test {
 	public Behaviour load(Agent a) throws TestException {
 		setTimeout(2000);
 		sourcePallete = TestUtility.createAgent(a, "test", "palleteRobotCommunication.SourcePalleteAgent",
-				new Object[] { 1 });
+				new Object[] { 5 });
 		CyclicBehaviour b = new CyclicBehaviour(a) {
 			private static final long serialVersionUID = -3423642459063630856L;
-
+			
 			@Override
 			public void onStart() {
 				ContentManager cm = myAgent.getContentManager();
 				cm.registerLanguage(codec);
 				cm.registerOntology(ontology);
-
 				WhatIsYourState question = new WhatIsYourState();
+
 				Action a = new Action();
 				a.setAction(question);
 				a.setActor(sourcePallete);
@@ -74,7 +74,7 @@ public class PalleteAlmostEmptyTest extends Test {
 						WhatIsYourState question = (WhatIsYourState) ((Action) c).getAction();
 						if (question != null) {
 							if (question.getState().getDescription()
-									.equals(SourcePalleteStateVocabulary.ALMOST_EMPTY)) {
+									.equals(SourcePalleteStateVocabulary.NOT_EMPTY_ANYMORE)) {
 								passed("Reply correct");
 							} else {
 								failed("Reply incorrect");

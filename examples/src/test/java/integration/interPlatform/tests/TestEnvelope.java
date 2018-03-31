@@ -21,9 +21,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-package interPlatform.tests;
+package integration.interPlatform.tests;
 
-import interPlatform.InterPlatformCommunicationTesterAgent;
+import integration.interPlatform.InterPlatformCommunicationTesterAgent;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;

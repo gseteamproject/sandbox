@@ -3,6 +3,7 @@
 .settings/
 
 .classpath
+.project
 APDescription.txt
 MTPs-Main-Container*
 MTPs-Container*
