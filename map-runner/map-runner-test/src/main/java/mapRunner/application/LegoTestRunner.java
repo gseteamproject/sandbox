@@ -1,4 +1,4 @@
-package mapRunner;
+package mapRunner.application;
 
 import mapRunner.runner.LegoRunner;
 

@@ -1,6 +1,5 @@
-package mapRunner;
+package mapRunner.application;
 
-import application.ArgumentBuilder;
 import jade.Boot;
 
 public class PeripheralContainer {
