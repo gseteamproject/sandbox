@@ -63,7 +63,7 @@ public class LegoRunner implements Runner {
 	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
 
-	public boolean notWorkSpace(float[] data) {
+	public boolean workSpace(float[] data) {
 		int colorId = (int) data[0];
 		switch (colorId) {
 		case lejos.robotics.Color.BLACK:
@@ -85,33 +85,59 @@ public class LegoRunner implements Runner {
 
 	@Override
 	public void rotate(int degrees) {
-		int controlTime = 100;
-		float[] firstData = new float[sensor2.sampleSize()];
-		sensor2.fetchSample(firstData, 0);
-		Direction moveDirection = Direction.RIGHT;
-		if (degrees > 0) {
-			moveDirection = Direction.LEFT;
-		} else {
-			moveDirection = Direction.RIGHT;
+		{
+			int controlTime = 100;
+			boolean notWorkSpaceFlag = false;
+			float[] firstData = new float[sensor2.sampleSize()];
+			sensor2.fetchSample(firstData, 0);
+			Direction moveDirection = Direction.RIGHT;
+			if (degrees > 0) {
+				moveDirection = Direction.LEFT;
+			} else {
+				moveDirection = Direction.RIGHT;
+			}	
+			
+			moveForward();
+			Delay.msDelay(100);
+			stopMoving();
+			
+			while (!ev3.getKey("Escape").isDown()) {
+				float[] data = new float[sensor2.sampleSize()];
+				sensor2.fetchSample(data, 0);
+				printData(data);
+				float[] colorData = new float[sensor.sampleSize()];
+				sensor.fetchSample(colorData, 0);
+				if (Math.abs(data[0] - firstData[0]) >= Math.abs(degrees)) {
+					break;
+				}
+				/*
+				 * РїСЂРѕРІРµСЂРєР° С†РІРµС‚РѕРј
+				 * СЃС‡С‘С‚С‡РёРє РІРјРµСЃС‚Рѕ С„Р»Р°РіР°
+				 */
+				if ((workSpace(colorData)) & (notWorkSpaceFlag)) {
+					break;
+				}
+				
+				if (!(workSpace(colorData))){
+					notWorkSpaceFlag = true;
+				}
+				/*
+				 * РїСЂРѕРІРµСЂРєР° С†РІРµС‚РѕРј
+				 */
+				
+				turnDirection(moveDirection);
+				Delay.msDelay(controlTime);
+			}	
 		}
-		while (!ev3.getKey("Escape").isDown()) {
-			float[] data = new float[sensor2.sampleSize()];
-			sensor2.fetchSample(data, 0);
-			printData(data);
-			if (Math.abs(data[0] - firstData[0]) >= Math.abs(degrees)) {
-				break;
-			}
-			turnDirection(moveDirection);
-			Delay.msDelay(controlTime);
-		}
+		stopMoving();
 	}
 
 	@Override
 	public void move(int circleAmount) {
 		/*
-		 * здесь надо разместить код из trackRunner учитывающий подсчёт зеленых меток
+		 * пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ trackRunner пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		 * 
-		 * количество меток которые надо проверить определяется параметром circleAmount
+		 * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ circleAmount
 		 */
 
 		left.setSpeed(ForwardSpeed);
@@ -133,12 +159,12 @@ public class LegoRunner implements Runner {
 
 			printData(data);
 
-			if (notWorkSpace(data)) {
+			if (workSpace(data)) {
 				if (turningMode) {
 					stopMoving();
 				}
 
-				/* Начало магии */
+				/* пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 				if (alarmColour(data)) {
 					alarmFlag = true;
 				} else {
@@ -147,7 +173,7 @@ public class LegoRunner implements Runner {
 						greenCounter++;
 					}
 				}
-				/* Конец магии */
+				/* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 
 				moveForward();
 				turningTime = 200;
@@ -174,6 +200,14 @@ public class LegoRunner implements Runner {
 				}
 			}
 		}
-		cs.close();
+		
+		stopMoving();
+	}
+
+	@Override
+	public void stop() {
+		// TODO : add something like init() and stop()
+		// before pass processing
+//		cs.close();
 	}
 }

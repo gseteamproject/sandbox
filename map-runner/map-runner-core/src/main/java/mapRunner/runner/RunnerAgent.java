@@ -196,6 +196,7 @@ public class RunnerAgent extends Agent {
 					break;
 				}
 			}
+			runner.stop();
 			respondInform(targetRequest);
 			isBusy = false;
 		}
