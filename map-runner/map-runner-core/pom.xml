@@ -13,6 +13,7 @@
 			<groupId>com.github.bdeneuter</groupId>
 			<artifactId>lejos-ev3-api</artifactId>
 			<version>0.9.1-beta</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tilab.jade</groupId>
