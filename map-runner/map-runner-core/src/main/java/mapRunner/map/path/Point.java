@@ -24,4 +24,14 @@ public class Point implements Concept {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+
+	public String name;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return this.name;
+	}
 }

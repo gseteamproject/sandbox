@@ -10,31 +10,36 @@ public class Map {
 		Path path = new Path();
 
 		if (target.id.equalsIgnoreCase("A")) {
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
+			path.addPoint(Command.FORWARD, 1, "1");
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "1");
+			path.addPoint(Command.FORWARD, 1, "2");
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "2");
+			path.addPoint(Command.FORWARD, 1, "4");
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "4");
+			path.addPoint(Command.FORWARD, 1, "3");
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "3");
 		} else if (target.id.equalsIgnoreCase("B")) {
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1);
-			path.addPoint(Command.FORWARD, 1);
-			path.addPoint(Command.ROTATE_180_DEGREE, 1);
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "3");
+			path.addPoint(Command.FORWARD, 1, "4");
+			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1, "4");
+			path.addPoint(Command.FORWARD, 1, "2");
+			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1, "2");
+			path.addPoint(Command.FORWARD, 1, "1");
+			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1, "1");
+			path.addPoint(Command.FORWARD, 1, "3");
+			path.addPoint(Command.ROTATE_180_DEGREE, 1, "3");
 		} else if (target.id.equalsIgnoreCase("l")) {
-			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1);
+			path.addPoint(Command.ROTATE_LEFT_90_DEGREE, 1, "3");
 		} else if (target.id.equalsIgnoreCase("r")) {
-			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1);
+			path.addPoint(Command.ROTATE_RIGHT_90_DEGREE, 1, "3");
 		} else if (target.id.equalsIgnoreCase("f")) {
-			path.addPoint(Command.FORWARD, 1);
+			path.addPoint(Command.FORWARD, 1, "3");
 		}
 		return path;
+	}
+
+	public void updateLocation(RunnerLocation location) {
+		System.out.println(
+				String.format("Runner \"%s\" at point \"%s\"", location.getRunner(), location.getPoint().name));
 	}
 }

@@ -16,7 +16,6 @@ import mapRunner.ontology.MapRunnerOntology;
 import mapRunner.ontology.Vocabulary;
 
 public class MapAgent extends Agent {
-
 	private static final long serialVersionUID = -2245739743003700621L;
 
 	private Map map = new Map();
@@ -24,6 +23,7 @@ public class MapAgent extends Agent {
 	@Override
 	protected void setup() {
 		addBehaviour(new PlanPathBehaviour());
+		addBehaviour(new UpdateMapBehaviour());
 		addBehaviour(new HandlePendingMessageBehaviour());
 
 		getContentManager().registerLanguage(new SLCodec());
@@ -31,7 +31,6 @@ public class MapAgent extends Agent {
 	}
 
 	class PlanPathBehaviour extends CyclicBehaviour {
-
 		private static final long serialVersionUID = -5851628986020982760L;
 
 		MessageTemplate messageTemplate = MessageTemplate.MatchConversationId(Vocabulary.CONVERSATION_ID_PATH);
@@ -41,6 +40,7 @@ public class MapAgent extends Agent {
 			ACLMessage msg = myAgent.receive(messageTemplate);
 			if (msg != null) {
 				ACLMessage reply = msg.createReply();
+				reply.setPerformative(ACLMessage.INFORM);
 
 				ContentManager cm = getContentManager();
 				ContentElement ce = null;
@@ -73,6 +73,41 @@ public class MapAgent extends Agent {
 					return;
 				}
 				send(reply);
+			} else {
+				block();
+			}
+		}
+	}
+
+	class UpdateMapBehaviour extends CyclicBehaviour {
+		private static final long serialVersionUID = -5851628986020982760L;
+
+		MessageTemplate messageTemplate = MessageTemplate.MatchConversationId(Vocabulary.CONVERSATION_ID_LOCATION);
+
+		@Override
+		public void action() {
+			ACLMessage msg = myAgent.receive(messageTemplate);
+			if (msg != null) {
+				ACLMessage reply = msg.createReply();
+
+				ContentManager cm = getContentManager();
+				ContentElement ce = null;
+				try {
+					ce = cm.extractContent(msg);
+				} catch (CodecException | OntologyException e) {
+					e.printStackTrace();
+					reply.setPerformative(ACLMessage.FAILURE);
+					reply.setContent(e.getMessage());
+					send(reply);
+					return;
+				}
+				if (!(ce instanceof RunnerLocation)) {
+					reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+					send(reply);
+					return;
+				}
+				RunnerLocation location = (RunnerLocation) ce;
+				map.updateLocation(location);
 			} else {
 				block();
 			}

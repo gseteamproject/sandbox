@@ -8,7 +8,8 @@ public class MainContainer {
 		String[] parameters = new String[] {
 			"-gui",
 			"-host", "localhost",
-			ArgumentBuilder.agent("map", mapRunner.map.MapAgent.class) + ArgumentBuilder.agent("customer", mapRunner.customer.CustomerAgent.class)
+			ArgumentBuilder.agent("map", mapRunner.map.MapAgent.class)
+			+ ArgumentBuilder.agent("customer", mapRunner.customer.CustomerAgent.class)
 		};
 		Boot.main(parameters);
 	}

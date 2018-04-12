@@ -14,4 +14,14 @@ public class Target implements Concept {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public String pointName;
+
+	public String getPointName() {
+		return pointName;
+	}
+
+	public void setPointName(String pointName) {
+		this.pointName = pointName;
+	}
 }

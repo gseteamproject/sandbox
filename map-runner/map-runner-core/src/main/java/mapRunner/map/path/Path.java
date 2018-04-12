@@ -17,10 +17,11 @@ public class Path implements Concept {
 		this.points = points;
 	}
 
-	public void addPoint(int command, int amount) {
+	public void addPoint(int command, int amount, String name) {
 		Point point = new Point();
 		point.command = command;
 		point.amount = amount;
+		point.name = name;
 		points.add(point);
 	}
 }
