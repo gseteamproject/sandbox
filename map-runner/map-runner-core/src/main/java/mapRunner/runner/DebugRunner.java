@@ -13,4 +13,8 @@ public class DebugRunner implements Runner {
 	@Override
 	public void stop() {
 	}
+
+	@Override
+	public void start() {
+	}
 }

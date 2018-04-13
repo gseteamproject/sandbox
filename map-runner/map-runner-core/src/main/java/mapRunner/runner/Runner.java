@@ -7,4 +7,6 @@ public interface Runner {
 	public void rotate(int degrees);
 
 	public void stop();
+
+	public void start();
 }

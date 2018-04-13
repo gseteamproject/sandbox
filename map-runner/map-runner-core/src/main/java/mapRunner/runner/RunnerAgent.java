@@ -206,6 +206,7 @@ public class RunnerAgent extends Agent {
 			isBusy = true;
 			iterator = predicate.getPath().points.iterator();
 			state = BehaviourState.active;
+			runner.start();
 		}
 
 		private void activity() {
@@ -215,13 +216,13 @@ public class RunnerAgent extends Agent {
 				runner.move(point.amount);
 				break;
 			case Command.ROTATE_LEFT_90_DEGREE:
-				runner.rotate(90 * point.amount);
+				runner.rotate(1 * point.amount);
 				break;
 			case Command.ROTATE_RIGHT_90_DEGREE:
-				runner.rotate(-90 * point.amount);
+				runner.rotate(-1 * point.amount);
 				break;
 			case Command.ROTATE_180_DEGREE:
-				runner.rotate(180 * point.amount);
+				runner.rotate(2 * point.amount);
 				break;
 			}
 			location.setPoint(point);

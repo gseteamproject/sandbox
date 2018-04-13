@@ -7,7 +7,6 @@ import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
@@ -29,39 +28,49 @@ public class LegoRunner implements Runner {
 	}
 
 	public void moveForward() {
-		right.setSpeed(ForwardSpeed);
-		left.setSpeed(ForwardSpeed);
-		left.forward();
-		right.forward();
+		rightMotor.setSpeed(ForwardSpeed);
+		leftMotor.setSpeed(ForwardSpeed);
+		leftMotor.forward();
+		rightMotor.forward();
 	}
 
 	public void stopMoving() {
-		left.stop(true);
-		right.stop(true);
+		leftMotor.stop(true);
+		rightMotor.stop(true);
 	}
 
 	public void turnDirection(Direction direction) {
-		right.setSpeed(RotationSpeed);
-		left.setSpeed(RotationSpeed);
+		rightMotor.setSpeed(RotationSpeed);
+		leftMotor.setSpeed(RotationSpeed);
 		if (direction == Direction.LEFT) {
-			right.forward();
-			left.backward();
+			rightMotor.forward();
+			leftMotor.backward();
 		} else {
-			left.forward();
-			right.backward();
+			leftMotor.forward();
+			rightMotor.backward();
 		}
 	}
 
-	Brick ev3 = BrickFinder.getLocal();
+	public LegoRunner() {
+		ev3 = BrickFinder.getLocal();
+	}
 
-	EV3ColorSensor cs = new EV3ColorSensor(ev3.getPort("S1"));
-	SensorMode sensor = cs.getColorIDMode();
+	Brick ev3;
 
-	EV3GyroSensor qs = new EV3GyroSensor(ev3.getPort("S2"));
-	SampleProvider sensor2 = qs.getAngleMode();
+	EV3ColorSensor colorSensor;
+	SampleProvider colorId;
 
-	RegulatedMotor left = new EV3LargeRegulatedMotor(ev3.getPort("D"));
-	RegulatedMotor right = new EV3LargeRegulatedMotor(ev3.getPort("A"));
+//	EV3GyroSensor gyroSensor;
+//	SampleProvider angle; 
+	// TODO: remove
+
+	RegulatedMotor leftMotor;
+	RegulatedMotor rightMotor;
+
+	// TODO : remove
+//	Wheel leftWheel;
+//	Wheel rightWheel;
+//	Chassis chassis;
 
 	public boolean workSpace(float[] data) {
 		int colorId = (int) data[0];
@@ -84,50 +93,45 @@ public class LegoRunner implements Runner {
 	}
 
 	@Override
-	public void rotate(int degrees) {
+	public void rotate(int rotationNumber) {
 		{
-			int controlTime = 100;
-			boolean notWorkSpaceFlag = false;
-			float[] firstData = new float[sensor2.sampleSize()];
-			sensor2.fetchSample(firstData, 0);
+			int controlTime = 150;
+			int rotationCounter = 0;
+			boolean rotationFlag = false;
 			Direction moveDirection = Direction.RIGHT;
-			if (degrees > 0) {
+			if (rotationNumber > 0) {
 				moveDirection = Direction.LEFT;
 			} else {
 				moveDirection = Direction.RIGHT;
-			}	
-			
-			moveForward();
-			Delay.msDelay(100);
-			stopMoving();
-			
+			}
+
 			while (!ev3.getKey("Escape").isDown()) {
-				float[] data = new float[sensor2.sampleSize()];
-				sensor2.fetchSample(data, 0);
-				printData(data);
-				float[] colorData = new float[sensor.sampleSize()];
-				sensor.fetchSample(colorData, 0);
-				if (Math.abs(data[0] - firstData[0]) >= Math.abs(degrees)) {
+				float[] colorData = new float[colorId.sampleSize()];
+				colorId.fetchSample(colorData, 0);
+				/*
+				 * проверка цветом счётчик вместо флага
+				 */
+				if (rotationCounter == Math.abs(rotationNumber)) {
 					break;
+				}
+
+				if (!(workSpace(colorData))) {
+					rotationFlag = true;
+				}
+
+				if (workSpace(colorData)) {
+					if (rotationFlag) {
+						rotationCounter++;
+						rotationFlag = false;
+					}
 				}
 				/*
 				 * проверка цветом
-				 * счётчик вместо флага
 				 */
-				if ((workSpace(colorData)) & (notWorkSpaceFlag)) {
-					break;
-				}
-				
-				if (!(workSpace(colorData))){
-					notWorkSpaceFlag = true;
-				}
-				/*
-				 * проверка цветом
-				 */
-				
+
 				turnDirection(moveDirection);
 				Delay.msDelay(controlTime);
-			}	
+			}
 		}
 		stopMoving();
 	}
@@ -140,8 +144,8 @@ public class LegoRunner implements Runner {
 		 * ���������� ����� ������� ���� ��������� ������������ ���������� circleAmount
 		 */
 
-		left.setSpeed(ForwardSpeed);
-		right.setSpeed(ForwardSpeed);
+		leftMotor.setSpeed(ForwardSpeed);
+		rightMotor.setSpeed(ForwardSpeed);
 
 		Direction lastDirection = Direction.RIGHT;
 		int turningTime = 1000;
@@ -154,8 +158,8 @@ public class LegoRunner implements Runner {
 		while ((!ev3.getKey("Escape").isDown()) & (greenCounter < circleAmount)) {
 			long currentTime = System.currentTimeMillis();
 
-			float[] data = new float[sensor.sampleSize()];
-			sensor.fetchSample(data, 0);
+			float[] data = new float[colorId.sampleSize()];
+			colorId.fetchSample(data, 0);
 
 			printData(data);
 
@@ -164,7 +168,7 @@ public class LegoRunner implements Runner {
 					stopMoving();
 				}
 
-				/* ������ ����� */
+				/* Проверка на прохождение метки */
 				if (alarmColour(data)) {
 					alarmFlag = true;
 				} else {
@@ -173,7 +177,6 @@ public class LegoRunner implements Runner {
 						greenCounter++;
 					}
 				}
-				/* ����� ����� */
 
 				moveForward();
 				turningTime = 200;
@@ -200,14 +203,28 @@ public class LegoRunner implements Runner {
 				}
 			}
 		}
-		
+
 		stopMoving();
 	}
 
 	@Override
 	public void stop() {
-		// TODO : add something like init() and stop()
-		// before pass processing
-//		cs.close();
+		colorSensor.close();
+		leftMotor.close();
+		rightMotor.close();
+	}
+
+	@Override
+	public void start() {
+		colorSensor = new EV3ColorSensor(ev3.getPort("S1"));
+		colorId = colorSensor.getColorIDMode();
+
+		leftMotor = new EV3LargeRegulatedMotor(ev3.getPort("D"));
+		rightMotor = new EV3LargeRegulatedMotor(ev3.getPort("A"));
+
+		// TODO : remove
+//		leftWheel = WheeledChassis.modelWheel(leftMotor, 43.2).offset(-72);
+//		rightWheel = WheeledChassis.modelWheel(rightMotor, 43.2).offset(72);
+//		chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL); 
 	}
 }
