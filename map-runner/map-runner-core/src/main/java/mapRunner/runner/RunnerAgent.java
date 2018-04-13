@@ -30,9 +30,6 @@ public class RunnerAgent extends Agent {
 
 	private boolean isBusy;
 
-	// TODO : remove
-//	private ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
-
 	private ACLMessage targetRequest;
 
 	private PathToTarget predicate;
@@ -172,8 +169,6 @@ public class RunnerAgent extends Agent {
 		private void performMovement() {
 			MoveOnPathBehaviour b = new MoveOnPathBehaviour();
 			addBehaviour(b);
-			// TODO : remove
-			// addBehaviour(tbf.wrap(b));
 		}
 	}
 
