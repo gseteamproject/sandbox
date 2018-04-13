@@ -1,12 +1,11 @@
 package mapRunner.map;
 
 import jade.content.Predicate;
-import mapRunner.map.path.Point;
 
 public class RunnerLocation implements Predicate {
 	private static final long serialVersionUID = -6906958044706475317L;
 
-	private Point point;
+	private Point point = new Point();
 
 	public Point getPoint() {
 		return point;

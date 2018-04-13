@@ -10,8 +10,9 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mapRunner.common.HandlePendingMessageBehaviour;
-import mapRunner.map.path.Path;
-import mapRunner.map.target.Target;
+import mapRunner.map.navigation.Navigation;
+import mapRunner.map.navigation.NavigationToTarget;
+import mapRunner.map.navigation.Target;
 import mapRunner.ontology.MapRunnerOntology;
 import mapRunner.ontology.Vocabulary;
 
@@ -53,15 +54,15 @@ public class MapAgent extends Agent {
 					send(reply);
 					return;
 				}
-				if (!(ce instanceof PathToTarget)) {
+				if (!(ce instanceof NavigationToTarget)) {
 					reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
 					send(reply);
 					return;
 				}
-				PathToTarget predicate = (PathToTarget) ce;
+				NavigationToTarget predicate = (NavigationToTarget) ce;
 				Target target = predicate.getTarget();
-				Path path = map.getPath(target);
-				predicate.setPath(path);
+				Navigation path = map.getPath(target);
+				predicate.setNavigation(path);
 
 				try {
 					getContentManager().fillContent(reply, predicate);

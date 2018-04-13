@@ -6,7 +6,6 @@ import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
@@ -58,21 +57,12 @@ public class LegoRunner implements Runner {
 	Brick ev3;
 
 	EV3ColorSensor colorSensor;
-	SampleProvider colorId;
-
-//	EV3GyroSensor gyroSensor;
-//	SampleProvider angle; 
-	// TODO: remove
+	SampleProvider colorIdSensor;
 
 	RegulatedMotor leftMotor;
 	RegulatedMotor rightMotor;
 
-	// TODO : remove
-//	Wheel leftWheel;
-//	Wheel rightWheel;
-//	Chassis chassis;
-
-	public boolean workSpace(float[] data) {
+	public boolean isMarker(float[] data) {
 		int colorId = (int) data[0];
 		switch (colorId) {
 		case lejos.robotics.Color.BLACK:
@@ -83,7 +73,7 @@ public class LegoRunner implements Runner {
 		return false;
 	}
 
-	public boolean alarmColour(float[] data) {
+	public boolean isSignalMarker(float[] data) {
 		int colorId = (int) data[0];
 		switch (colorId) {
 		case lejos.robotics.Color.GREEN:
@@ -106,8 +96,8 @@ public class LegoRunner implements Runner {
 			}
 
 			while (!ev3.getKey("Escape").isDown()) {
-				float[] colorData = new float[colorId.sampleSize()];
-				colorId.fetchSample(colorData, 0);
+				float[] colorData = new float[colorIdSensor.sampleSize()];
+				colorIdSensor.fetchSample(colorData, 0);
 				/*
 				 * проверка цветом счётчик вместо флага
 				 */
@@ -115,11 +105,11 @@ public class LegoRunner implements Runner {
 					break;
 				}
 
-				if (!(workSpace(colorData))) {
+				if (!(isMarker(colorData))) {
 					rotationFlag = true;
 				}
 
-				if (workSpace(colorData)) {
+				if (isMarker(colorData)) {
 					if (rotationFlag) {
 						rotationCounter++;
 						rotationFlag = false;
@@ -137,13 +127,7 @@ public class LegoRunner implements Runner {
 	}
 
 	@Override
-	public void move(int circleAmount) {
-		/*
-		 * ����� ���� ���������� ��� �� trackRunner ����������� ������� ������� �����
-		 * 
-		 * ���������� ����� ������� ���� ��������� ������������ ���������� circleAmount
-		 */
-
+	public void move(int signalMarkAmount) {
 		leftMotor.setSpeed(ForwardSpeed);
 		rightMotor.setSpeed(ForwardSpeed);
 
@@ -153,28 +137,28 @@ public class LegoRunner implements Runner {
 		boolean turningMode = false;
 		boolean alarmFlag = false;
 		long startTime = 0;
-		long greenCounter = 0;
+		long signalMarkCounter = 0;
 
-		while ((!ev3.getKey("Escape").isDown()) & (greenCounter < circleAmount)) {
+		while ((!ev3.getKey("Escape").isDown()) & (signalMarkCounter < signalMarkAmount)) {
 			long currentTime = System.currentTimeMillis();
 
-			float[] data = new float[colorId.sampleSize()];
-			colorId.fetchSample(data, 0);
+			float[] data = new float[colorIdSensor.sampleSize()];
+			colorIdSensor.fetchSample(data, 0);
 
 			printData(data);
 
-			if (workSpace(data)) {
+			if (isMarker(data)) {
 				if (turningMode) {
 					stopMoving();
 				}
 
 				/* Проверка на прохождение метки */
-				if (alarmColour(data)) {
+				if (isSignalMarker(data)) {
 					alarmFlag = true;
 				} else {
 					if (alarmFlag) {
 						alarmFlag = false;
-						greenCounter++;
+						signalMarkCounter++;
 					}
 				}
 
@@ -217,14 +201,9 @@ public class LegoRunner implements Runner {
 	@Override
 	public void start() {
 		colorSensor = new EV3ColorSensor(ev3.getPort("S1"));
-		colorId = colorSensor.getColorIDMode();
+		colorIdSensor = colorSensor.getColorIDMode();
 
 		leftMotor = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 		rightMotor = new EV3LargeRegulatedMotor(ev3.getPort("A"));
-
-		// TODO : remove
-//		leftWheel = WheeledChassis.modelWheel(leftMotor, 43.2).offset(-72);
-//		rightWheel = WheeledChassis.modelWheel(rightMotor, 43.2).offset(72);
-//		chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL); 
 	}
 }

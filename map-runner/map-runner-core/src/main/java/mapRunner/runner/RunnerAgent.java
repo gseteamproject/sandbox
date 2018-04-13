@@ -16,10 +16,10 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mapRunner.common.HandlePendingMessageBehaviour;
-import mapRunner.map.PathToTarget;
 import mapRunner.map.RunnerLocation;
-import mapRunner.map.path.Command;
-import mapRunner.map.path.Point;
+import mapRunner.map.navigation.NavigationCommand;
+import mapRunner.map.navigation.NavigationCommandType;
+import mapRunner.map.navigation.NavigationToTarget;
 import mapRunner.ontology.MapRunnerOntology;
 import mapRunner.ontology.Vocabulary;
 
@@ -32,7 +32,7 @@ public class RunnerAgent extends Agent {
 
 	private ACLMessage targetRequest;
 
-	private PathToTarget predicate;
+	private NavigationToTarget navigationToTarget;
 
 	private RunnerLocation location;
 
@@ -57,7 +57,6 @@ public class RunnerAgent extends Agent {
 		}
 		location = new RunnerLocation();
 		location.setRunner("runner");
-		location.setPoint(new Point());
 		location.getPoint().setName("3");
 	}
 
@@ -94,9 +93,9 @@ public class RunnerAgent extends Agent {
 				} else {
 					targetRequest = msg;
 					respondAgree(targetRequest);
-					predicate = new PathToTarget();
-					predicate.getTarget().setId(msg.getContent());
-					predicate.getTarget().setPointName("3");
+					navigationToTarget = new NavigationToTarget();
+					navigationToTarget.getTarget().getDestination().setName(msg.getContent());
+					navigationToTarget.getTarget().setLocation(location.getPoint());
 					requestPath();
 				}
 			} else {
@@ -120,7 +119,7 @@ public class RunnerAgent extends Agent {
 			msg.setLanguage(FIPANames.ContentLanguage.FIPA_SL);
 			msg.setOntology(MapRunnerOntology.NAME);
 			try {
-				getContentManager().fillContent(msg, predicate);
+				getContentManager().fillContent(msg, navigationToTarget);
 			} catch (CodecException | OntologyException e) {
 				e.printStackTrace();
 				return;
@@ -153,22 +152,17 @@ public class RunnerAgent extends Agent {
 						send(reply);
 						return;
 					}
-					if (!(ce instanceof PathToTarget)) {
+					if (!(ce instanceof NavigationToTarget)) {
 						reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
 						send(reply);
 						return;
 					}
-					predicate = (PathToTarget) ce;
-					performMovement();
+					navigationToTarget = (NavigationToTarget) ce;
+					addBehaviour(new MoveOnPathBehaviour());
 				}
 			} else {
 				block();
 			}
-		}
-
-		private void performMovement() {
-			MoveOnPathBehaviour b = new MoveOnPathBehaviour();
-			addBehaviour(b);
 		}
 	}
 
@@ -204,28 +198,28 @@ public class RunnerAgent extends Agent {
 
 		private void initialization() {
 			isBusy = true;
-			iterator = predicate.getPath().points.iterator();
+			iterator = navigationToTarget.getNavigation().commands.iterator();
 			state = BehaviourState.active;
 			runner.start();
 		}
 
 		private void activity() {
-			Point point = (Point) iterator.next();
-			switch (point.command) {
-			case Command.FORWARD:
-				runner.move(point.amount);
+			NavigationCommand command = (NavigationCommand) iterator.next();
+			switch (command.type) {
+			case NavigationCommandType.FORWARD:
+				runner.move(command.quantity);
 				break;
-			case Command.ROTATE_LEFT_90_DEGREE:
-				runner.rotate(1 * point.amount);
+			case NavigationCommandType.ROTATE_LEFT_90_DEGREE:
+				runner.rotate(1 * command.quantity);
 				break;
-			case Command.ROTATE_RIGHT_90_DEGREE:
-				runner.rotate(-1 * point.amount);
+			case NavigationCommandType.ROTATE_RIGHT_90_DEGREE:
+				runner.rotate(-1 * command.quantity);
 				break;
-			case Command.ROTATE_180_DEGREE:
-				runner.rotate(2 * point.amount);
+			case NavigationCommandType.ROTATE_180_DEGREE:
+				runner.rotate(2 * command.quantity);
 				break;
 			}
-			location.setPoint(point);
+			location.setPoint(command.point);
 			addBehaviour(new NotifyAboutLocationChangeBehaviour());
 		}
 

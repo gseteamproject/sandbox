@@ -1,6 +1,6 @@
-package mapRunner.map.path;
+package mapRunner.map.navigation;
 
-public class Command {
+public class NavigationCommandType {
 	public final static int FORWARD = 0;
 
 	public final static int ROTATE_RIGHT_90_DEGREE = 1;
