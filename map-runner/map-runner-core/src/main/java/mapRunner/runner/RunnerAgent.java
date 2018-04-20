@@ -57,7 +57,8 @@ public class RunnerAgent extends Agent {
 		}
 		location = new RunnerLocation();
 		location.setRunner("runner");
-		location.getPoint().setName("3");
+		location.getPoint().setName("5");
+		//"3" fo A and B
 	}
 
 	private void respondCancel(ACLMessage msg) {
