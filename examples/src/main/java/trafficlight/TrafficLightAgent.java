@@ -10,7 +10,7 @@ public class TrafficLightAgent extends Agent {
 
 	public int currentLight;
 	
-	public int switchTime;
+	public int switchTime=10000;
 	
 	public int amountOfCars;
 	
@@ -18,7 +18,7 @@ public class TrafficLightAgent extends Agent {
 
 	@Override
 	protected void setup() {
-		addBehaviour(new SwitchLightBehaviour());
+		addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 		
@@ -41,4 +41,6 @@ public class TrafficLightAgent extends Agent {
 		}
 	
 	}
+        
+        
 }
