@@ -40,6 +40,14 @@ public class TrafficLightAgent extends Agent {
                         currentLight = Integer.parseInt(args[1].toString());
                         amountOfCars = Integer.parseInt(args[2].toString());
 		}
+                
+                if(currentLight==0){
+                    System.out.println("Traffic light: " +this.getLocalName()+ " is now green" );
+                } else {
+                    System.out.println("Traffic light: " +this.getLocalName()+ " is now red" );
+                }
+                
+                
             
                 addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
