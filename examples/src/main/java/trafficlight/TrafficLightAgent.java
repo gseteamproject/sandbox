@@ -24,7 +24,7 @@ public class TrafficLightAgent extends Agent {
 	
 	public int switchTime;
 	
-	public int amountOfCars = 0;
+	public int amountOfCars;
 	
 	public MySubscriptionManager myManager = new MySubscriptionManager();
 	
@@ -38,6 +38,7 @@ public class TrafficLightAgent extends Agent {
 			//connectedAgentName = args[0].toString();
 			switchTime = Integer.parseInt(args[0].toString());
                         currentLight = Integer.parseInt(args[1].toString());
+                        amountOfCars = Integer.parseInt(args[2].toString());
 		}
             
                 addBehaviour(new SwitchLightBehaviour(this,switchTime));
