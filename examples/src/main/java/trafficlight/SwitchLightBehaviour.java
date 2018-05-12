@@ -24,7 +24,7 @@ public class SwitchLightBehaviour extends TickerBehaviour {
                  System.out.println("Light is now green" );
              }
              trflight.currentLight=currLight; //update
-            
+             trflight.myManager.notifyAll(String.valueOf(currLight));
         }
         
         private TrafficLightAgent getMyTrafficLightAgent(){

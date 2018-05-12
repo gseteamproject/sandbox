@@ -1,13 +1,18 @@
 package trafficlight;
 
+import java.util.Vector;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.proto.SubscriptionInitiator;
 
 public class CarTrafficLightAgent extends Agent {
 
 	private String connectedAgentName;
+	public int light = 0;
 			
 	@Override
 	protected void setup() {
@@ -21,6 +26,9 @@ public class CarTrafficLightAgent extends Agent {
 		}
 		
 		addBehaviour(new CarArrivedBehaviour(this, period));
+		addBehaviour(new CarGoneBehaviour(this, period));
+		
+		addBehaviour(new LightsSwitchSubscriptionInitiator());
 	}
 	
 	class CarArrivedBehaviour extends TickerBehaviour{
@@ -31,7 +39,9 @@ public class CarTrafficLightAgent extends Agent {
 
 		@Override
 		protected void onTick() {
-			sendCarArrivedMessage();
+			if (light == 1) {
+				sendCarArrivedMessage();
+			}
 		}
 		
 		private void sendCarArrivedMessage() {
@@ -42,6 +52,64 @@ public class CarTrafficLightAgent extends Agent {
 			send(msg);
 		}
 		
+	}
+	
+	class CarGoneBehaviour extends TickerBehaviour{
+
+		public CarGoneBehaviour(Agent a, long period) {
+			super(a, period);			
+		}
+
+		@Override
+		protected void onTick() {
+			if (light == 0) {
+				sendCarGoneMessage();
+			}
+		}
+		
+		private void sendCarGoneMessage() {
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			msg.addReceiver(new AID((connectedAgentName), AID.ISLOCALNAME));
+			msg.setConversationId("car-gone");
+			msg.setContent("Car gone");
+			send(msg);
+		}
+		
+	}
+	
+	private class LightsSwitchSubscriptionInitiator extends SubscriptionInitiator {
+		public LightsSwitchSubscriptionInitiator() {
+			super(null, null);
+		}
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
+		protected Vector prepareSubscriptions(ACLMessage subscription) {
+			subscription = new ACLMessage(ACLMessage.SUBSCRIBE);
+			subscription.addReceiver(new AID((connectedAgentName), AID.ISLOCALNAME));
+			subscription.setProtocol(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE);
+			Vector l = new Vector(1);
+			l.addElement(subscription);
+			System.out.println(myAgent.getLocalName() + ": subscription request");
+			return l;
+		}
+
+		@Override
+		protected void handleAgree(ACLMessage agree) {
+			System.out.println(myAgent.getLocalName() + ": succesfully subscribed");
+		}
+
+		@Override
+		protected void handleRefuse(ACLMessage refuse) {
+			System.out.println(myAgent.getLocalName() + ": subscription failed");
+		}
+
+		@Override
+		protected void handleInform(ACLMessage inform) {
+			light = Integer.valueOf(inform.getContent());
+		}
+
+		private static final long serialVersionUID = -8553947845257751922L;
 	}
 
 }
