@@ -11,8 +11,8 @@ public class Application {
 		parameters[1] =
 			ArgumentBuilder.agent("traffic-light-1", TrafficLightAgent.class) +
 			ArgumentBuilder.agent("traffic-light-2", TrafficLightAgent.class) +
-			ArgumentBuilder.agent("car-traffic-1", CarTrafficLightAgent.class) + 
-			ArgumentBuilder.agent("car-traffic-2", CarTrafficLightAgent.class);
+			ArgumentBuilder.agent("car-traffic-1", CarTrafficLightAgent.class, "traffic-light-1, 1000") + 
+			ArgumentBuilder.agent("car-traffic-2", CarTrafficLightAgent.class, "traffic-light-2, 2000");
 		Boot.main(parameters);
 	}
 }
