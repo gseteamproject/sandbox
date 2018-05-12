@@ -7,6 +7,8 @@ public class Application {
 	
 	public static void main(String[] args) {
 		String[] parameters = new String[2];
+                
+                
 		parameters[0] = "-gui";
 		parameters[1] =
 			ArgumentBuilder.agent("traffic-light-1", TrafficLightAgent.class) +
