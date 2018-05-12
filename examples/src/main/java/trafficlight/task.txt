@@ -1,0 +1,10 @@
+ our task it to develop MAS
+
+1) turn-on / turn-off traffic light
+2) automatic synchronization of traffic-light switch-time
+3) car-agent traffic that generates car for every street
+4) automatic adaptation of traffic-light switch-time depending on traffic
+
+currentLight
+switchTime
+amountOfCars
