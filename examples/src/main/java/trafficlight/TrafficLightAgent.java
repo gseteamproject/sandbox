@@ -7,6 +7,7 @@ import java.util.Map;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
@@ -23,6 +24,8 @@ public class TrafficLightAgent extends Agent {
 	public int switchTime;
 	
 	public int amountOfCars = 0;
+        
+        public TickerBehaviour SwLghtBhv = null;
 	
 	public MySubscriptionManager myManager = new MySubscriptionManager();
 	
@@ -45,7 +48,9 @@ public class TrafficLightAgent extends Agent {
                     System.out.println(this.getLocalName()+ ": light is now red" );
                 }
                 
-        addBehaviour(new SwitchLightBehaviour(this,switchTime));
+                SwLghtBhv = new SwitchLightBehaviour(this,switchTime);
+                
+                addBehaviour(SwLghtBhv);
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 		
