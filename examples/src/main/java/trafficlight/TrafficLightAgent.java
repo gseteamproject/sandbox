@@ -9,6 +9,8 @@ import jade.lang.acl.MessageTemplate;
 public class TrafficLightAgent extends Agent {
 
 	public int currentLight;
+        
+       
 	
 	public int switchTime;
 	
@@ -18,7 +20,17 @@ public class TrafficLightAgent extends Agent {
 
 	@Override
 	protected void setup() {
-		addBehaviour(new SwitchLightBehaviour(this,switchTime));
+		
+                Object[] args = getArguments();
+		
+		
+		if (args != null && args.length > 0) {
+			//connectedAgentName = args[0].toString();
+			switchTime = Integer.parseInt(args[0].toString());
+                        currentLight = Integer.parseInt(args[1].toString());
+		}
+            
+                addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 		
