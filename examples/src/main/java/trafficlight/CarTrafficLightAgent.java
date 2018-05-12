@@ -12,7 +12,8 @@ import jade.proto.SubscriptionInitiator;
 public class CarTrafficLightAgent extends Agent {
 
 	private String connectedAgentName;
-	public int light = 0;
+        
+	public int light;
 			
 	@Override
 	protected void setup() {
@@ -23,7 +24,10 @@ public class CarTrafficLightAgent extends Agent {
 		if (args != null && args.length > 0) {
 			connectedAgentName = args[0].toString();
 			period = Integer.parseInt(args[1].toString());
+                        light = Integer.parseInt(args[2].toString());
 		}
+                
+                
 		
 		addBehaviour(new CarArrivedBehaviour(this, period));
 		addBehaviour(new CarGoneBehaviour(this, period));
@@ -112,5 +116,7 @@ public class CarTrafficLightAgent extends Agent {
 
 		private static final long serialVersionUID = -8553947845257751922L;
 	}
+        
+       
     
 }
