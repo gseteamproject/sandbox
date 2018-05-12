@@ -42,13 +42,11 @@ public class TrafficLightAgent extends Agent {
 		}
                 
                 if(currentLight==0){
-                    System.out.println("Traffic light: " +this.getLocalName()+ " is now green" );
+                    System.out.println(this.getLocalName()+ ": light is now green" );
                 } else {
-                    System.out.println("Traffic light: " +this.getLocalName()+ " is now red" );
+                    System.out.println(this.getLocalName()+ ": light is now red" );
                 }
                 
-                
-            
                 addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
