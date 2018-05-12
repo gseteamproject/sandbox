@@ -18,10 +18,8 @@ import jade.proto.SubscriptionResponder.SubscriptionManager;
 
 public class TrafficLightAgent extends Agent {
 
-	public int currentLight;
-        
-       
-	
+	public LightsColor currentLight;
+
 	public int switchTime;
 	
 	public int amountOfCars = 0;
@@ -37,10 +35,10 @@ public class TrafficLightAgent extends Agent {
 		if (args != null && args.length > 0) {
 			//connectedAgentName = args[0].toString();
 			switchTime = Integer.parseInt(args[0].toString());
-                        currentLight = Integer.parseInt(args[1].toString());
+            currentLight = LightsColor.values()[Integer.parseInt(args[1].toString())];
 		}
             
-                addBehaviour(new SwitchLightBehaviour(this,switchTime));
+        addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 		

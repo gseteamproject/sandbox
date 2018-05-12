@@ -6,7 +6,7 @@ import jade.core.behaviours.TickerBehaviour;
 
 public class SwitchLightBehaviour extends TickerBehaviour {
 
-        private int currLight; //0=green; 1=red;
+        private LightsColor currLight; 
     
         public SwitchLightBehaviour(Agent a, long period) {
             super(a, period);
@@ -16,15 +16,15 @@ public class SwitchLightBehaviour extends TickerBehaviour {
         protected void onTick() {
              TrafficLightAgent trflight = getMyTrafficLightAgent();
              currLight = trflight.currentLight;
-             if(currLight==0){
-                 currLight=1;
+             if(currLight == LightsColor.Green){
+                 currLight = LightsColor.Red;
                   System.out.println("Light is now red" );
              } else {
-                 currLight=0;
+                 currLight = LightsColor.Green;
                  System.out.println("Light is now green" );
              }
-             trflight.currentLight=currLight; //update
-             trflight.myManager.notifyAll(String.valueOf(currLight));
+             trflight.currentLight = currLight; //update
+             trflight.myManager.notifyAll(String.valueOf(currLight.getValue()));
         }
         
         private TrafficLightAgent getMyTrafficLightAgent(){

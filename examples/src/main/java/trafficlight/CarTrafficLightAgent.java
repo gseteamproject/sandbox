@@ -12,7 +12,7 @@ import jade.proto.SubscriptionInitiator;
 public class CarTrafficLightAgent extends Agent {
 
 	private String connectedAgentName;
-	public int light = 0;
+	public LightsColor light;
 			
 	@Override
 	protected void setup() {
@@ -39,7 +39,7 @@ public class CarTrafficLightAgent extends Agent {
 
 		@Override
 		protected void onTick() {
-			if (light == 1) {
+			if (light == LightsColor.Red) {
 				sendCarArrivedMessage();
 			}
 		}
@@ -62,7 +62,7 @@ public class CarTrafficLightAgent extends Agent {
 
 		@Override
 		protected void onTick() {
-			if (light == 0) {
+			if (light == LightsColor.Green) {
 				sendCarGoneMessage();
 			}
 		}
@@ -106,7 +106,7 @@ public class CarTrafficLightAgent extends Agent {
 
 		@Override
 		protected void handleInform(ACLMessage inform) {
-			light = Integer.valueOf(inform.getContent());
+			light = LightsColor.values()[Integer.valueOf(inform.getContent())];
 		}
 
 		private static final long serialVersionUID = -8553947845257751922L;
