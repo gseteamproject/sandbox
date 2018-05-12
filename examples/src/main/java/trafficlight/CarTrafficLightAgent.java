@@ -39,6 +39,7 @@ public class CarTrafficLightAgent extends Agent {
 
 		@Override
 		protected void onTick() {
+                        
 			if (light == 1) {
 				sendCarArrivedMessage();
 			}
@@ -111,5 +112,5 @@ public class CarTrafficLightAgent extends Agent {
 
 		private static final long serialVersionUID = -8553947845257751922L;
 	}
-
+    
 }
