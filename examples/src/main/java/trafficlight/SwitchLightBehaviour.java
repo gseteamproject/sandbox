@@ -18,10 +18,10 @@ public class SwitchLightBehaviour extends TickerBehaviour {
              currLight = trflight.currentLight;
              if(currLight==0){
                  currLight=1;
-                  System.out.println("Traffic light: " +trflight.getLocalName()+ " is now red" );
+                  System.out.println(trflight.getLocalName()+ ": light is now red" );
              } else {
                  currLight=0;
-                 System.out.println("Traffic light: " +trflight.getLocalName()+ " is now green" );
+                 System.out.println(trflight.getLocalName()+ ": light is now green" );
              }
              trflight.currentLight=currLight; //update
              trflight.myManager.notifyAll(String.valueOf(currLight));
