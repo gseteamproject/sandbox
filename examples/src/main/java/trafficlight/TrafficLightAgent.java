@@ -6,7 +6,7 @@ public class TrafficLightAgent extends Agent {
 
 	public int currentLight;
 	
-	public int switchTime=10000;
+	public int switchTime;
 	
 	public int amountOfCars;
 
