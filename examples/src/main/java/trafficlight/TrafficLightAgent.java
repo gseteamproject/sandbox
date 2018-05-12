@@ -12,8 +12,10 @@ public class TrafficLightAgent extends Agent {
 
 	@Override
 	protected void setup() {
-		addBehaviour(new SwitchLightBehaviour());
+		addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 	}
+        
+        
 }
