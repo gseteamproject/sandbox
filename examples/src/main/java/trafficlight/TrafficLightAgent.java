@@ -36,8 +36,15 @@ public class TrafficLightAgent extends Agent {
 			//connectedAgentName = args[0].toString();
 			switchTime = Integer.parseInt(args[0].toString());
             currentLight = LightsColor.values()[Integer.parseInt(args[1].toString())];
+            amountOfCars = Integer.parseInt(args[2].toString());
 		}
-            
+                
+                if(currentLight== LightsColor.Green){
+                    System.out.println(this.getLocalName()+ ": light is now green" );
+                } else {
+                    System.out.println(this.getLocalName()+ ": light is now red" );
+                }
+                
         addBehaviour(new SwitchLightBehaviour(this,switchTime));
 		addBehaviour(new AdaptSwitchTimeBehaviour());
 		addBehaviour(new SyncronizeSwitchTimeBehaviour());

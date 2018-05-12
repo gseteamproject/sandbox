@@ -12,7 +12,7 @@ import jade.proto.SubscriptionInitiator;
 public class CarTrafficLightAgent extends Agent {
 
 	private String connectedAgentName;
-	public LightsColor light;
+	public LightsColor light;        
 			
 	@Override
 	protected void setup() {
@@ -23,6 +23,7 @@ public class CarTrafficLightAgent extends Agent {
 		if (args != null && args.length > 0) {
 			connectedAgentName = args[0].toString();
 			period = Integer.parseInt(args[1].toString());
+			light = LightsColor.values()[Integer.parseInt(args[2].toString())];
 		}
 		
 		addBehaviour(new CarArrivedBehaviour(this, period));
