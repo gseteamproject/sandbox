@@ -202,4 +202,6 @@ public class CoffeeMaschine extends Agent {
 			}
 		}
 	}
+
+	private static final long serialVersionUID = 6975899535941483474L;
 }

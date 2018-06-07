@@ -4,20 +4,18 @@ import jade.Boot;
 
 public class Main {
 	public static void main(String[] args) {
-				//String[] parameters = new String[2];
-				//parameters[0] = "-gui";
-				//parameters[1] = "waitress:waitress.Waitress;";
-				
-				String[] parameters = new String[] { "-gui",
-						 "-host", "localhost",
-						//"waitress:waitress.Waitress;customer:TheGreatestCustomerEverrrr.CoolCustomer_Agent;" 
-						 "CoffeeMachine:servingTea.coffeeMachine.CoffeeMachine;"
-						 + "Boiler:servingTea.Robots.Robot_Boiler;"
-						 + "Grinder:servingTea.Robots.Robot_Grinder;"
-						 + "Milker:servingTea.Robots.Robot_Milker;"
-						 + "Teaer:servingTea.Robots.Robot_Teaer;"};
-				Boot.main(parameters);
-				
-		
-			}
+		String[] parameters = new String[] { "-gui", "-host", "localhost",
+				// "waitress:waitress.Waitress;customer:TheGreatestCustomerEverrrr.CoolCustomer_Agent;"
+				agent("CoffeeMachine", servingTea.coffeeMachine.CoffeeMachine.class)
+						+ agent("Boiler", servingTea.Robots.Robot_Boiler.class)
+						+ agent("Grinder", servingTea.Robots.Robot_Grinder.class)
+						+ agent("Milker", servingTea.Robots.Robot_Milker.class)
+						+ agent("Teaer", servingTea.Robots.Robot_Teaer.class) };
+		Boot.main(parameters);
+
+	}
+
+	private static String agent(String agentName, Class<?> agentClass) {
+		return agentName + ":" + agentClass.getName() + ";";
+	}
 }

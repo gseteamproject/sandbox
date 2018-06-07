@@ -5,23 +5,14 @@ import java.util.Date;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.WakerBehaviour;
 import jade.domain.FIPANames;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
-import jade.proto.AchieveREResponder;
-
-import java.util.Random;
 
 public class Customer extends Agent {
 	ArrayList<String> receivedMenu = new ArrayList<String>();
 	String sreceivedMenu;
-	String choice= "HotWater";
+	String choice = "HotWater";
 
 	@Override
 	protected void setup() {
@@ -46,6 +37,7 @@ public class Customer extends Agent {
 			myAgent.addBehaviour(new RequestToDoSomethingNow(myAgent, msg));
 		}
 
+		private static final long serialVersionUID = -623461407382174958L;
 	}
 
 	class ItemRequest extends OneShotBehaviour {
@@ -65,7 +57,10 @@ public class Customer extends Agent {
 				System.out.println("Customer      : My choice is: " + requestedItem);
 			}
 		}
+
+		private static final long serialVersionUID = 7619519357915137548L;
 	}
+
 	class RequestToDoSomethingNow extends AchieveREInitiator {
 		public RequestToDoSomethingNow(Agent a, ACLMessage msg) {
 			super(a, msg);
@@ -92,11 +87,14 @@ public class Customer extends Agent {
 			System.out.println("Error: received failure");
 		}
 
+		private static final long serialVersionUID = -7468486887315747328L;
 	}
 
 	public void DecideForItem(String receivedMenu2) {
 		addBehaviour(new ItemRequest(choice));
 	}
-	
-	//#######################################################
+
+	// #######################################################
+
+	private static final long serialVersionUID = 1657846620700157348L;
 }

@@ -1,14 +1,11 @@
 package servingTea.HomeWork;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import servingTea.HomeWork.Customer.RequestToDoSomethingNow;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.WakerBehaviour;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -32,7 +29,6 @@ public class Waitress extends Agent {
 	// Customer#########################
 
 	public class RespondToCustomer extends AchieveREResponder {
-
 		public RespondToCustomer(Waitress waitress, MessageTemplate mt) {
 			super(waitress, mt);
 		}
@@ -81,6 +77,8 @@ public class Waitress extends Agent {
 
 			return inform;
 		}
+
+		private static final long serialVersionUID = 3926236008954757536L;
 	}
 
 	// ********************************************************************************************
@@ -109,6 +107,7 @@ public class Waitress extends Agent {
 			myAgent.addBehaviour(new RequestToDoSomethingNow(myAgent, msg));
 		}
 
+		private static final long serialVersionUID = 8950879219288894025L;
 	}
 
 	class RequestToDoSomethingNow extends AchieveREInitiator {
@@ -136,8 +135,10 @@ public class Waitress extends Agent {
 			System.out.println("Error: received failure");
 		}
 
+		private static final long serialVersionUID = 2776615775411097278L;
 	}
+
+	private static final long serialVersionUID = -9079363306709279543L;
 }
-	// ############################################ITEM to
-	// Customer#########################
-	
+// ############################################ITEM to
+// Customer#########################

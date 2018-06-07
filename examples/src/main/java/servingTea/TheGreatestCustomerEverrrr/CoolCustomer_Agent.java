@@ -2,29 +2,27 @@ package servingTea.TheGreatestCustomerEverrrr;
 
 import java.util.Date;
 
-import servingTea.commonFunctionality.CommonAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.WakerBehaviour;
 import jade.domain.FIPANames;
-import jade.domain.introspection.AddedBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
-import servingTea.commonFunctionality.CommonAgent;
 
 public class CoolCustomer_Agent extends Agent {
-	
+
 	@Override
 	protected void setup() {
-		addBehaviour (new MenuRequest(this, 2000));
-		
+		addBehaviour(new MenuRequest(this, 2000));
+
 	}
-	
+
 	class MenuRequest extends WakerBehaviour {
+
 		public MenuRequest(Agent a, long time) {
 			super(a, time);
 		}
-		
+
 		@Override
 		protected void onWake() {
 			String requestedAction = "RequestMenu";
@@ -34,12 +32,13 @@ public class CoolCustomer_Agent extends Agent {
 			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 			msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
 			msg.setContent(requestedAction);
-			
+
 			myAgent.addBehaviour(new RequestToDoSomething(myAgent, msg));
 		}
-		
+
+		private static final long serialVersionUID = -2275668669847371271L;
 	}
-	
+
 	class RequestToDoSomething extends AchieveREInitiator {
 		public RequestToDoSomething(Agent a, ACLMessage msg) {
 			super(a, msg);
@@ -65,8 +64,8 @@ public class CoolCustomer_Agent extends Agent {
 			System.out.println("received failure");
 		}
 
+		private static final long serialVersionUID = -546919178270879519L;
 	}
-	
 
+	private static final long serialVersionUID = -1486631559002522276L;
 }
-
