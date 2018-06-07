@@ -14,4 +14,6 @@ public class AdaptSwitchTimeBehaviour extends Behaviour {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	private static final long serialVersionUID = 1368059315029532162L;
 }

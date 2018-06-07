@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
@@ -150,6 +149,5 @@ public class TrafficLightAgent extends Agent {
 		}
 	}
 
-        
-        
+	private static final long serialVersionUID = 6185206318540380464L;
 }

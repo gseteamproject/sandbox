@@ -14,4 +14,6 @@ public class SyncronizeSwitchTimeBehaviour extends Behaviour {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	private static final long serialVersionUID = 7012926191040846268L;
 }

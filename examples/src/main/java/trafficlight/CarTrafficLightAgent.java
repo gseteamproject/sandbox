@@ -53,6 +53,7 @@ public class CarTrafficLightAgent extends Agent {
 			send(msg);
 		}
 		
+		private static final long serialVersionUID = 7918825043580373884L;
 	}
 	
 	class CarGoneBehaviour extends TickerBehaviour{
@@ -76,6 +77,7 @@ public class CarTrafficLightAgent extends Agent {
 			send(msg);
 		}
 		
+		private static final long serialVersionUID = -892482474483900734L;
 	}
 	
 	private class LightsSwitchSubscriptionInitiator extends SubscriptionInitiator {
@@ -113,4 +115,5 @@ public class CarTrafficLightAgent extends Agent {
 		private static final long serialVersionUID = -8553947845257751922L;
 	}
 
+	private static final long serialVersionUID = -1555256091882979391L;
 }

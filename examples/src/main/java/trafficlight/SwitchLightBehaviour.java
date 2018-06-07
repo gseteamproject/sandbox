@@ -1,12 +1,11 @@
 package trafficlight;
 
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
 
 public class SwitchLightBehaviour extends TickerBehaviour {
 
-        private LightsColor currLight; 
+		private LightsColor currLight; 
     
         public SwitchLightBehaviour(Agent a, long period) {
             super(a, period);
@@ -30,4 +29,6 @@ public class SwitchLightBehaviour extends TickerBehaviour {
         private TrafficLightAgent getMyTrafficLightAgent(){
             return (TrafficLightAgent) myAgent;
         }
+
+        private static final long serialVersionUID = -5926454346965177769L;
 }
