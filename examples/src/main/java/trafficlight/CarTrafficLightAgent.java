@@ -32,7 +32,7 @@ public class CarTrafficLightAgent extends Agent {
 		addBehaviour(new LightsSwitchSubscriptionInitiator());
 	}
 	
-	class CarArrivedBehaviour extends TickerBehaviour{
+	private class CarArrivedBehaviour extends TickerBehaviour{
 
 		public CarArrivedBehaviour(Agent a, long period) {
 			super(a, period);			
@@ -56,7 +56,7 @@ public class CarTrafficLightAgent extends Agent {
 		private static final long serialVersionUID = 7918825043580373884L;
 	}
 	
-	class CarGoneBehaviour extends TickerBehaviour{
+	private class CarGoneBehaviour extends TickerBehaviour{
 
 		public CarGoneBehaviour(Agent a, long period) {
 			super(a, period);			
@@ -114,6 +114,8 @@ public class CarTrafficLightAgent extends Agent {
 
 		private static final long serialVersionUID = -8553947845257751922L;
 	}
+
+
 
 	private static final long serialVersionUID = -1555256091882979391L;
 }

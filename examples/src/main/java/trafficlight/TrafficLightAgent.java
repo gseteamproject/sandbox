@@ -1,153 +1,144 @@
 package trafficlight;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.TickerBehaviour;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.proto.SubscriptionResponder;
-import jade.proto.SubscriptionResponder.Subscription;
-import jade.proto.SubscriptionResponder.SubscriptionManager;
 
 public class TrafficLightAgent extends Agent {
 
-	public LightsColor currentLight;
+	private LightsColor _currentColor;
 
-	public int switchTime;
+//	public int switchTime;
 	
-	public int amountOfCars = 0;
-        
-        public TickerBehaviour SwLghtBhv = null;
-	
-	public MySubscriptionManager myManager = new MySubscriptionManager();
-	
+	private int _waitingCarsCount = 0;
+	private int _maxCarsWaitingCount;
+	private int _maxGreenTime;
+
+	private int _priority;
+
+	private GreenLightTimeCountBehaviour _greenLightTimeCounter;
+
+	public GreenLightTimeCountBehaviour getGreenLightTimeCounter() {
+		return _greenLightTimeCounter;
+	}
+
+	public void setGreenLightTimeCounter(GreenLightTimeCountBehaviour _greenLightTimeCounter) {
+		this._greenLightTimeCounter = _greenLightTimeCounter;
+	}
+
+	private MySubscriptionManager _myManager = new MySubscriptionManager();
+
+	private SwitchColorPropose _proposeInProgress;
+
+	public MySubscriptionManager getMySubscriptionManager(){
+		return _myManager;
+	}
+
+	public void setCurrentColor(LightsColor color){
+		_currentColor = color;
+	}
+
+	public int getMaxGreenTime(){
+		return _maxGreenTime;
+	}
+
+	public void increaseWaitingCarsCount(){
+		_waitingCarsCount++;
+	}
+
+	public void decreaseWaitingCarsCount(){
+		_waitingCarsCount--;
+	}
+
+	public int getWaitingCarsCount(){
+		return _waitingCarsCount;
+	}
+
+	public int getMaxCarsWaitingCount(){
+		return _maxCarsWaitingCount;
+	}
+
+	public LightsColor getCurrentColor(){
+		return _currentColor;
+	}
+
+	public SwitchColorPropose getProposeInProgress(){
+		return _proposeInProgress;
+	}
+
+	public int getPriority(){
+		return _priority;
+	}
+
+	public void setProposeInProgress(SwitchColorPropose proposeInProgress) {
+		_proposeInProgress = proposeInProgress;
+	}
+
 	@Override
 	protected void setup() {
 		
-                Object[] args = getArguments();
-		
-		
+        Object[] args = getArguments();
+
 		if (args != null && args.length > 0) {
 			//connectedAgentName = args[0].toString();
-			switchTime = Integer.parseInt(args[0].toString());
-            currentLight = LightsColor.values()[Integer.parseInt(args[1].toString())];
-            amountOfCars = Integer.parseInt(args[2].toString());
+//			switchTime = Integer.parseInt(args[0].toString());
+            _currentColor = LightsColor.values()[Integer.parseInt(args[0].toString())];
+            _waitingCarsCount = Integer.parseInt(args[1].toString());
+            _maxCarsWaitingCount = Integer.parseInt(args[2].toString());
+            _maxGreenTime = Integer.parseInt(args[3].toString());
+            _priority = Integer.parseInt(args[4].toString());
 		}
                 
-                if(currentLight== LightsColor.Green){
-                    System.out.println(this.getLocalName()+ ": light is now green" );
-                } else {
-                    System.out.println(this.getLocalName()+ ": light is now red" );
-                }
-                
-                SwLghtBhv = new SwitchLightBehaviour(this,switchTime);
-                
-                addBehaviour(SwLghtBhv);
-		addBehaviour(new AdaptSwitchTimeBehaviour());
-		addBehaviour(new SyncronizeSwitchTimeBehaviour());
+		if(_currentColor == LightsColor.Green){
+			System.out.println(this.getLocalName()+ ": light is now green" );
+		} else {
+			System.out.println(this.getLocalName()+ ": light is now red" );
+		}
+
+//		addBehaviour(new SwitchLightBehaviour(this,switchTime));
+//		_greenLightTimeCounter = new GreenLightTimeCountBehaviour(this, _maxGreenTime);
+//		_greenLightTimeCounter.stop();
+//		addBehaviour(_greenLightTimeCounter);
+
+//		addBehaviour(new AdaptSwitchTimeBehaviour());
+//		addBehaviour(new SyncronizeSwitchTimeBehaviour());
 		
 		addBehaviour(new RegisterCarArrivedBehaviour());
 		addBehaviour(new RegisterCarGoneBehaviour());
 		
-		addBehaviour(new LightSwitchSubscriotionResponder());
-	}
-	
-	class RegisterCarArrivedBehaviour extends CyclicBehaviour {
-		private static final long serialVersionUID = 6130496380982287815L;
+		addBehaviour(new LightSwitchSubscriptionResponder(_myManager));
 
-		MessageTemplate template = MessageTemplate.MatchConversationId("car-arrived");
-		@Override
-		public void action() {
-			ACLMessage msg = myAgent.receive(template);
-			if (msg != null) {
-				amountOfCars ++;				
-				System.out.println(myAgent.getLocalName() + ": Car arrived. Total " + amountOfCars);
-			} else {
-				block();
-			}
-		}	
-	}
-	
-	class RegisterCarGoneBehaviour extends CyclicBehaviour {
-		private static final long serialVersionUID = 6130496380982287815L;
-
-		MessageTemplate template = MessageTemplate.MatchConversationId("car-gone");
-		@Override
-		public void action() {
-			ACLMessage msg = myAgent.receive(template);
-			if (msg != null) {
-				amountOfCars = amountOfCars > 0 ? amountOfCars - 1 : 0;				 
-				System.out.println(myAgent.getLocalName() + ": Car gone. Total " + amountOfCars);
-			} else {
-				block();
-			}
-		}	
-	}
-	
-	private class LightSwitchSubscriotionResponder extends SubscriptionResponder {
-		public LightSwitchSubscriotionResponder() {
-			super(null, SubscriptionResponder.createMessageTemplate(ACLMessage.SUBSCRIBE), myManager);
-		}
-
-		@Override
-		protected ACLMessage handleSubscription(ACLMessage subscription)
-				throws NotUnderstoodException, RefuseException {
-			ACLMessage decisionResult = subscription.createReply();
-			
-			try {
-				super.handleSubscription(subscription);
-				decisionResult.setPerformative(ACLMessage.AGREE);
-			} catch (RefuseException e) {
-				decisionResult.setPerformative(ACLMessage.REFUSE);
-			} catch (NotUnderstoodException e) {
-				decisionResult.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-			}
-			return decisionResult;
-		}
-
-		@Override
-		protected ACLMessage handleCancel(ACLMessage cancel) throws FailureException {
-			super.handleCancel(cancel);
-			ACLMessage cancellResponse = cancel.createReply();
-			cancellResponse.setPerformative(ACLMessage.INFORM);
-			return cancellResponse;
-		}
-
-		private static final long serialVersionUID = -3111194745853398686L;
+		addBehaviour(new ChangeColorProposeResponder(this ));
 	}
 
-	class MySubscriptionManager implements SubscriptionManager {
-		private Map<String, Subscription> subscriptions = new HashMap<String, Subscription>();
 
-		@Override
-		public boolean register(Subscription s) throws RefuseException, NotUnderstoodException {
-			subscriptions.put(s.getMessage().getConversationId(), s);
-			return true;
-		}
-
-		@Override
-		public boolean deregister(Subscription s) throws FailureException {
-			subscriptions.remove(s.getMessage().getConversationId());
-			return true;
-		}
-
-		public void notifyAll(String event) {
-			Iterator<Subscription> i = subscriptions.values().iterator();
-			while (i.hasNext()) {
-				Subscription s = (Subscription) i.next();
-				ACLMessage notification = new ACLMessage(ACLMessage.INFORM);
-				notification.setContent(event);
-				s.notify(notification);
-			}
-		}
-	}
+//	private class SwitchLightBehaviour extends TickerBehaviour {
+//
+//		private LightsColor currLight;
+//
+//		public SwitchLightBehaviour(Agent a, long period) {
+//			super(a, period);
+//		}
+//
+//		@Override
+//		protected void onTick() {
+//			TrafficLightAgent trflight = getMyTrafficLightAgent();
+//			currLight = trflight._currentColor;
+//			if(currLight == LightsColor.Green){
+//				currLight = LightsColor.Red;
+//				System.out.println(trflight.getLocalName()+ ": light is now red" );
+//			} else {
+//				currLight = LightsColor.Green;
+//				System.out.println(trflight.getLocalName()+ ": light is now green" );
+//			}
+//			trflight._currentColor = currLight; //update
+//			trflight._myManager.notifyAll(String.valueOf(currLight.getValue()));
+//		}
+//
+//		private TrafficLightAgent getMyTrafficLightAgent(){
+//			return (TrafficLightAgent) myAgent;
+//		}
+//
+//		private static final long serialVersionUID = -5926454346965177769L;
+//	}
 
 	private static final long serialVersionUID = 6185206318540380464L;
 }
