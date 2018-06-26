@@ -17,7 +17,7 @@ import java.util.Vector;
 
 public class ChangeColorProposeInitiator extends ProposeInitiator {
 
-    public ChangeColorProposeInitiator(Agent a, ACLMessage msg) {
+	public ChangeColorProposeInitiator(Agent a, ACLMessage msg) {
         super(a, msg);
         try {
             ((TrafficLightAgent)a).setProposeInProgress((SwitchColorPropose) msg.getContentObject());
@@ -26,7 +26,8 @@ public class ChangeColorProposeInitiator extends ProposeInitiator {
         }
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected Vector prepareInitiations(ACLMessage propose) {
         System.out.println(myAgent.getLocalName()+ ": trying to switch the color" );
         propose.setPerformative(ACLMessage.PROPOSE);
@@ -35,7 +36,7 @@ public class ChangeColorProposeInitiator extends ProposeInitiator {
             propose.addReceiver(new AID(name, AID.ISLOCALNAME));
         }
         propose.setProtocol(FIPANames.InteractionProtocol.FIPA_PROPOSE);
-        Vector l = new Vector(1);
+        Vector<ACLMessage> l = new Vector<ACLMessage>(1);
         l.addElement(propose);
         //System.out.println(myAgent.getLocalName() + ": subscription request");
         return l;
@@ -60,7 +61,8 @@ public class ChangeColorProposeInitiator extends ProposeInitiator {
         return null;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected void handleAllResponses(Vector responses) {
         System.out.println(myAgent.getLocalName()+ ": recieved strange response" );
     }
@@ -90,4 +92,6 @@ public class ChangeColorProposeInitiator extends ProposeInitiator {
         System.out.println(myAgent.getLocalName()+ ": failed to change the color" );
         this.getAgent().removeBehaviour(this);
     }
+
+    private static final long serialVersionUID = 3221157061048709970L;
 }

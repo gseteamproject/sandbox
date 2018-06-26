@@ -6,7 +6,6 @@ import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ProposeResponder;
 
@@ -15,7 +14,7 @@ import java.util.Date;
 
 public class ChangeColorProposeResponder extends ProposeResponder {
 
-    public ChangeColorProposeResponder(Agent a) {
+	public ChangeColorProposeResponder(Agent a) {
         super(a, ProposeResponder.createMessageTemplate(FIPA_PROPOSE));
 //        MessageTemplate t = ProposeResponder.createMessageTemplate("trLight");
     }
@@ -73,4 +72,6 @@ public class ChangeColorProposeResponder extends ProposeResponder {
         }
         return msg;
     }
+
+	private static final long serialVersionUID = -1786192933061510216L;
 }

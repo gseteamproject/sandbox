@@ -3,7 +3,7 @@ package trafficlight;
 import java.io.Serializable;
 
 public class SwitchColorPropose implements Serializable {
-    private LightsColor _color;
+	private LightsColor _color;
     private int _priority;
 
     public SwitchColorPropose(LightsColor color, int priority){
@@ -18,4 +18,6 @@ public class SwitchColorPropose implements Serializable {
     public int getPriority() {
         return _priority;
     }
+
+    private static final long serialVersionUID = 3511332672257389092L;
 }

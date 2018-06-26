@@ -17,7 +17,7 @@ import java.util.List;
 
 public class GreenLightTimeCountBehaviour extends TickerBehaviour {
 
-    public GreenLightTimeCountBehaviour(Agent a, long period) {
+	public GreenLightTimeCountBehaviour(Agent a, long period) {
         super(a, period);
     }
 
@@ -58,4 +58,5 @@ public class GreenLightTimeCountBehaviour extends TickerBehaviour {
         return null;
     }
 
+    private static final long serialVersionUID = -1587957059358048498L;
 }
