@@ -7,6 +7,8 @@ public class LegoTestRunner {
 	public static void main(String args[]) {
 		LegoRunner runner = new LegoRunner();
 
+		runner.start();
+		
 		runner.move(3);
 		/*
 		runner.rotate(90);
@@ -14,5 +16,7 @@ public class LegoTestRunner {
 		runner.rotate(180);
 		runner.rotate(-450);
 		*/
+		
+		runner.stop();
 	}
 }
