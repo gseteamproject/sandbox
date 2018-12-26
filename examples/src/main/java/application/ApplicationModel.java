@@ -1,7 +1,7 @@
 package application;
 
 import bookTrading.BookTitle;
-import requester_responder.Vocabulary;
+import requester_responder.models.Vocabulary;
 
 public class ApplicationModel {
 	public String bookTrading() {
@@ -73,7 +73,8 @@ public class ApplicationModel {
 	}
 
 	public String requestResponder() {
-		return ArgumentBuilder.agent(Vocabulary.REQUESTER_AGENT_NAME, requester_responder.RequesterAgent.class)
+		return ArgumentBuilder.agent(Vocabulary.REQUESTER_AGENT_NAME + "1", requester_responder.RequesterAgent.class)
+				+ ArgumentBuilder.agent(Vocabulary.REQUESTER_AGENT_NAME + "2", requester_responder.RequesterAgent.class)
 				+ ArgumentBuilder.agent(Vocabulary.RESPONDER_AGENT_NAME, requester_responder.ResponderAgent.class);
 	}
 }

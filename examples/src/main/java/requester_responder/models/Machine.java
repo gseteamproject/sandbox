@@ -1,4 +1,4 @@
-package requester_responder.responder;
+package requester_responder.models;
 
 import java.util.Random;
 
@@ -30,12 +30,12 @@ public class Machine {
 		return reason;
 	}
 
-	public String getDurationEstimated() {
-		return Integer.toString(durationEstimated);
+	public int getDurationEstimated() {
+		return this.durationEstimated;
 	}
 
-	public String getDuration() {
-		return Integer.toString(duration);
+	public int getDuration() {
+		return duration;
 	}
 
 	public void execute() {

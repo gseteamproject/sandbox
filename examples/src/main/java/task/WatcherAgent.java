@@ -5,24 +5,18 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
 public class WatcherAgent extends Agent {
-	
-	String news[] = new String[5];{
-//	news[0] = "� ������ ������� ��������. ��-��, ���.";
-//	news[1] = "�� ����� ������, ������ ���������.";
-//	news[2] = "������� ������ ���!!!";
-//	news[3] = "�������, ������� ��� ���� ���� ����������� :)";
-//	news[4] = "�� ����� ���� ��� �� �������, ������� ��� ���� ���� �����������";
-	}
-	
+
+	String news[] = new String[] { "news 1", "news 2", "news 3", "news 4", "news 5" };
+
 	int message;
 
 	private static final long serialVersionUID = 7905485865837911637L;
-	
+
 	protected void setup() {
 		addBehaviour(new ListeningBehavior2());
 	}
-	
-	class ListeningBehavior2 extends CyclicBehaviour{
+
+	class ListeningBehavior2 extends CyclicBehaviour {
 
 		private static final long serialVersionUID = -7960774253378262134L;
 
@@ -35,9 +29,9 @@ public class WatcherAgent extends Agent {
 			} else {
 				block();
 			}
-			
+
 		}
-		
+
 	}
 
 }

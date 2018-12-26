@@ -17,9 +17,9 @@ public class TellerAgent extends Agent {
 
 	Random randomNumber = new Random(5);
 
-	String gottedMessage = "10";
+	String gottedMessage = "5";
 
-	String messageToSend = "10";
+	String messageToSend = "5";
 	
 	MessageTemplate messageTemplate = MessageTemplate.MatchConversationId("1234");
 
