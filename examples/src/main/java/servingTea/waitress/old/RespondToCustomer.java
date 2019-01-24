@@ -19,7 +19,6 @@ public String CustomerOrder="none";
 
 	public RespondToCustomer(Waitress waitress, MessageTemplate mt) {
 		super(waitress, mt);
-		// TODO Auto-generated constructor stub
 	}
 
 	public RespondToCustomer(Agent a, MessageTemplate mt, ArrayList<Object> menuForCustomer) {

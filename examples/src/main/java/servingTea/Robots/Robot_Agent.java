@@ -19,7 +19,6 @@ private static final long serialVersionUID = -7418692714860762106L;
 protected String serviceName;
 
 	public Robot_Agent() {
-	// TODO Auto-generated constructor stub
 }
 
 	@Override

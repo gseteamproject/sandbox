@@ -50,7 +50,6 @@ public class CoffeeMaschine extends Agent {
 
 		public RespondToWaitress(CoffeeMaschine coffeeMaschine, MessageTemplate mt) {
 			super(coffeeMaschine, mt);
-			// TODO Auto-generated constructor stub
 		}
 
 		// ######################################## Somewhere here probably Start
