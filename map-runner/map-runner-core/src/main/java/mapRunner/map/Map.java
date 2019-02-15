@@ -14,6 +14,7 @@ public class Map {
 	public Navigation getPath(Target target) {
 		Navigation path = new Navigation();
 
+		// targetName is the point where we want runner to go to
 		String targetName = target.getDestination().getName();
 
 		if (targetName.equalsIgnoreCase("A")) {
@@ -41,7 +42,8 @@ public class Map {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, "3");
 		} else if (targetName.equalsIgnoreCase("f")) {
 			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, "3");
-		} else if ((Integer.parseInt(targetName) > 0) & (Integer.parseInt(targetName) < sizeOfGraph)) {
+//			findingPath(path, Integer.parseInt(target.getLocation().getName()), Integer.parseInt(target.getLocation().getName()) - widthOfMap);
+		} else if ((Integer.parseInt(targetName) > 0) & (Integer.parseInt(targetName) <= sizeOfGraph)) {
 			findingPath(path, Integer.parseInt(target.getLocation().getName()), Integer.parseInt(targetName));
 		}
 		return path;
@@ -54,12 +56,14 @@ public class Map {
 	
 	//Dijkstra's algorithm
 	public void findingPath(Navigation path, int startPoint, int finishPoint) {
+		// array of lengths of paths from current point to each other 
 		int[] lengthOfWay = new int[sizeOfGraph + 1];
-		int[] previosPoint = new int[sizeOfGraph + 1];
+		// array of point names that are previous in paths for each point
+		int[] previousPoint = new int[sizeOfGraph + 1];
 		boolean[] usedPoint = new boolean[sizeOfGraph + 1];
 		for (int i = 0; i <= sizeOfGraph; i++) {
 			lengthOfWay[i] = sizeOfGraph+100;
-			previosPoint[i] = 0; 
+			previousPoint[i] = 0; 
 			usedPoint[i] = true;
 		}
 		lengthOfWay[startPoint] = 0;
@@ -72,33 +76,38 @@ public class Map {
 					lessWay = lengthOfWay[i];
 					lessWayPoint = i;
 				}	
-			}			
+			}
+			
 			if (lessWayPoint == 0) {
 				break;
-			}			
-			usedPoint[lessWayPoint] = false;			
+			}
+			usedPoint[lessWayPoint] = false;
+			// fill lengths of paths to neighboring point in previous row
 			if (lessWayPoint - widthOfMap > 0) {
 				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint - widthOfMap]) {
 					lengthOfWay[lessWayPoint - widthOfMap] = lengthOfWay[lessWayPoint] + 1;
-					previosPoint[lessWayPoint - widthOfMap] = lessWayPoint;
+					previousPoint[lessWayPoint - widthOfMap] = lessWayPoint;
 				}
 			}
+			// fill lengths of paths to neighboring point in next row
 			if (lessWayPoint + widthOfMap < sizeOfGraph) {
 				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint + widthOfMap]) {
 					lengthOfWay[lessWayPoint + widthOfMap] = lengthOfWay[lessWayPoint] + 1;
-					previosPoint[lessWayPoint + widthOfMap] = lessWayPoint;
+					previousPoint[lessWayPoint + widthOfMap] = lessWayPoint;
 				}
 			}
+			// fill lengths of paths to neighboring point in previous column
 			if (lessWayPoint % widthOfMap != 1) {
 				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint - 1]) {
 					lengthOfWay[lessWayPoint - 1] = lengthOfWay[lessWayPoint] + 1;
-					previosPoint[lessWayPoint - 1] = lessWayPoint;
+					previousPoint[lessWayPoint - 1] = lessWayPoint;
 				}
 			}
+			// fill lengths of paths to neighboring point in previous column
 			if (lessWayPoint % widthOfMap != 0) {
 				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint + 1]) {
 					lengthOfWay[lessWayPoint + 1] = lengthOfWay[lessWayPoint] + 1;
-					previosPoint[lessWayPoint + 1] = lessWayPoint;
+					previousPoint[lessWayPoint + 1] = lessWayPoint;
 				}
 			}
 		}
@@ -110,60 +119,97 @@ public class Map {
 	while (consideredPoint != 0) {
 		sizeOfWay++;
 		way[sizeOfWay] = consideredPoint;
-		consideredPoint = previosPoint[consideredPoint];
+		consideredPoint = previousPoint[consideredPoint];
 	}
+	
+	// Direction robot is facing to
 	/*
-	for (int i = sizeOfWay; i > 1; i--) {
-		System.out.println(Integer.toString(way[i]));
-	}
-	
-	System.out.println(Integer.toString(sizeOfWay));
-	*/
+	 * 1 - forward
+	 * 2 - right
+	 * 3 - back
+	 * 0 - left
+	 */
 	int direction = 1;
-	for (int i = sizeOfWay; i > 1; i--) {
-		if (way[i] - way[i - 1] == 1) {
-			switch (direction) {
-			case 1: path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[i]));
-			case 2: path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[i]));
-			case 3: path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[i]));
+		for (int i = sizeOfWay; i > 1; i--) {
+			String nextPoint = Integer.toString(way[i]);
+			// if next point is at the left side of the current one
+			if (way[i] - way[i - 1] == 1) {
+				switch (direction) {
+				case 1:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
+					break;
+				case 2:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
+					break;
+				case 3:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
+					break;
+				}
+				direction = 0;
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
 			}
-			direction = 0;
-			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
-		}
-		if (way[i] - way[i - 1] == -1) {
-			switch (direction) {
-			case 3: path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[i]));
-			case 0: path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[i]));
-			case 1: path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[i]));
+			// if next point is at the right side of the current one
+			if (way[i] - way[i - 1] == -1) {
+				switch (direction) {
+				case 3:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
+					break;
+				case 0:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
+					break;
+				case 1:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
+					break;
+				}
+				direction = 2;
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
 			}
-			direction = 2;
-			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
-		}
-		if (way[i] - way[i - 1] == widthOfMap) {
-			switch (direction) {
-			case 2: path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[i]));
-			case 3: path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[i]));
-			case 0: path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[i]));
+			// if next point is in front of the current one
+			if (way[i] - way[i - 1] == widthOfMap) {
+				switch (direction) {
+				case 2:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
+					break;
+				case 3:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
+					break;
+				case 0:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
+					break;
+				}
+				direction = 1;
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
 			}
-			direction = 1;
-			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
-		}
-		if (way[i] - way[i - 1] == -widthOfMap) {
-			switch (direction) {
-			case 2: path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[i]));
-			case 1: path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[i]));
-			case 0: path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[i]));
+			// if next point is in behind of the current one
+			if (way[i] - way[i - 1] == -widthOfMap) {
+				switch (direction) {
+				case 0:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
+					break;
+				case 1:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
+					break;
+				case 2:
+					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
+					break;
+				}
+				direction = 3;
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
 			}
-			direction = 3;
-			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
 		}
-	}
-	
+
 		switch (direction) {
-		case 2: path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[1]));
-		case 3: path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[1]));
-		case 0: path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[1]));
-		}	
-		//path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, Integer.toString(startPoint));
+		case 2:
+			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[1]));
+			break;
+		case 3:
+			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[1]));
+			break;
+		case 0:
+			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[1]));
+			break;
+		}
+		// path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2,
+		// Integer.toString(startPoint));
 	}
 }
