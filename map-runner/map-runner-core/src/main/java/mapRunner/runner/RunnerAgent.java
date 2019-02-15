@@ -16,6 +16,7 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mapRunner.common.HandlePendingMessageBehaviour;
+import mapRunner.map.Point;
 import mapRunner.map.RunnerLocation;
 import mapRunner.map.navigation.NavigationCommand;
 import mapRunner.map.navigation.NavigationCommandType;
@@ -56,9 +57,11 @@ public class RunnerAgent extends Agent {
 			runner = new LegoRunner();
 		}
 		location = new RunnerLocation();
+		// TODO: get robot name
 		location.setRunner("runner");
+		// robot starts at "5"
 		location.getPoint().setName("5");
-		//"3" fo A and B
+		//"3" for A and B
 	}
 
 	private void respondCancel(ACLMessage msg) {
@@ -206,6 +209,7 @@ public class RunnerAgent extends Agent {
 
 		private void activity() {
 			NavigationCommand command = (NavigationCommand) iterator.next();
+			
 			switch (command.type) {
 			case NavigationCommandType.FORWARD:
 				runner.move(command.quantity);
@@ -220,8 +224,9 @@ public class RunnerAgent extends Agent {
 				runner.rotate(2 * command.quantity);
 				break;
 			}
-			location.setPoint(command.point);
-			addBehaviour(new NotifyAboutLocationChangeBehaviour());
+//			location.setPoint(command.point);
+			Point newPoint = command.point;
+			addBehaviour(new NotifyAboutLocationChangeBehaviour(newPoint));
 		}
 
 		private void shutdown() {
@@ -242,9 +247,15 @@ public class RunnerAgent extends Agent {
 
 	class NotifyAboutLocationChangeBehaviour extends OneShotBehaviour {
 		private static final long serialVersionUID = 7084813117098820135L;
+		private Point currentPoint;
+
+		public NotifyAboutLocationChangeBehaviour(Point newPoint) {
+			currentPoint = newPoint;
+		}
 
 		@Override
 		public void action() {
+			location.setPoint(currentPoint);
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(new AID(("map"), AID.ISLOCALNAME));
 			msg.setConversationId(Vocabulary.CONVERSATION_ID_LOCATION);
@@ -252,6 +263,7 @@ public class RunnerAgent extends Agent {
 			msg.setOntology(MapRunnerOntology.NAME);
 			try {
 				getContentManager().fillContent(msg, location);
+				
 			} catch (CodecException | OntologyException e) {
 				e.printStackTrace();
 				return;
