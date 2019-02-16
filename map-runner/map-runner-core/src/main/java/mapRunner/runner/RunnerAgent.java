@@ -51,16 +51,16 @@ public class RunnerAgent extends Agent {
 
 	private void setupRunner() {
 		String runnerType = (String) getArguments()[0];
+		String runnerStart = (String) getArguments()[1];
 		if (runnerType.contentEquals("debug")) {
 			runner = new DebugRunner();
 		} else {
 			runner = new LegoRunner();
 		}
 		location = new RunnerLocation();
-		// TODO: get robot name
-		location.setRunner("runner");
+		location.setRunner(this.getLocalName());
 		// robot starts at "5"
-		location.getPoint().setName("5");
+		location.getPoint().setName(runnerStart);
 		//"3" for A and B
 	}
 

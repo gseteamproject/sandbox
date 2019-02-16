@@ -9,8 +9,8 @@ public class PeripheralContainer {
 			"-container",
 			"-host", "localhost",
 			"-local-host", "localhost",
-			ArgumentBuilder.agent("runner", mapRunner.runner.RunnerAgent.class, "debug")+
-			ArgumentBuilder.agent("runner2", mapRunner.runner.RunnerAgent.class, "debug")+
+			ArgumentBuilder.agent("runner", mapRunner.runner.RunnerAgent.class, "debug, 5")+
+			ArgumentBuilder.agent("runner2", mapRunner.runner.RunnerAgent.class, "debug, 4")+
 			ArgumentBuilder.agent("sniffer", jade.tools.sniffer.Sniffer.class, "runner")
 		};
 		Boot.main(parameters);
