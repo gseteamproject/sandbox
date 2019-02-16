@@ -61,7 +61,7 @@ public class MapAgent extends Agent {
 				}
 				NavigationToTarget predicate = (NavigationToTarget) ce;
 				Target target = predicate.getTarget();
-				Navigation path = map.getPath(target);
+				Navigation path = map.getPath(target, msg.getSender().getLocalName());
 				predicate.setNavigation(path);
 
 				try {
