@@ -12,9 +12,9 @@ import mapRunner.map.navigation.Navigation;
 public class Map {
 	
 	//Map settings
-	int lengthOfMap = 3;
+	int heightOfMap = 3;
 	int widthOfMap = 3;
-	int sizeOfGraph = lengthOfMap*widthOfMap;
+	int sizeOfGraph = heightOfMap*widthOfMap;
 	// Direction robot is facing to
 	// It would be better to not to use this variable in Map since it should be a Runner parameter
 	int manualDirection = 0;
@@ -116,73 +116,101 @@ public class Map {
 				String.format("Runner \"%s\" at point \"%s\"", location.getRunner(), location.getPoint().name));
 	}	
 	
-	//Dijkstra's algorithm
+	// Lee algorithm
 	public void findingPath(Navigation path, int startPoint, int finishPoint) {
-		// array of lengths of paths from current point to each other 
-		int[] lengthOfWay = new int[sizeOfGraph + 1];
-		// array of point names that are previous in paths for each point
-		int[] previousPoint = new int[sizeOfGraph + 1];
-		boolean[] usedPoint = new boolean[sizeOfGraph + 1];
-		for (int i = 0; i <= sizeOfGraph; i++) {
-			lengthOfWay[i] = sizeOfGraph+100;
-			previousPoint[i] = 0; 
-			usedPoint[i] = true;
+		// extend the grid to add impassable borders
+		int H = heightOfMap + 2;
+		int W = widthOfMap + 2;
+		int G = H * W;
+
+		int ax = (int) ((startPoint - 1) % widthOfMap) + 1;
+		int ay = (int) ((startPoint - 1) / heightOfMap) + 1;
+		int bx = (int) ((finishPoint - 1) % widthOfMap) + 1;
+		int by = (int) ((finishPoint - 1) / heightOfMap) + 1;
+
+		int WALL = -1; // impassable
+		int BLANK = -2; // empty unmarked point
+
+		// final path coordinates
+		int[] px = new int[G];
+		int[] py = new int[G];
+		int len; // length of path
+		int[][] grid = new int[H][W];
+		// grid of actual point names
+		int[][] pointGrid = new int[heightOfMap][widthOfMap];
+		boolean stop;
+		int dx[] = { 1, 0, -1, 0 };
+		int dy[] = { 0, 1, 0, -1 };
+		int d, x, y, k, p;
+
+		// fill grids with values
+		p = 1;
+		for (y = 0; y < heightOfMap; y++) {
+			for (x = 0; x < widthOfMap; x++) {
+				pointGrid[y][x] = p;
+				p++;
+			}
 		}
-		lengthOfWay[startPoint] = 0;
-		while (true) {
-			int lessWay = sizeOfGraph+10;
-			int lessWayPoint = 0;
-			
-			for (int i = 1; i <= sizeOfGraph; i++) {
-				if ((lengthOfWay[i] < lessWay) & (usedPoint[i])) {
-					lessWay = lengthOfWay[i];
-					lessWayPoint = i;
-				}	
+
+		for (y = 0; y < H; y++) {
+			for (x = 0; x < W; x++) {
+				grid[y][x] = BLANK;
+				grid[0][x] = WALL;
+				grid[H - 1][x] = WALL;
 			}
-			
-			if (lessWayPoint == 0) {
+			grid[y][0] = WALL;
+			grid[y][W - 1] = WALL;
+		}
+		grid[ay][ax] = 0;
+
+		d = 0;
+		do {
+			stop = true;
+			for (y = 0; y < H; ++y) {
+				for (x = 0; x < W; ++x) {
+					if (grid[y][x] == d) {
+						for (k = 0; k < 4; ++k) {
+							int iy = y + dy[k], ix = x + dx[k];
+							if (iy >= 0 && iy < H && ix >= 0 && ix < W && grid[iy][ix] == BLANK) {
+								stop = false;
+								grid[iy][ix] = d + 1;
+							}
+						}
+					}
+				}
+			}
+			d++;
+		} while (!stop && grid[by][bx] == BLANK);
+
+		len = grid[by][bx];
+		x = bx;
+		y = by;
+		d = len;
+		while (d > 0) {
+			px[d] = x;
+			py[d] = y;
+			d--;
+			for (k = 0; k < 4; ++k) {
+				int iy = y + dy[k], ix = x + dx[k];
+				if (iy >= 0 && iy < H && ix >= 0 && ix < W && grid[iy][ix] == d) {
+					x = x + dx[k];
+					y = y + dy[k];
+					break;
+				}
+			}
+		}
+		px[0] = ax;
+		py[0] = ay;
+
+		int[] pointWay = new int[G];
+		for (int i = 0; i < G; i++) {
+			if (px[i] > 0 && py[i] > 0) {
+				pointWay[i] = pointGrid[py[i] - 1][px[i] - 1];
+			} else {
 				break;
-			}
-			usedPoint[lessWayPoint] = false;
-			// fill lengths of paths to neighboring point in previous row
-			if (lessWayPoint - widthOfMap > 0) {
-				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint - widthOfMap]) {
-					lengthOfWay[lessWayPoint - widthOfMap] = lengthOfWay[lessWayPoint] + 1;
-					previousPoint[lessWayPoint - widthOfMap] = lessWayPoint;
-				}
-			}
-			// fill lengths of paths to neighboring point in next row
-			if (lessWayPoint + widthOfMap < sizeOfGraph) {
-				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint + widthOfMap]) {
-					lengthOfWay[lessWayPoint + widthOfMap] = lengthOfWay[lessWayPoint] + 1;
-					previousPoint[lessWayPoint + widthOfMap] = lessWayPoint;
-				}
-			}
-			// fill lengths of paths to neighboring point in previous column
-			if (lessWayPoint % widthOfMap != 1) {
-				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint - 1]) {
-					lengthOfWay[lessWayPoint - 1] = lengthOfWay[lessWayPoint] + 1;
-					previousPoint[lessWayPoint - 1] = lessWayPoint;
-				}
-			}
-			// fill lengths of paths to neighboring point in next column
-			if (lessWayPoint % widthOfMap != 0) {
-				if (lengthOfWay[lessWayPoint] + 1 < lengthOfWay[lessWayPoint + 1]) {
-					lengthOfWay[lessWayPoint + 1] = lengthOfWay[lessWayPoint] + 1;
-					previousPoint[lessWayPoint + 1] = lessWayPoint;
-				}
 			}
 		}
 	//making path
-		
-	int sizeOfWay = 0;
-	int[] way = new int[sizeOfGraph + 1];
-	int consideredPoint = finishPoint;
-	while (consideredPoint != 0) {
-		sizeOfWay++;
-		way[sizeOfWay] = consideredPoint;
-		consideredPoint = previousPoint[consideredPoint];
-	}
 	
 	// Direction robot is facing to
 	/*
@@ -192,10 +220,10 @@ public class Map {
 	 * 3 - left
 	 */
 	int direction = 0;
-		for (int i = sizeOfWay; i > 1; i--) {
-			String nextPoint = Integer.toString(way[i]);
+		for (int i = 1; i < len + 1; i++) {
+			String nextPoint = Integer.toString(pointWay[i - 1]);
 			// if next point is at the left side of the current one
-			if (way[i] - way[i - 1] == 1) {
+			if (pointWay[i] - pointWay[i - 1] == -1) {
 				switch (direction) {
 				case 0:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
@@ -208,10 +236,10 @@ public class Map {
 					break;
 				}
 				direction = 3;
-				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is at the right side of the current one
-			if (way[i] - way[i - 1] == -1) {
+			if (pointWay[i] - pointWay[i - 1] == 1) {
 				switch (direction) {
 				case 2:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
@@ -224,10 +252,10 @@ public class Map {
 					break;
 				}
 				direction = 1;
-				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in front of the current one
-			if (way[i] - way[i - 1] == widthOfMap) {
+			if (pointWay[i] - pointWay[i - 1] == -widthOfMap) {
 				switch (direction) {
 				case 1:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
@@ -240,10 +268,10 @@ public class Map {
 					break;
 				}
 				direction = 0;
-				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in behind of the current one
-			if (way[i] - way[i - 1] == -widthOfMap) {
+			if (pointWay[i] - pointWay[i - 1] == widthOfMap) {
 				switch (direction) {
 				case 3:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
@@ -256,22 +284,20 @@ public class Map {
 					break;
 				}
 				direction = 2;
-				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(way[i - 1]));
+				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 		}
 
 		switch (direction) {
 		case 1:
-			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(way[1]));
+			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
 		case 2:
-			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(way[1]));
+			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
 		case 3:
-			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(way[1]));
+			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
 		}
-		// path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2,
-		// Integer.toString(startPoint));
 	}
 }
