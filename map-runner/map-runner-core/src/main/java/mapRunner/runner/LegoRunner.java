@@ -1,5 +1,8 @@
 package mapRunner.runner;
 
+import java.util.AbstractMap;
+import java.util.Map.Entry;
+
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.lcd.Font;
@@ -83,8 +86,11 @@ public class LegoRunner implements Runner {
 	}
 
 	@Override
-	public void rotate(int rotationNumber) {
+	public void rotate(int rotationNumber, MapCreator mapCreator) {
 		{
+			Entry<Integer,Integer> road;
+			int count = 0;
+			
 			int controlTime = 150;
 			int rotationCounter = 0;
 			boolean rotationFlag = false;
@@ -113,6 +119,68 @@ public class LegoRunner implements Runner {
 					if (rotationFlag) {
 						rotationCounter++;
 						rotationFlag = false;
+					}
+
+					if (mapCreator != null) {
+
+						mapCreator.updateGrid();
+
+						count++;
+
+						int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
+						mapCreator.checkedPoints.add(n);
+
+						switch (rotationCounter) {
+						case 1: // if road to the left is found
+							if (mapCreator.currentPointX == 0) {
+								mapCreator.currentPointX += 1;
+								mapCreator.widthOfMap += 1;
+								mapCreator.updateGrid();
+							}
+							road = new AbstractMap.SimpleEntry<>(
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1]);
+							mapCreator.listOfRoads.add(road);
+							break;
+						case 2: // if road to the bottom is found
+							if (mapCreator.currentPointY == mapCreator.heightOfMap - 1) {
+								mapCreator.heightOfMap += 1;
+								mapCreator.updateGrid();
+							}
+							road = new AbstractMap.SimpleEntry<>(
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
+									mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX]);
+							mapCreator.listOfRoads.add(road);
+							break;
+						case 3: // if road to the right is found
+							if (mapCreator.currentPointX == mapCreator.widthOfMap - 1) {
+								mapCreator.widthOfMap += 1;
+								mapCreator.updateGrid();
+							}
+							road = new AbstractMap.SimpleEntry<>(
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1]);
+							mapCreator.listOfRoads.add(road);
+							break;
+						case 4: // if road to the top is found
+							if (mapCreator.currentPointY == 0) {
+								mapCreator.currentPointY += 1;
+								mapCreator.heightOfMap += 1;
+								mapCreator.updateGrid();
+							}
+							road = new AbstractMap.SimpleEntry<>(
+									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
+									mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX]);
+							mapCreator.listOfRoads.add(road);
+							break;
+						}
+						System.out.println("W: " + mapCreator.widthOfMap + " H: " + mapCreator.heightOfMap + " p: ("
+								+ mapCreator.currentPointX + ";" + mapCreator.currentPointY + ")");
+
+						if (count == mapCreator.widthOfMap * mapCreator.heightOfMap) {
+							mapCreator.isMapCompleted = true;
+							System.out.println("STOP");
+						}
 					}
 				}
 				/*

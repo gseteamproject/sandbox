@@ -18,6 +18,7 @@ import jade.lang.acl.MessageTemplate;
 import mapRunner.common.HandlePendingMessageBehaviour;
 import mapRunner.map.Point;
 import mapRunner.map.RunnerLocation;
+import mapRunner.map.navigation.Navigation;
 import mapRunner.map.navigation.NavigationCommand;
 import mapRunner.map.navigation.NavigationCommandType;
 import mapRunner.map.navigation.NavigationToTarget;
@@ -34,8 +35,12 @@ public class RunnerAgent extends Agent {
 	private ACLMessage targetRequest;
 
 	private NavigationToTarget navigationToTarget;
+	
+	private Navigation navigation;
 
 	private RunnerLocation location;
+	
+	private MapCreator mapCreator;
 
 	@Override
 	protected void setup() {
@@ -162,12 +167,124 @@ public class RunnerAgent extends Agent {
 						return;
 					}
 					navigationToTarget = (NavigationToTarget) ce;
-					addBehaviour(new MoveOnPathBehaviour());
+					navigation = navigationToTarget.getNavigation();
+					if (navigation.commands.size() == 1 && ((NavigationCommand) navigation.commands.get(0)).type == 3) {
+						addBehaviour(new CreateMapBehaviour());
+						mapCreator = new MapCreator();
+					} else {
+						addBehaviour(new MoveOnPathBehaviour());
+					}
 				}
 			} else {
 				block();
 			}
 		}
+	}
+	
+	class CreateMapBehaviour extends SimpleBehaviour {
+		private static final long serialVersionUID = -9019504440001330522L;
+
+		private BehaviourState state = BehaviourState.initial;
+		
+		private Iterator<?> iterator = null;
+		
+		@Override
+		public void action() {
+			switch (state) {
+			case initial:
+				initialization();
+				break;
+			case active:
+				if (iterator.hasNext()) {
+					System.out.println("yos");
+					activity();
+				} else {
+					state = BehaviourState.beforeEnd;
+				}
+				break;
+			case beforeEnd:
+				shutdown();
+				state = BehaviourState.finished;
+				break;
+			default:
+				state = BehaviourState.finished;
+				break;
+			}
+		}
+
+		private void initialization() {
+			isBusy = true;
+			iterator = navigation.commands.iterator();
+			state = BehaviourState.active;
+			runner.start();
+		}
+
+		private void activity() {
+
+			System.out.println("iterator1 " + iterator.hasNext());
+			NavigationCommand command = (NavigationCommand) iterator.next();
+			System.out.println("iterator2 " + iterator.hasNext());
+			System.out.println("command.type1 " + command.type);
+
+			switch (command.type) {
+			case NavigationCommandType.FORWARD:
+				runner.move(command.quantity);
+				if (!mapCreator.isMapCompleted) {
+					navigation.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, "0");
+				}
+				break;
+			case NavigationCommandType.ROTATE_180_DEGREE:
+				runner.rotate(2 * command.quantity, mapCreator);
+				if (mapCreator.currentPointY > 0 && !mapCreator.checkedPoints
+						.contains(mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX])) {
+					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+					mapCreator.currentPointY -= 1;
+				} else if (mapCreator.currentPointX < mapCreator.widthOfMap - 1 && !mapCreator.checkedPoints
+						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
+					runner.rotate(-1, null);
+					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+					mapCreator.currentPointX += 1;
+				} else if (mapCreator.currentPointY < mapCreator.heightOfMap - 1 && !mapCreator.checkedPoints
+						.contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
+					runner.rotate(2, null);
+					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+					mapCreator.currentPointY += 1;
+				} else if (mapCreator.currentPointX > 0 && !mapCreator.checkedPoints
+						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
+					runner.rotate(1, null);
+					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+					mapCreator.currentPointX -= 1;
+				}
+
+				break;
+			}
+			
+			if (!mapCreator.isMapCompleted) {
+				iterator = navigation.commands.iterator();
+				System.out.println("navigation.commands.size() " + navigation.commands.size());
+				for (int i = 1; i < navigation.commands.size(); i++) {
+					System.out.println("meme " + i);
+					iterator.next();
+				}
+			}
+			for (int i = 0; i < navigation.commands.size(); i++) {
+				System.out.println("i " + i + " " + ((NavigationCommand) navigation.commands.get(i)).type);
+			}
+			System.out.println("iterator3 "+iterator.hasNext());
+			System.out.println("command.type2 " + command.type);
+		}
+
+		private void shutdown() {
+			runner.stop();
+			respondInform(targetRequest);
+			isBusy = false;
+		}
+
+		@Override
+		public boolean done() {
+			return state == BehaviourState.finished;
+		}
+		
 	}
 
 	class MoveOnPathBehaviour extends SimpleBehaviour {
@@ -202,26 +319,27 @@ public class RunnerAgent extends Agent {
 
 		private void initialization() {
 			isBusy = true;
-			iterator = navigationToTarget.getNavigation().commands.iterator();
+			iterator = navigation.commands.iterator();
 			state = BehaviourState.active;
 			runner.start();
 		}
 
 		private void activity() {
 			NavigationCommand command = (NavigationCommand) iterator.next();
+			System.out.println("command.type " + command.type);
 			
 			switch (command.type) {
 			case NavigationCommandType.FORWARD:
 				runner.move(command.quantity);
 				break;
 			case NavigationCommandType.ROTATE_LEFT_90_DEGREE:
-				runner.rotate(1 * command.quantity);
+				runner.rotate(1 * command.quantity, null);
 				break;
 			case NavigationCommandType.ROTATE_RIGHT_90_DEGREE:
-				runner.rotate(-1 * command.quantity);
+				runner.rotate(-1 * command.quantity, null);
 				break;
 			case NavigationCommandType.ROTATE_180_DEGREE:
-				runner.rotate(2 * command.quantity);
+				runner.rotate(2 * command.quantity, null);
 				break;
 			}
 //			location.setPoint(command.point);
