@@ -35,11 +35,11 @@ public class RunnerAgent extends Agent {
 	private ACLMessage targetRequest;
 
 	private NavigationToTarget navigationToTarget;
-	
+
 	private Navigation navigation;
 
 	private RunnerLocation location;
-	
+
 	private MapCreator mapCreator;
 
 	@Override
@@ -66,7 +66,7 @@ public class RunnerAgent extends Agent {
 		location.setRunner(this.getLocalName());
 		// robot starts at "5"
 		location.getPoint().setName(runnerStart);
-		//"3" for A and B
+		// "3" for A and B
 	}
 
 	private void respondCancel(ACLMessage msg) {
@@ -180,14 +180,20 @@ public class RunnerAgent extends Agent {
 			}
 		}
 	}
-	
+
 	class CreateMapBehaviour extends SimpleBehaviour {
 		private static final long serialVersionUID = -9019504440001330522L;
 
 		private BehaviourState state = BehaviourState.initial;
-		
+
 		private Iterator<?> iterator = null;
-		
+
+		// Direction robot is facing to
+		/*
+		 * 0 - forward 1 - right 2 - back 3 - left
+		 */
+		int direction = 0;
+
 		@Override
 		public void action() {
 			switch (state) {
@@ -221,14 +227,27 @@ public class RunnerAgent extends Agent {
 
 		private void activity() {
 
-			System.out.println("iterator1 " + iterator.hasNext());
+//			System.out.println("iterator1 " + iterator.hasNext());
 			NavigationCommand command = (NavigationCommand) iterator.next();
-			System.out.println("iterator2 " + iterator.hasNext());
-			System.out.println("command.type1 " + command.type);
+//			System.out.println("iterator2 " + iterator.hasNext());
+//			System.out.println("command.type1 " + command.type);
 
 			switch (command.type) {
 			case NavigationCommandType.FORWARD:
 				runner.move(command.quantity);
+				// TODO: enhance algorithm to create map without these corrective rotations
+				switch (direction) {
+				case 1:
+					runner.rotate(1, null);
+					break;
+				case 2:
+					runner.rotate(2, null);
+					break;
+				case 3:
+					runner.rotate(-1, null);
+					break;
+				}
+				direction = 0;
 				if (!mapCreator.isMapCompleted) {
 					navigation.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, "0");
 				}
@@ -242,36 +261,39 @@ public class RunnerAgent extends Agent {
 				} else if (mapCreator.currentPointX < mapCreator.widthOfMap - 1 && !mapCreator.checkedPoints
 						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
 					runner.rotate(-1, null);
+					direction = 1;
 					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
 					mapCreator.currentPointX += 1;
 				} else if (mapCreator.currentPointY < mapCreator.heightOfMap - 1 && !mapCreator.checkedPoints
 						.contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
 					runner.rotate(2, null);
+					direction = 2;
 					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
 					mapCreator.currentPointY += 1;
 				} else if (mapCreator.currentPointX > 0 && !mapCreator.checkedPoints
 						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
 					runner.rotate(1, null);
+					direction = 3;
 					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
 					mapCreator.currentPointX -= 1;
 				}
 
 				break;
 			}
-			
+
 			if (!mapCreator.isMapCompleted) {
 				iterator = navigation.commands.iterator();
-				System.out.println("navigation.commands.size() " + navigation.commands.size());
+//				System.out.println("navigation.commands.size() " + navigation.commands.size());
 				for (int i = 1; i < navigation.commands.size(); i++) {
-					System.out.println("meme " + i);
+//					System.out.println("meme " + i);
 					iterator.next();
 				}
 			}
 			for (int i = 0; i < navigation.commands.size(); i++) {
-				System.out.println("i " + i + " " + ((NavigationCommand) navigation.commands.get(i)).type);
+//				System.out.println("i " + i + " " + ((NavigationCommand) navigation.commands.get(i)).type);
 			}
-			System.out.println("iterator3 "+iterator.hasNext());
-			System.out.println("command.type2 " + command.type);
+//			System.out.println("iterator3 "+iterator.hasNext());
+//			System.out.println("command.type2 " + command.type);
 		}
 
 		private void shutdown() {
@@ -284,7 +306,7 @@ public class RunnerAgent extends Agent {
 		public boolean done() {
 			return state == BehaviourState.finished;
 		}
-		
+
 	}
 
 	class MoveOnPathBehaviour extends SimpleBehaviour {
@@ -327,7 +349,7 @@ public class RunnerAgent extends Agent {
 		private void activity() {
 			NavigationCommand command = (NavigationCommand) iterator.next();
 			System.out.println("command.type " + command.type);
-			
+
 			switch (command.type) {
 			case NavigationCommandType.FORWARD:
 				runner.move(command.quantity);
@@ -381,7 +403,7 @@ public class RunnerAgent extends Agent {
 			msg.setOntology(MapRunnerOntology.NAME);
 			try {
 				getContentManager().fillContent(msg, location);
-				
+
 			} catch (CodecException | OntologyException e) {
 				e.printStackTrace();
 				return;

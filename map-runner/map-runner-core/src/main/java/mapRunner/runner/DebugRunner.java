@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class DebugRunner implements Runner {
-	
+
 	int count = 0;
-		
+
 	@Override
 	public void move(int target) {
-		
+
 	}
 
 	@Override
@@ -35,21 +35,32 @@ public class DebugRunner implements Runner {
 			list.add(subList5);
 			int[] subList6 = { 1, 1, 0, 1 };
 			list.add(subList6);
-			int[] subList7 = { 0, 0, 1, 1 };
+//			int[] subList7 = { 0, 0, 1, 1 };
+//			list.add(subList7);
+//			int[] subList8 = { 1, 0, 1, 1 };
+//			list.add(subList8);
+//			int[] subList9 = { 1, 0, 0, 1 };
+//			list.add(subList9);
+			int[] subList7 = { 0, 1, 1, 1 };
 			list.add(subList7);
-			int[] subList8 = { 1, 0, 1, 1 };
+			int[] subList8 = { 1, 1, 1, 1 };
 			list.add(subList8);
-			int[] subList9 = { 1, 0, 0, 1 };
+			int[] subList9 = { 1, 1, 0, 1 };
 			list.add(subList9);
+			int[] subList10 = { 0, 0, 1, 1 };
+			list.add(subList10);
+			int[] subList11 = { 1, 0, 1, 1 };
+			list.add(subList11);
+			int[] subList12 = { 1, 0, 0, 1 };
+			list.add(subList12);
 
-			mapCreator.updateGrid();
-			
+			mapCreator.updateGrid(rotationCounter);
+
 			count++;
 
-			System.out.println(" p:(" + mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
+//			System.out.println(" p:(" + mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
 			int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
 			System.out.println(mapCreator.checkedPoints.toString());
-			System.out.println("count "+count);
 			System.out.println(" n:[" + n + "]");
 			mapCreator.checkedPoints.add(n);
 			for (int isWay : list.get(n - 1)) {
@@ -57,14 +68,14 @@ public class DebugRunner implements Runner {
 				if (isWay == 1) {
 					System.out.println("rotationCounter=" + rotationCounter);
 
-					System.out.println("W:" + mapCreator.widthOfMap + " H:" + mapCreator.heightOfMap + " p:("
-							+ mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
+//					System.out.println("W:" + mapCreator.widthOfMap + " H:" + mapCreator.heightOfMap + " p:("
+//							+ mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
 					switch (rotationCounter) {
 					case 1: // if road to the left is found
 						if (mapCreator.currentPointX == 0) {
 							mapCreator.currentPointX += 1;
 							mapCreator.widthOfMap += 1;
-							mapCreator.updateGrid();
+							mapCreator.updateGrid(rotationCounter);
 						}
 						road = new AbstractMap.SimpleEntry<>(
 								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -74,7 +85,7 @@ public class DebugRunner implements Runner {
 					case 2: // if road to the bottom is found
 						if (mapCreator.currentPointY == mapCreator.heightOfMap - 1) {
 							mapCreator.heightOfMap += 1;
-							mapCreator.updateGrid();
+							mapCreator.updateGrid(rotationCounter);
 						}
 						road = new AbstractMap.SimpleEntry<>(
 								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -84,7 +95,7 @@ public class DebugRunner implements Runner {
 					case 3: // if road to the right is found
 						if (mapCreator.currentPointX == mapCreator.widthOfMap - 1) {
 							mapCreator.widthOfMap += 1;
-							mapCreator.updateGrid();
+							mapCreator.updateGrid(rotationCounter);
 						}
 						road = new AbstractMap.SimpleEntry<>(
 								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -95,7 +106,7 @@ public class DebugRunner implements Runner {
 						if (mapCreator.currentPointY == 0) {
 							mapCreator.currentPointY += 1;
 							mapCreator.heightOfMap += 1;
-							mapCreator.updateGrid();
+							mapCreator.updateGrid(rotationCounter);
 						}
 						road = new AbstractMap.SimpleEntry<>(
 								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -103,10 +114,13 @@ public class DebugRunner implements Runner {
 						mapCreator.listOfRoads.add(road);
 						break;
 					}
+
 					System.out.println("W:" + mapCreator.widthOfMap + " H:" + mapCreator.heightOfMap + " p:("
 							+ mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
 				}
 			}
+
+			System.out.println("listOfRoads after point:");
 			for (Entry<Integer, Integer> entry : mapCreator.listOfRoads) {
 				System.out.println(entry.toString());
 			}
@@ -116,7 +130,7 @@ public class DebugRunner implements Runner {
 				System.out.println("STOP");
 			}
 		}
-		
+
 	}
 
 	@Override

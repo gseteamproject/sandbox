@@ -72,6 +72,19 @@ public class LegoRunner implements Runner {
 			return true;
 		case lejos.robotics.Color.GREEN:
 			return true;
+		case lejos.robotics.Color.RED:
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isActiveMarker(float[] data) {
+		int colorId = (int) data[0];
+		switch (colorId) {
+		case lejos.robotics.Color.BLACK:
+			return true;
+		case lejos.robotics.Color.GREEN:
+			return true;
 		}
 		return false;
 	}
@@ -88,9 +101,9 @@ public class LegoRunner implements Runner {
 	@Override
 	public void rotate(int rotationNumber, MapCreator mapCreator) {
 		{
-			Entry<Integer,Integer> road;
+			Entry<Integer, Integer> road;
 			int count = 0;
-			
+
 			int controlTime = 150;
 			int rotationCounter = 0;
 			boolean rotationFlag = false;
@@ -104,38 +117,44 @@ public class LegoRunner implements Runner {
 			while (!ev3.getKey("Escape").isDown()) {
 				float[] colorData = new float[colorIdSensor.sampleSize()];
 				colorIdSensor.fetchSample(colorData, 0);
-				/*
-				 * проверка цветом счётчик вместо флага
-				 */
+
 				if (rotationCounter == Math.abs(rotationNumber)) {
 					break;
 				}
 
+				// if color detected
+				// if white then keep rotating
 				if (!(isMarker(colorData))) {
 					rotationFlag = true;
 				}
 
+				// if not white then robot turned for 90 degrees
 				if (isMarker(colorData)) {
 					if (rotationFlag) {
+						if (mapCreator != null) {
+							count++;
+						}
 						rotationCounter++;
 						rotationFlag = false;
 					}
+					System.out.println("rotationCounter " + rotationCounter);
 
-					if (mapCreator != null) {
+					// if black or green then it's a road
+					if (mapCreator != null && isActiveMarker(colorData)) {
+						ev3.getAudio().systemSound(1);
 
-						mapCreator.updateGrid();
-
-						count++;
+						mapCreator.updateGrid(rotationCounter);
 
 						int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
 						mapCreator.checkedPoints.add(n);
 
 						switch (rotationCounter) {
 						case 1: // if road to the left is found
+							ev3.getAudio().systemSound(0);
 							if (mapCreator.currentPointX == 0) {
 								mapCreator.currentPointX += 1;
 								mapCreator.widthOfMap += 1;
-								mapCreator.updateGrid();
+								mapCreator.updateGrid(rotationCounter);
 							}
 							road = new AbstractMap.SimpleEntry<>(
 									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -143,9 +162,10 @@ public class LegoRunner implements Runner {
 							mapCreator.listOfRoads.add(road);
 							break;
 						case 2: // if road to the bottom is found
+							ev3.getAudio().systemSound(0);
 							if (mapCreator.currentPointY == mapCreator.heightOfMap - 1) {
 								mapCreator.heightOfMap += 1;
-								mapCreator.updateGrid();
+								mapCreator.updateGrid(rotationCounter);
 							}
 							road = new AbstractMap.SimpleEntry<>(
 									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -153,9 +173,10 @@ public class LegoRunner implements Runner {
 							mapCreator.listOfRoads.add(road);
 							break;
 						case 3: // if road to the right is found
+							ev3.getAudio().systemSound(0);
 							if (mapCreator.currentPointX == mapCreator.widthOfMap - 1) {
 								mapCreator.widthOfMap += 1;
-								mapCreator.updateGrid();
+								mapCreator.updateGrid(rotationCounter);
 							}
 							road = new AbstractMap.SimpleEntry<>(
 									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
@@ -163,16 +184,22 @@ public class LegoRunner implements Runner {
 							mapCreator.listOfRoads.add(road);
 							break;
 						case 4: // if road to the top is found
+							ev3.getAudio().systemSound(0);
 							if (mapCreator.currentPointY == 0) {
 								mapCreator.currentPointY += 1;
 								mapCreator.heightOfMap += 1;
-								mapCreator.updateGrid();
+								mapCreator.updateGrid(rotationCounter);
 							}
 							road = new AbstractMap.SimpleEntry<>(
 									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
 									mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX]);
 							mapCreator.listOfRoads.add(road);
 							break;
+						}
+
+						System.out.println("listOfRoads after point:");
+						for (Entry<Integer, Integer> entry : mapCreator.listOfRoads) {
+							System.out.println(entry.toString());
 						}
 						System.out.println("W: " + mapCreator.widthOfMap + " H: " + mapCreator.heightOfMap + " p: ("
 								+ mapCreator.currentPointX + ";" + mapCreator.currentPointY + ")");
@@ -183,9 +210,6 @@ public class LegoRunner implements Runner {
 						}
 					}
 				}
-				/*
-				 * проверка цветом
-				 */
 
 				turnDirection(moveDirection);
 				Delay.msDelay(controlTime);
@@ -215,7 +239,7 @@ public class LegoRunner implements Runner {
 
 			printData(data);
 
-			if (isMarker(data)) {
+			if (isActiveMarker(data)) {
 				if (turningMode) {
 					stopMoving();
 				}
