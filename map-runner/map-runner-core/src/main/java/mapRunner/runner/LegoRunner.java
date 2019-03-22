@@ -1,7 +1,8 @@
 package mapRunner.runner;
 
-import java.util.AbstractMap;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
@@ -12,11 +13,14 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
+import mapRunner.map.structure.Road;
 
 public class LegoRunner implements Runner {
 
-	final static int ForwardSpeed = 300;
+	final static int ForwardSpeed = 200;
 	final static int RotationSpeed = 100;
+
+	final static int StackSize = 10;
 
 	public void printData(float[] data) {
 		GraphicsLCD lcd = ev3.getGraphicsLCD();
@@ -32,13 +36,13 @@ public class LegoRunner implements Runner {
 	public void moveForward() {
 		rightMotor.setSpeed(ForwardSpeed);
 		leftMotor.setSpeed(ForwardSpeed);
-		leftMotor.forward();
 		rightMotor.forward();
+		leftMotor.forward();
 	}
 
 	public void stopMoving() {
-		leftMotor.stop(true);
 		rightMotor.stop(true);
+		leftMotor.stop(true);
 	}
 
 	public void turnDirection(Direction direction) {
@@ -65,34 +69,36 @@ public class LegoRunner implements Runner {
 	RegulatedMotor leftMotor;
 	RegulatedMotor rightMotor;
 
-	public boolean isMarker(float[] data) {
-		int colorId = (int) data[0];
-		switch (colorId) {
-		case lejos.robotics.Color.BLACK:
-			return true;
-		case lejos.robotics.Color.GREEN:
-			return true;
-		case lejos.robotics.Color.RED:
+	public boolean isMarker(int color) {
+		switch (color) {
+		case 1:
+		case 2:
+		case 3:
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isActiveMarker(float[] data) {
-		int colorId = (int) data[0];
-		switch (colorId) {
-		case lejos.robotics.Color.BLACK:
+	public boolean isActiveMarker(int color) {
+		switch (color) {
+		case 1:
+		case 2:
 			return true;
-		case lejos.robotics.Color.GREEN:
+		}
+		return false;
+	}
+	
+	public boolean isInactiveMarker(int color) {
+		switch (color) {
+		case 3:
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isSignalMarker(float[] data) {
-		int colorId = (int) data[0];
-		switch (colorId) {
-		case lejos.robotics.Color.GREEN:
+	public boolean isSignalMarker(int color) {
+		switch (color) {
+		case 2:
 			return true;
 		}
 		return false;
@@ -101,12 +107,11 @@ public class LegoRunner implements Runner {
 	@Override
 	public void rotate(int rotationNumber, MapCreator mapCreator) {
 		{
-			Entry<Integer, Integer> road;
-			int count = 0;
 
 			int controlTime = 150;
 			int rotationCounter = 0;
 			boolean rotationFlag = false;
+
 			Direction moveDirection = Direction.RIGHT;
 			if (rotationNumber > 0) {
 				moveDirection = Direction.LEFT;
@@ -114,9 +119,35 @@ public class LegoRunner implements Runner {
 				moveDirection = Direction.RIGHT;
 			}
 
+			if (mapCreator != null) {
+				mapCreator.updateGrid(rotationCounter);
+			}
+
+			float[] colorData = new float[colorIdSensor.sampleSize()];
+			int oldColor = 0;
+			int currentColor = 0;
+			List<Integer> recentColors = new ArrayList<Integer>();
+
+			float colorRed;
+			float colorGreen;
+			float colorBlue;
+			int[] realColors;
+
 			while (!ev3.getKey("Escape").isDown()) {
-				float[] colorData = new float[colorIdSensor.sampleSize()];
 				colorIdSensor.fetchSample(colorData, 0);
+				colorRed = colorData[0];
+				colorGreen = colorData[1];
+				colorBlue = colorData[2];
+				currentColor = rgbToColor(colorRed, colorGreen, colorBlue);
+				recentColors.add(currentColor);
+
+				// update color every 60th iteration
+				if (recentColors.size() == StackSize) {
+					realColors = sortColors(recentColors, oldColor);
+					currentColor = realColors[0];
+					oldColor = realColors[1];
+					recentColors.clear();
+				}
 
 				if (rotationCounter == Math.abs(rotationNumber)) {
 					break;
@@ -124,99 +155,236 @@ public class LegoRunner implements Runner {
 
 				// if color detected
 				// if white then keep rotating
-				if (!(isMarker(colorData))) {
+				if (!(isMarker(currentColor))) {
 					rotationFlag = true;
 				}
+				System.out.println("currentColor " + currentColor);
 
 				// if not white then robot turned for 90 degrees
-				if (isMarker(colorData)) {
-					if (rotationFlag) {
-						if (mapCreator != null) {
-							count++;
-						}
-						rotationCounter++;
-						rotationFlag = false;
-					}
+				if (isMarker(currentColor) && rotationFlag) {
+					rotationCounter++;
+//						ev3.getAudio().systemSound(0);
+					rotationFlag = false;
+
 					System.out.println("rotationCounter " + rotationCounter);
 
 					// if black or green then it's a road
-					if (mapCreator != null && isActiveMarker(colorData)) {
-						ev3.getAudio().systemSound(1);
-
-						mapCreator.updateGrid(rotationCounter);
-
-						int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
-						mapCreator.checkedPoints.add(n);
-
-						switch (rotationCounter) {
-						case 1: // if road to the left is found
-							ev3.getAudio().systemSound(0);
-							if (mapCreator.currentPointX == 0) {
-								mapCreator.currentPointX += 1;
-								mapCreator.widthOfMap += 1;
-								mapCreator.updateGrid(rotationCounter);
-							}
-							road = new AbstractMap.SimpleEntry<>(
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1]);
-							mapCreator.listOfRoads.add(road);
-							break;
-						case 2: // if road to the bottom is found
-							ev3.getAudio().systemSound(0);
-							if (mapCreator.currentPointY == mapCreator.heightOfMap - 1) {
-								mapCreator.heightOfMap += 1;
-								mapCreator.updateGrid(rotationCounter);
-							}
-							road = new AbstractMap.SimpleEntry<>(
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-									mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX]);
-							mapCreator.listOfRoads.add(road);
-							break;
-						case 3: // if road to the right is found
-							ev3.getAudio().systemSound(0);
-							if (mapCreator.currentPointX == mapCreator.widthOfMap - 1) {
-								mapCreator.widthOfMap += 1;
-								mapCreator.updateGrid(rotationCounter);
-							}
-							road = new AbstractMap.SimpleEntry<>(
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1]);
-							mapCreator.listOfRoads.add(road);
-							break;
-						case 4: // if road to the top is found
-							ev3.getAudio().systemSound(0);
-							if (mapCreator.currentPointY == 0) {
-								mapCreator.currentPointY += 1;
-								mapCreator.heightOfMap += 1;
-								mapCreator.updateGrid(rotationCounter);
-							}
-							road = new AbstractMap.SimpleEntry<>(
-									mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-									mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX]);
-							mapCreator.listOfRoads.add(road);
-							break;
-						}
-
-						System.out.println("listOfRoads after point:");
-						for (Entry<Integer, Integer> entry : mapCreator.listOfRoads) {
-							System.out.println(entry.toString());
-						}
-						System.out.println("W: " + mapCreator.widthOfMap + " H: " + mapCreator.heightOfMap + " p: ("
-								+ mapCreator.currentPointX + ";" + mapCreator.currentPointY + ")");
-
-						if (count == mapCreator.widthOfMap * mapCreator.heightOfMap) {
-							mapCreator.isMapCompleted = true;
-							System.out.println("STOP");
-						}
+					if (mapCreator != null && isActiveMarker(currentColor)) {
+						mapCreator.updatePosition(rotationCounter);
 					}
 				}
 
 				turnDirection(moveDirection);
 				Delay.msDelay(controlTime);
 			}
+
+			if (mapCreator != null) {
+				
+				int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
+				mapCreator.checkedPoints.add(n);
+				
+				System.out.println("listOfRoads after point:");
+				Iterator<?> iterator = mapCreator.listOfRoads.roads.iterator();
+				for (int i = 0; i < mapCreator.listOfRoads.roads.size(); i++) {
+					Road r = (Road) iterator.next();
+					System.out.println(r.startPoint + "=" + r.finishPoint);
+				}
+				System.out.println("W: " + mapCreator.widthOfMap + " H: " + mapCreator.heightOfMap + " p: ("
+						+ mapCreator.currentPointX + ";" + mapCreator.currentPointY + ")");
+
+				if (mapCreator.checkedPoints.size() == mapCreator.widthOfMap * mapCreator.heightOfMap - 1) {
+					mapCreator.isMapCompleted = true;
+					System.out.println("STOP");
+				}
+			}
 		}
 		stopMoving();
 	}
+
+	public int getColor() {
+		float[] colorData = new float[colorIdSensor.sampleSize()];
+		int oldColor = 0;
+		int currentColor = 0;
+		List<Integer> recentColors = new ArrayList<Integer>();
+
+		float colorRed;
+		float colorGreen;
+		float colorBlue;
+		int[] realColors;
+
+		while (!ev3.getKey("Escape").isDown()) {
+			colorIdSensor.fetchSample(colorData, 0);
+			colorRed = colorData[0];
+			colorGreen = colorData[1];
+			colorBlue = colorData[2];
+			currentColor = rgbToColor(colorRed, colorGreen, colorBlue);
+			recentColors.add(currentColor);
+
+			// update color every 60th iteration
+			if (recentColors.size() == StackSize) {
+				realColors = sortColors(recentColors, oldColor);
+				currentColor = realColors[0];
+				oldColor = realColors[1];
+				recentColors.clear();
+			}
+		}
+		return currentColor;
+	}
+
+	/*
+	 * 0 - white 1 - black 2 - green 3 - red
+	 */
+	public int rgbToColor(float colorRed, float colorGreen, float colorBlue) {
+		int red = (int) (colorRed * 255);
+		int green = (int) (colorGreen * 255);
+		int blue = (int) (colorBlue * 255);
+		int color = 0;
+
+		double diff = 1.2;
+
+		int i = 0;
+		do {
+			i++;
+		} while (red * i < 255 && green * i < 255 && blue * i < 255);
+		i--;
+
+		red = red * i + 1;
+		green = green * i + 1;
+		blue = blue * i + 1;
+
+//		System.out.println("R: " + red + " G: " + green + " B: " + blue + " i: " + i);
+
+		if (red / (double) green < diff && red / (double) blue < diff && green / (double) red < diff
+				&& green / (double) blue < diff && blue / (double) red < diff && blue / (double) green < diff
+				&& i < 6) {
+			color = 0;
+		} else if (green / (double) red > diff && green / (double) blue > diff && i < 10) {
+			color = 2;
+		} else if (red / (double) green > diff && red / (double) blue > diff && i < 10) {
+			color = 3;
+		} else {
+			color = 1;
+		}
+
+		return color;
+	}
+
+	public int[] sortColors(List<Integer> recentColors, int oldColor) {
+		int maxValue = 0;
+		int maxCount = 0;
+
+		for (int color1 : recentColors) {
+			int counter = 0;
+			for (int color2 : recentColors) {
+				if (color2 == color1)
+					++counter;
+			}
+			if (counter > maxCount) {
+				maxCount = counter;
+				maxValue = color1;
+			}
+		}
+
+		if (maxValue != oldColor) {
+			oldColor = maxValue;
+		}
+		return new int[] { maxValue, oldColor };
+	}
+
+//	@Override
+//	public void move(int signalMarkAmount) {
+//		leftMotor.setSpeed(ForwardSpeed);
+//		rightMotor.setSpeed(ForwardSpeed);
+//
+//		Direction lastDirection = Direction.RIGHT;
+//		int turningTime = 1000;
+//		int moveTime = 500;
+//		long currentTime;
+//
+//		boolean turningMode = false;
+//		boolean alarmFlag = false;
+//		long startTime = 0;
+//		long signalMarkCounter = 0;
+//
+//		float[] colorData = new float[colorIdSensor.sampleSize()];
+//		int oldColor = 0;
+//		int currentColor = 0;
+//		List<Integer> recentColors = new ArrayList<Integer>();
+//		float colorRed;
+//		float colorGreen;
+//		float colorBlue;
+//		
+//		while ((!ev3.getKey("Escape").isDown()) & (signalMarkCounter < signalMarkAmount)) {
+//			currentTime = System.currentTimeMillis();
+//
+//			colorIdSensor.fetchSample(colorData, 0);
+//			colorRed = colorData[0];
+//			colorGreen = colorData[1];
+//			colorBlue = colorData[2];
+//			currentColor = rgbToColor(colorRed, colorGreen, colorBlue);
+//			recentColors.add(currentColor);
+//
+//			// update color every 60th iteration
+//			if (recentColors.size() == StackSize) {
+//				int[] realColors = sortColors(recentColors, currentColor, oldColor);
+//				currentColor = realColors[0];
+//				oldColor = realColors[1];
+//				recentColors.clear();
+//			}
+//
+////			printData(colorData);
+//
+//			if (isMarker(currentColor)) {
+//				System.out.println("currentColor " + currentColor);
+//				if (turningMode) {
+//					stopMoving();
+//				}
+//
+//				/* Проверка на прохождение метки */
+//				if (isSignalMarker(currentColor)) {
+//					alarmFlag = true;
+//					ev3.getAudio().systemSound(0);
+//				} else {
+//					if (alarmFlag) {
+//						alarmFlag = false;
+//						signalMarkCounter++;
+//					}
+//				}
+//				moveForward();
+//				
+//				if (currentTime - startTime >= moveTime) {
+//					ev3.getAudio().systemSound(1);
+//					stopMoving();					
+//				}
+//				
+//				turningTime = 200;
+//				turningMode = false;
+//				startTime = currentTime;				
+//				
+//			} else {
+//				if (currentTime - startTime > turningTime) {
+//					stopMoving();
+//
+//					if (turningMode) {
+//						if (lastDirection == Direction.RIGHT) {
+//							lastDirection = Direction.LEFT;
+//						} else {
+//							lastDirection = Direction.RIGHT;
+//						}
+//					} else {
+//						turningMode = true;
+//					}
+//
+//					startTime = currentTime;
+//					turningTime += 300;
+//					turnDirection(lastDirection);
+//					turningMode = true;
+//				}
+//			}
+//		}
+//
+//		stopMoving();
+//	}
 
 	@Override
 	public void move(int signalMarkAmount) {
@@ -224,62 +392,99 @@ public class LegoRunner implements Runner {
 		rightMotor.setSpeed(ForwardSpeed);
 
 		Direction lastDirection = Direction.RIGHT;
-		int turningTime = 1000;
+		int rotationTime = 1000;
+		int moveTime = 450;
+		long currentTime = 0;
 
 		boolean turningMode = false;
-		boolean alarmFlag = false;
-		long startTime = 0;
+//		boolean moveMode = false;
+		long rotationStartTime = 0;
+		long moveStartTime = 0;
 		long signalMarkCounter = 0;
 
-		while ((!ev3.getKey("Escape").isDown()) & (signalMarkCounter < signalMarkAmount)) {
-			long currentTime = System.currentTimeMillis();
+		float[] colorData = new float[colorIdSensor.sampleSize()];
+		int oldColor = 0;
+		int newColor = 0;
+		int currentColor = 0;
+		List<Integer> recentColors = new ArrayList<Integer>();
+		float colorRed;
+		float colorGreen;
+		float colorBlue;
+		int[] realColors;
 
-			float[] data = new float[colorIdSensor.sampleSize()];
-			colorIdSensor.fetchSample(data, 0);
+		while ((!ev3.getKey("Escape").isDown()) && (signalMarkCounter < signalMarkAmount) 
+//				|| ((currentTime - moveStartTime < moveTime) && (signalMarkCounter > 0))
+//				|| (currentTime - moveStartTime < moveTime)
+			) {
+			currentTime = System.currentTimeMillis();
 
-			printData(data);
+			colorIdSensor.fetchSample(colorData, 0);
+			colorRed = colorData[0];
+			colorGreen = colorData[1];
+			colorBlue = colorData[2];
+			newColor = rgbToColor(colorRed, colorGreen, colorBlue);
+			recentColors.add(newColor);
 
-			if (isActiveMarker(data)) {
-				if (turningMode) {
+			// update color every 60th iteration
+			if (recentColors.size() == StackSize) {
+				realColors = sortColors(recentColors, oldColor);
+				currentColor = realColors[0];
+				oldColor = realColors[1];
+				recentColors.clear();
+//				if (!moveMode) {
+//					moveMode = true;					
+//				}
+			}
+			System.out.println("currentColor: " + currentColor);
+			
+//			if (moveMode) {
+
+				if (turningMode && isMarker(currentColor)) {
 					stopMoving();
+					turningMode = false;
+
+					currentTime = System.currentTimeMillis();
 				}
 
-				/* Проверка на прохождение метки */
-				if (isSignalMarker(data)) {
-					alarmFlag = true;
-				} else {
-					if (alarmFlag) {
-						alarmFlag = false;
+				if (isActiveMarker(currentColor)) {
+
+					moveForward();
+					moveStartTime = currentTime;
+
+					rotationTime = 200;
+
+					if (isSignalMarker(currentColor)) {
+						ev3.getAudio().systemSound(0);
 						signalMarkCounter++;
 					}
-				}
+				} else {
+					if (signalMarkCounter == 0) {
+						turningMode = true;
+						if (currentTime - rotationStartTime > rotationTime) {
+							stopMoving();
 
-				moveForward();
-				turningTime = 200;
-				turningMode = false;
-				startTime = currentTime;
-			} else {
-				if (currentTime - startTime > turningTime) {
-					stopMoving();
+							if (lastDirection == Direction.RIGHT) {
+								lastDirection = Direction.LEFT;
+							} else {
+								lastDirection = Direction.RIGHT;
+							}
 
-					if (turningMode) {
-						if (lastDirection == Direction.RIGHT) {
-							lastDirection = Direction.LEFT;
-						} else {
-							lastDirection = Direction.RIGHT;
+							rotationStartTime = currentTime;
+							rotationTime += 300;
+							turnDirection(lastDirection);
 						}
 					} else {
-						turningMode = true;
+						System.out.println(currentTime - moveStartTime);
+						if (currentTime - moveStartTime > moveTime && !turningMode) {
+							System.out.println("done");
+							ev3.getAudio().systemSound(1);
+							stopMoving();
+							break;
+						}
 					}
-
-					startTime = currentTime;
-					turningTime += 300;
-					turnDirection(lastDirection);
-					turningMode = true;
 				}
-			}
+//			}
 		}
-
 		stopMoving();
 	}
 
@@ -293,7 +498,7 @@ public class LegoRunner implements Runner {
 	@Override
 	public void start() {
 		colorSensor = new EV3ColorSensor(ev3.getPort("S1"));
-		colorIdSensor = colorSensor.getColorIDMode();
+		colorIdSensor = colorSensor.getRGBMode();
 
 		leftMotor = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 		rightMotor = new EV3LargeRegulatedMotor(ev3.getPort("A"));

@@ -9,6 +9,8 @@ public class LegoTestRunner {
 
 		runner.start();
 		
+//		runner.getColor();		
+		
 		runner.move(3);
 		/*
 		runner.rotate(90);

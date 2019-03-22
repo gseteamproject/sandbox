@@ -1,9 +1,7 @@
 package mapRunner.runner;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class DebugRunner implements Runner {
 
@@ -19,7 +17,6 @@ public class DebugRunner implements Runner {
 
 		if (mapCreator != null) {
 
-			Entry<Integer, Integer> road;
 			int rotationCounter = 0;
 
 			List<int[]> list = new ArrayList<>();
@@ -60,73 +57,28 @@ public class DebugRunner implements Runner {
 
 //			System.out.println(" p:(" + mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
 			int n = mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX];
-			System.out.println(mapCreator.checkedPoints.toString());
 			System.out.println(" n:[" + n + "]");
 			mapCreator.checkedPoints.add(n);
 			for (int isWay : list.get(n - 1)) {
 				rotationCounter++;
 				if (isWay == 1) {
-					System.out.println("rotationCounter=" + rotationCounter);
+					mapCreator.updatePosition(rotationCounter);
 
 //					System.out.println("W:" + mapCreator.widthOfMap + " H:" + mapCreator.heightOfMap + " p:("
 //							+ mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
-					switch (rotationCounter) {
-					case 1: // if road to the left is found
-						if (mapCreator.currentPointX == 0) {
-							mapCreator.currentPointX += 1;
-							mapCreator.widthOfMap += 1;
-							mapCreator.updateGrid(rotationCounter);
-						}
-						road = new AbstractMap.SimpleEntry<>(
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1]);
-						mapCreator.listOfRoads.add(road);
-						break;
-					case 2: // if road to the bottom is found
-						if (mapCreator.currentPointY == mapCreator.heightOfMap - 1) {
-							mapCreator.heightOfMap += 1;
-							mapCreator.updateGrid(rotationCounter);
-						}
-						road = new AbstractMap.SimpleEntry<>(
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-								mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX]);
-						mapCreator.listOfRoads.add(road);
-						break;
-					case 3: // if road to the right is found
-						if (mapCreator.currentPointX == mapCreator.widthOfMap - 1) {
-							mapCreator.widthOfMap += 1;
-							mapCreator.updateGrid(rotationCounter);
-						}
-						road = new AbstractMap.SimpleEntry<>(
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1]);
-						mapCreator.listOfRoads.add(road);
-						break;
-					case 4: // if road to the top is found
-						if (mapCreator.currentPointY == 0) {
-							mapCreator.currentPointY += 1;
-							mapCreator.heightOfMap += 1;
-							mapCreator.updateGrid(rotationCounter);
-						}
-						road = new AbstractMap.SimpleEntry<>(
-								mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX],
-								mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX]);
-						mapCreator.listOfRoads.add(road);
-						break;
-					}
-
-					System.out.println("W:" + mapCreator.widthOfMap + " H:" + mapCreator.heightOfMap + " p:("
-							+ mapCreator.currentPointX + "; " + mapCreator.currentPointY + ")");
 				}
 			}
 
-			System.out.println("listOfRoads after point:");
-			for (Entry<Integer, Integer> entry : mapCreator.listOfRoads) {
-				System.out.println(entry.toString());
-			}
+//			System.out.println("listOfRoads after point:");
+//			Iterator<?> iterator = mapCreator.listOfRoads.roads.iterator();
+//			for (int i = 0; i < mapCreator.listOfRoads.roads.size(); i++) {
+//				Road r = (Road) iterator.next();
+//				System.out.println(r.startPoint + "=" + r.finishPoint);
+//			}
 
 			if (count == mapCreator.widthOfMap * mapCreator.heightOfMap) {
 				mapCreator.isMapCompleted = true;
+				count = 0;
 				System.out.println("STOP");
 			}
 		}
