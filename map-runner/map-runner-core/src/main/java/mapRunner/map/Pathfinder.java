@@ -2,26 +2,39 @@ package mapRunner.map;
 
 import mapRunner.map.navigation.NavigationCommandType;
 import mapRunner.map.navigation.Target;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import mapRunner.map.structure.MapStructure;
+import mapRunner.map.structure.Roads;
 
 import mapRunner.map.navigation.Navigation;
 
-public class Map {
+public class Pathfinder {
 
 	// Map settings
-	int heightOfMap = 3;
-	int widthOfMap = 3;
-	int sizeOfGraph = heightOfMap * widthOfMap;
-	// Direction robot is facing to
-	// It would be better to not to use this variable in Map since it should be a
-	// Runner parameter
-	int manualDirection = 0;
+//	public MapStructure map;
 
-	// K - runner name, V - list of parameters
-	java.util.Map<String, List<Integer>> runnersData = new HashMap<String, List<Integer>>();
+	public int heightOfMap;
+	public int widthOfMap;
+	public int sizeOfGraph;
+
+	public Roads roads;
+
+	public RunnersData runnersData = new RunnersData();
+	public RunnerLocation runnerLocation = new RunnerLocation();
+
+	public void setMap(MapStructure map) {
+		if (map == null) {
+			// default values
+			heightOfMap = 3;
+			widthOfMap = 3;
+			sizeOfGraph = heightOfMap * widthOfMap;
+			roads = new Roads();
+		} else {
+			heightOfMap = map.getMapParameters().height;
+			widthOfMap = map.getMapParameters().width;
+			sizeOfGraph = map.getMapParameters().size;
+			roads = map.getRoads();
+		}
+	}
 
 	public Navigation getPath(Target target, String runnerName) {
 		Navigation path = new Navigation();
@@ -30,14 +43,15 @@ public class Map {
 		String targetName = target.getDestination().getName();
 		// currentPoint is the point where runner is now
 		int currentPoint = Integer.parseInt(target.getLocation().getName());
-		// nextPoint is the point where runner is going to be after executing this
-		// command
+		// nextPoint is the point where runner is going to be after executing this command
 		String nextPoint = Integer.toString(currentPoint);
 
-		try {
-			manualDirection = runnersData.get(runnerName).get(1);
-		} catch (NullPointerException e) {
-			manualDirection = 0;
+		runnerLocation = runnersData.getRunnerData(runnerName);
+		if (runnerLocation == null) {
+			runnerLocation = new RunnerLocation();
+			runnerLocation.setRunner(runnerName);
+			runnerLocation.point.setName(Integer.toString(currentPoint));
+			runnerLocation.setDirection(0);
 		}
 
 		if (targetName.equalsIgnoreCase("A")) {
@@ -54,33 +68,13 @@ public class Map {
 			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, nextPoint);
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 		} else if (targetName.equalsIgnoreCase("B")) {
-//			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, "3");
-//			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, "4");
-//			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, "4");
-//			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, "2");
-//			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, "2");
-//			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, "1");
-//			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, "1");
-//			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, "3");
-//			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, "3");
-			
 			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, "0");
 		} else if (targetName.equalsIgnoreCase("l")) {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
-			if (manualDirection != 0) {
-				manualDirection -= 1;
-			} else {
-				manualDirection = 3;
-			}
 		} else if (targetName.equalsIgnoreCase("r")) {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
-			if (manualDirection != 3) {
-				manualDirection += 1;
-			} else {
-				manualDirection = 0;
-			}
 		} else if (targetName.equalsIgnoreCase("f")) {
-			switch (manualDirection) {
+			switch (runnerLocation.direction) {
 			case 0:
 				if (currentPoint - widthOfMap > 0) {
 					nextPoint = Integer.toString(currentPoint - widthOfMap);
@@ -106,20 +100,15 @@ public class Map {
 		} else if ((Integer.parseInt(targetName) > 0) & (Integer.parseInt(targetName) <= sizeOfGraph)) {
 			findingPath(path, currentPoint, Integer.parseInt(targetName));
 		}
-		// 0 - location point, 1 - direction
-		List<Integer> runnerParameters = new ArrayList<Integer>();
-		runnerParameters.add(Integer.parseInt(nextPoint));
-		runnerParameters.add(manualDirection);
-		runnersData.put(runnerName, runnerParameters);
-
 		return path;
 	}
 
 	public void updateLocation(RunnerLocation location) {
+		runnersData.updateRunnersData(location);
 		System.out.println(
 				String.format("Runner \"%s\" at point \"%s\"", location.getRunner(), location.getPoint().name));
 	}
-	
+
 	// Lee algorithm
 	public void findingPath(Navigation path, int startPoint, int finishPoint) {
 		// extend the grid to add impassable borders
@@ -127,10 +116,10 @@ public class Map {
 		int W = widthOfMap + 2;
 		int G = H * W;
 
-		int ax = (int) ((startPoint - 1) % widthOfMap) + 1;
-		int ay = (int) ((startPoint - 1) / heightOfMap) + 1;
-		int bx = (int) ((finishPoint - 1) % widthOfMap) + 1;
-		int by = (int) ((finishPoint - 1) / heightOfMap) + 1;
+		int ax = 0;
+		int ay = 0;
+		int bx = 0;
+		int by = 0;
 
 		int WALL = -1; // impassable
 		int BLANK = -2; // empty unmarked point
@@ -151,6 +140,14 @@ public class Map {
 		p = 1;
 		for (y = 0; y < heightOfMap; y++) {
 			for (x = 0; x < widthOfMap; x++) {
+				if (p == startPoint) {
+					ax = x + 1;
+					ay = y + 1;
+				}
+				if (p == finishPoint) {
+					bx = x + 1;
+					by = y + 1;
+				}
 				pointGrid[y][x] = p;
 				p++;
 			}
@@ -216,16 +213,11 @@ public class Map {
 		}
 		// making path
 
-		// Direction robot is facing to
-		/*
-		 * 0 - forward 1 - right 2 - back 3 - left
-		 */
-		int direction = 0;
 		for (int i = 1; i < len + 1; i++) {
 			String nextPoint = Integer.toString(pointWay[i - 1]);
 			// if next point is at the left side of the current one
 			if (pointWay[i] - pointWay[i - 1] == -1) {
-				switch (direction) {
+				switch (runnerLocation.direction) {
 				case 0:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
@@ -236,12 +228,12 @@ public class Map {
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				direction = 3;
+				runnerLocation.direction = 3;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is at the right side of the current one
 			if (pointWay[i] - pointWay[i - 1] == 1) {
-				switch (direction) {
+				switch (runnerLocation.direction) {
 				case 2:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
@@ -252,12 +244,12 @@ public class Map {
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				direction = 1;
+				runnerLocation.direction = 1;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in front of the current one
 			if (pointWay[i] - pointWay[i - 1] == -widthOfMap) {
-				switch (direction) {
+				switch (runnerLocation.direction) {
 				case 1:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
@@ -268,12 +260,12 @@ public class Map {
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				direction = 0;
+				runnerLocation.direction = 0;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in behind of the current one
 			if (pointWay[i] - pointWay[i - 1] == widthOfMap) {
-				switch (direction) {
+				switch (runnerLocation.direction) {
 				case 3:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
@@ -284,12 +276,12 @@ public class Map {
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				direction = 2;
+				runnerLocation.direction = 2;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 		}
 
-		switch (direction) {
+		switch (runnerLocation.direction) {
 		case 1:
 			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;

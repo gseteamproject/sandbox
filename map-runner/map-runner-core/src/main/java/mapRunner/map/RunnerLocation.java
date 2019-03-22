@@ -5,7 +5,17 @@ import jade.content.Predicate;
 public class RunnerLocation implements Predicate {
 	private static final long serialVersionUID = -6906958044706475317L;
 
-	private Point point = new Point();
+	private String runner;
+
+	public void setRunner(String runner) {
+		this.runner = runner;
+	}
+
+	public String getRunner() {
+		return runner;
+	}
+
+	public Point point = new Point();
 
 	public Point getPoint() {
 		return point;
@@ -15,13 +25,20 @@ public class RunnerLocation implements Predicate {
 		this.point = point;
 	}
 
-	private String runner;
+	// Direction robot is facing to
+	/*
+	 * 0 - forward 
+	 * 1 - right 
+	 * 2 - back 
+	 * 3 - left
+	 */
+	public int direction;
 
-	public void setRunner(String runner) {
-		this.runner = runner;
+	public int getDirection() {
+		return direction;
 	}
 
-	public String getRunner() {
-		return runner;
+	public void setDirection(int direction) {
+		this.direction = direction;
 	}
 }

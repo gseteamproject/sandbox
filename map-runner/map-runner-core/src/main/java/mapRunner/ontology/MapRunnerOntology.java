@@ -13,6 +13,10 @@ import mapRunner.map.navigation.Navigation;
 import mapRunner.map.navigation.NavigationCommand;
 import mapRunner.map.navigation.NavigationToTarget;
 import mapRunner.map.navigation.Target;
+import mapRunner.map.structure.MapParameters;
+import mapRunner.map.structure.MapStructure;
+import mapRunner.map.structure.Road;
+import mapRunner.map.structure.Roads;
 
 public class MapRunnerOntology extends Ontology {
 	private static final long serialVersionUID = 5644667211496682059L;
@@ -39,8 +43,23 @@ public class MapRunnerOntology extends Ontology {
 	public static final String PATH_TO_TARGET_NAVIGATION = "navigation";
 
 	public static final String RUNNER_LOCATION = "runner-location";
-	public static final String RUNNER_LOCATION_POINT = "point";
 	public static final String RUNNER_LOCATION_RUNNER = "runner";
+	public static final String RUNNER_LOCATION_POINT = "point";
+	public static final String RUNNER_LOCATION_DIRECTION = "direction";
+
+	public static final String MAP_STRUCTURE = "map-structure";
+	public static final String MAP_PARAMETERS = "map-parameters";
+	
+	// TODO: Refactor names
+	public static final String MAP_HEIGHT = "height";
+	public static final String MAP_WIDTH = "width";
+	public static final String MAP_SIZE = "size";
+	public static final String MAP_GRID = "grid";
+	public static final String MAP_ROADS = "roads";
+	
+	public static final String MAP_ROAD = "road";
+	public static final String ROAD_START = "startPoint";
+	public static final String ROAD_FINISH = "finishPoint";
 
 	private MapRunnerOntology() {
 		super(NAME, BasicOntology.getInstance());
@@ -52,6 +71,11 @@ public class MapRunnerOntology extends Ontology {
 			add(new ConceptSchema(NAVIGATION_COMMAND), NavigationCommand.class);
 			add(new PredicateSchema(PATH_TO_TARGET), NavigationToTarget.class);
 			add(new PredicateSchema(RUNNER_LOCATION), RunnerLocation.class);
+
+			add(new ConceptSchema(MAP_ROADS), Roads.class);
+			add(new ConceptSchema(MAP_ROAD), Road.class);
+			add(new ConceptSchema(MAP_PARAMETERS), MapParameters.class);
+			add(new PredicateSchema(MAP_STRUCTURE), MapStructure.class);
 
 			ConceptSchema cs;
 			cs = (ConceptSchema) getSchema(TARGET);
@@ -68,15 +92,32 @@ public class MapRunnerOntology extends Ontology {
 			cs.add(NAVIGATION_COMMAND_TYPE, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
 			cs.add(NAVIGATION_COMMAND_QUANTITY, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
 			cs.add(NAVIGATION_COMMAND_POINT, (ConceptSchema) getSchema(POINT));
+			
+			cs = (ConceptSchema) getSchema(MAP_PARAMETERS);
+			cs.add(MAP_HEIGHT, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			cs.add(MAP_WIDTH, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			cs.add(MAP_SIZE, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			
+			cs = (ConceptSchema) getSchema(MAP_ROAD);
+			cs.add(ROAD_START, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			cs.add(ROAD_FINISH, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			
+			cs = (ConceptSchema) getSchema(MAP_ROADS);
+			cs.add(MAP_ROADS, (ConceptSchema) getSchema(MAP_ROAD), 0, ObjectSchema.UNLIMITED);
 
 			PredicateSchema ps;
 			ps = (PredicateSchema) getSchema(PATH_TO_TARGET);
 			ps.add(PATH_TO_TARGET_TARGET, (ConceptSchema) getSchema(TARGET));
 			ps.add(PATH_TO_TARGET_NAVIGATION, (ConceptSchema) getSchema(NAVIGATION));
-
+			// TODO: Refactor schemas
 			ps = (PredicateSchema) getSchema(RUNNER_LOCATION);
-			ps.add(RUNNER_LOCATION_POINT, (ConceptSchema) getSchema(POINT));
 			ps.add(RUNNER_LOCATION_RUNNER, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			ps.add(RUNNER_LOCATION_POINT, (ConceptSchema) getSchema(POINT));
+			ps.add(RUNNER_LOCATION_DIRECTION, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+			
+			ps = (PredicateSchema) getSchema(MAP_STRUCTURE);
+			ps.add(MAP_PARAMETERS, (ConceptSchema) getSchema(MAP_PARAMETERS));
+			ps.add(MAP_ROADS, (ConceptSchema) getSchema(MAP_ROADS));
 
 		} catch (OntologyException e) {
 			e.printStackTrace();
