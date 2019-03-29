@@ -54,12 +54,11 @@ public class MapCreator {
 		}
 	}
 
+
+	// This function updates names of points in found roads based on current position
 	public void updateRoads(int rotationCounter, Roads roads) {
-//		Iterator<?> iterator = roads.roads.iterator();
-//		for (int i = 0; i < roads.roads.size(); i++) {
 		for (Object road1 : Arrays.asList(roads.roads.toArray())) {
 			Road road = (Road) road1;
-//			Road road = (Road) iterator.next();
 			int dif = road.startPoint - road.finishPoint;
 			switch (rotationCounter) {
 			case 1:
@@ -92,6 +91,7 @@ public class MapCreator {
 		}
 	}
 	
+	// This function updates current position based on roads found and current direction
 	public void updatePosition(int rotationCounter) {
 		if (rotationCounter != 0) {
 			switch (startDirection) {
@@ -118,6 +118,7 @@ public class MapCreator {
 					rotationCounter -= 2;
 					break;
 				}
+				break;
 			case 3:
 				switch (rotationCounter) {
 				case 1:
@@ -129,6 +130,7 @@ public class MapCreator {
 					rotationCounter = 1;
 					break;
 				}
+				break;
 			}
 		}
 		

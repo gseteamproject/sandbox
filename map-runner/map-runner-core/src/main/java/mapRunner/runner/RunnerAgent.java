@@ -104,7 +104,6 @@ public class RunnerAgent extends Agent {
 
 		@Override
 		public void action() {
-			System.out.println("Sended");
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(new AID(("map"), AID.ISLOCALNAME));
 			msg.setConversationId(Vocabulary.CONVERSATION_ID_MAP);
@@ -206,7 +205,6 @@ public class RunnerAgent extends Agent {
 					navigation = navigationToTarget.getNavigation();
 					if (navigation.commands.size() == 1 && ((NavigationCommand) navigation.commands.get(0)).type == 3
 							&& ((NavigationCommand) navigation.commands.get(0)).getPoint().name.equals("0")) {
-						System.out.println("new");
 						mapCreator = new MapCreator();
 						addBehaviour(new CreateMapBehaviour());
 					} else {
@@ -223,8 +221,6 @@ public class RunnerAgent extends Agent {
 		private static final long serialVersionUID = -9019504440001330522L;
 
 		private BehaviourState state = BehaviourState.initial;
-
-//		private Iterator<?> iterator = null;
 		
 		private NavigationCommand command = new NavigationCommand();
 
@@ -235,8 +231,6 @@ public class RunnerAgent extends Agent {
 				initialization();
 				break;
 			case active:
-//				if (iterator.hasNext()) {
-//					activity();
 				if (command != null) {
 					activity();
 				} else {
@@ -255,32 +249,16 @@ public class RunnerAgent extends Agent {
 
 		private void initialization() {
 			isBusy = true;
-//			iterator = navigation.commands.iterator();
 			state = BehaviourState.active;
 			runner.start();
 		}
 
 		private void activity() {
-
-//			NavigationCommand command = (NavigationCommand) iterator.next();
 			command = (NavigationCommand) navigation.commands.get(navigation.commands.size() - 1);
 
 			switch (command.type) {
 			case NavigationCommandType.FORWARD:
 				runner.move(command.quantity);
-				// TODO: enhance algorithm to create map without these corrective rotations
-//				switch (location.getDirection()) {
-//				case 1:
-//					runner.rotate(1, null);
-//					break;
-//				case 2:
-//					runner.rotate(2, null);
-//					break;
-//				case 3:
-//					runner.rotate(-1, null);
-//					break;
-//				}
-//				location.setDirection(0);
 				if (!mapCreator.isMapCompleted) {
 					navigation.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, "0");
 				}
@@ -289,89 +267,77 @@ public class RunnerAgent extends Agent {
 				mapCreator.startDirection = location.direction;
 				
 				runner.rotate(2 * command.quantity, mapCreator);
-				System.out.println("mapCreator.checkedPoints " + mapCreator.checkedPoints);
-				if (mapCreator.currentPointY > 0 && !mapCreator.checkedPoints
-						.contains(mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX])) {
-					System.out.println("top " + location.direction);
-					switch (location.direction) {
-					case 1:
-						runner.rotate(1, null);
-						break;
-					case 2:
-						runner.rotate(2, null);
-						break;
-					case 3:
-						runner.rotate(-1, null);
-						break;
+				if (!mapCreator.isMapCompleted) {
+					if (mapCreator.currentPointY > 0 && !mapCreator.checkedPoints
+							.contains(mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX])) {
+						switch (location.direction) {
+						case 1:
+							runner.rotate(1, null);
+							break;
+						case 2:
+							runner.rotate(2, null);
+							break;
+						case 3:
+							runner.rotate(-1, null);
+							break;
+						}
+						location.setDirection(0);
+						navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+						mapCreator.currentPointY -= 1;
+					} else if (mapCreator.currentPointX < mapCreator.widthOfMap - 1 && !mapCreator.checkedPoints
+							.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
+						switch (location.direction) {
+						case 0:
+							runner.rotate(-1, null);
+							break;
+						case 2:
+							runner.rotate(1, null);
+							break;
+						case 3:
+							runner.rotate(2, null);
+							break;
+						}
+						location.setDirection(1);
+						navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+						mapCreator.currentPointX += 1;
+					} else if (mapCreator.currentPointY < mapCreator.heightOfMap - 1 && !mapCreator.checkedPoints
+							.contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
+						switch (location.direction) {
+						case 0:
+							runner.rotate(2, null);
+							break;
+						case 1:
+							runner.rotate(-1, null);
+							break;
+						case 3:
+							runner.rotate(1, null);
+							break;
+						}
+						location.setDirection(2);
+						navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+						mapCreator.currentPointY += 1;
+					} else if (mapCreator.currentPointX > 0 && !mapCreator.checkedPoints
+							.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
+						switch (location.direction) {
+						case 0:
+							runner.rotate(1, null);
+							break;
+						case 1:
+							runner.rotate(2, null);
+							break;
+						case 2:
+							runner.rotate(-1, null);
+							break;
+						}
+						location.setDirection(3);
+						navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
+						mapCreator.currentPointX -= 1;
 					}
-					location.setDirection(0);
-					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
-					mapCreator.currentPointY -= 1;
-				} else if (mapCreator.currentPointX < mapCreator.widthOfMap - 1 && !mapCreator.checkedPoints
-						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
-					System.out.println("right " + location.direction);
-					switch (location.direction) {
-					case 0:
-						runner.rotate(-1, null);
-						break;
-					case 2:
-						runner.rotate(1, null);
-						break;
-					case 3:
-						runner.rotate(2, null);
-						break;
-					}
-					location.setDirection(1);
-					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
-					mapCreator.currentPointX += 1;
-				} else if (mapCreator.currentPointY < mapCreator.heightOfMap - 1 && !mapCreator.checkedPoints
-						.contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
-					System.out.println("bottom " + location.direction);
-					switch (location.direction) {
-					case 0:
-						runner.rotate(2, null);
-						break;
-					case 1:
-						runner.rotate(-1, null);
-						break;
-					case 3:
-						runner.rotate(1, null);
-						break;
-					}
-					location.setDirection(2);
-					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
-					mapCreator.currentPointY += 1;
-				} else if (mapCreator.currentPointX > 0 && !mapCreator.checkedPoints
-						.contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
-					System.out.println("left " + location.direction);
-					switch (location.direction) {
-					case 0:
-						runner.rotate(1, null);
-						break;
-					case 1:
-						runner.rotate(2, null);
-						break;
-					case 2:
-						runner.rotate(-1, null);
-						break;
-					}
-					location.setDirection(3);
-					navigation.addNavigationCommand(NavigationCommandType.FORWARD, 1, "0");
-					mapCreator.currentPointX -= 1;
 				}
-
 				break;
 			}
-
-//			if (!mapCreator.isMapCompleted) {
-//				iterator = navigation.commands.iterator();
-//				for (int i = 1; i < navigation.commands.size(); i++) {
-//					iterator.next();
-//				}
-//			} else {
 			if (mapCreator.isMapCompleted) {
 				command = null;
-				System.out.println(navigation.commands.toString());
 				MapStructure map = mapCreator.makeAMap();
 				sendMapToRunner(map);
 			}
@@ -482,7 +448,6 @@ public class RunnerAgent extends Agent {
 				}
 				break;
 			}
-//			location.setPoint(command.point);
 			Point newPoint = command.point;
 			addBehaviour(new NotifyAboutLocationChangeBehaviour(newPoint));
 		}

@@ -11,7 +11,9 @@ public class LegoTestRunner {
 		
 //		runner.getColor();		
 		
-		runner.move(3);
+//		runner.gyro();
+		
+//		runner.move(3);
 		/*
 		runner.rotate(90);
 		runner.rotate(-90);
