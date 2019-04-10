@@ -79,6 +79,15 @@ public class LegoRunner implements Runner {
 		ev3 = BrickFinder.getLocal();
 	}
 
+	LegoRunner(Brick ev3, EV3ColorSensor colorSensor, EV3GyroSensor gyroSensor, RegulatedMotor leftMotor,
+			RegulatedMotor rightMotor) {
+		this.ev3 = ev3;
+		this.colorSensor = colorSensor;
+		this.gyroSensor = gyroSensor;
+		this.leftMotor = leftMotor;
+		this.rightMotor = rightMotor;
+	}
+
 	Brick ev3;
 
 	EV3ColorSensor colorSensor;
