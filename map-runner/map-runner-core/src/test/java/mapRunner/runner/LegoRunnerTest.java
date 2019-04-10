@@ -329,6 +329,7 @@ public class LegoRunnerTest {
 	}
 
 	@Test
+	@Ignore
 	public void colorMode_move() {
 		testable.colorData = new float[] {};
 		// TODO : add action constants
@@ -336,6 +337,7 @@ public class LegoRunnerTest {
 	}
 
 	@Test
+	@Ignore
 	public void colorMode_rotate() {
 		// TODO : add action constants
 		testable.colorMode(1);
