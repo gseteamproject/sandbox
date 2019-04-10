@@ -344,6 +344,7 @@ public class LegoRunnerTest {
 	}
 
 	@Test
+	@Ignore
 	public void rgbToColor_white() {
 		// TODO: add color constant
 		Assert.assertEquals(0, testable.rgbToColor(0.0f, 0.0f, 0.0f));
