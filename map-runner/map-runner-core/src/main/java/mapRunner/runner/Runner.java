@@ -9,4 +9,6 @@ public interface Runner {
 	public void stop();
 
 	public void start();
+
+    public void load();
 }

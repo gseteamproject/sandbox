@@ -84,6 +84,11 @@ public class DebugRunner implements Runner {
 		}
 
 	}
+    
+    @Override
+    public void load() {
+        System.out.println("loading a cargo");        
+    }
 
 	@Override
 	public void stop() {
