@@ -36,13 +36,14 @@ public class CustomerAgent extends Agent {
 	private void hideForm() {
 		view.dispose();
 	}
-
-	public void sendTargetToRunner(String agent, String target) {
-		SendTargetBehaviour b = new SendTargetBehaviour();
-		b.agent = agent;
-		b.target = target;
-		addBehaviour(b);
-	}
+	
+	public void sendTargetToRunner(String agent, String targetStart, String targetFinish) {
+        SendTargetBehaviour b = new SendTargetBehaviour();
+        b.agent = agent;
+        b.targetStart = targetStart;
+        b.targetFinish = targetFinish;
+        addBehaviour(b);
+    }
 
 	class SendTargetBehaviour extends OneShotBehaviour {
 
@@ -50,14 +51,19 @@ public class CustomerAgent extends Agent {
 
 		String agent;
 
-		String target;
+		String targetStart;		
+        String targetFinish;
 
 		@Override
 		public void action() {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(new AID((agent), AID.ISLOCALNAME));
 			msg.setConversationId(Vocabulary.CONVERSATION_ID_TARGET);
-			msg.setContent(target);
+			if (targetStart == null || targetStart.equals("")) {
+	            msg.setContent(targetFinish);
+			} else {
+                msg.setContent(targetStart + "," + targetFinish);			    
+			}
 			send(msg);
 		}
 	}

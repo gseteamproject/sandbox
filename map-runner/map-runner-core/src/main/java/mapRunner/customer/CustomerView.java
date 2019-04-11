@@ -18,15 +18,21 @@ public class CustomerView extends javax.swing.JFrame {
 
         tfAgent = new javax.swing.JTextField();
         lAgent = new javax.swing.JLabel();
-        lTarget = new javax.swing.JLabel();
-        tfTarget = new javax.swing.JTextField();
+        lStartTarget = new javax.swing.JLabel();
+        lFinishTarget = new javax.swing.JLabel();
+        lManualControl = new javax.swing.JLabel();
+        lAutonomousNavigation = new javax.swing.JLabel();
+        lMapCreation = new javax.swing.JLabel();
+        tfStartTarget = new javax.swing.JTextField();
+        tfFinishTarget = new javax.swing.JTextField();
         bRun = new javax.swing.JButton();
         lStatus = new javax.swing.JLabel();
         bRunA = new javax.swing.JButton();
+        bRunB = new javax.swing.JButton();
+        bRunMapCreate = new javax.swing.JButton();
         bRunRight = new javax.swing.JButton();
         bRunLeft = new javax.swing.JButton();
         bRunForward = new javax.swing.JButton();
-        bRunB = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -41,9 +47,20 @@ public class CustomerView extends javax.swing.JFrame {
 
         lAgent.setText("Agent");
 
-        lTarget.setText("Target");
+        lStartTarget.setText("Start");
+        lFinishTarget.setText("Finish");
 
-        tfTarget.setText("1");
+//        lManualControl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lManualControl.setText("Manual control");
+
+//        lAutonomousNavigation.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lAutonomousNavigation.setText("Autonomous navigation");
+        
+//        lMapCreation.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lMapCreation.setText("Map creation");
+
+        tfStartTarget.setText("1");
+        tfFinishTarget.setText("9");
 
         bRun.setText("run");
         bRun.addActionListener(new java.awt.event.ActionListener() {
@@ -59,6 +76,20 @@ public class CustomerView extends javax.swing.JFrame {
         bRunA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bRunAActionPerformed(evt);
+            }
+        });
+        
+        bRunB.setText("B");
+        bRunB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bRunBActionPerformed(evt);
+            }
+        });
+        
+        bRunMapCreate.setText("create a map");
+        bRunMapCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bRunMapCreateActionPerformed(evt);
             }
         });
 
@@ -83,73 +114,72 @@ public class CustomerView extends javax.swing.JFrame {
             }
         });
 
-        bRunB.setText("B");
-        bRunB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bRunBActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lAgent)
-                            .addComponent(lTarget))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tfTarget)
-                            .addComponent(tfAgent, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)))
-                    .addComponent(lStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(7, 7, 7)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(bRun)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bRunLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(bRunB, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bRunA, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lAgent)
+                                .addComponent(lStartTarget)
+                                .addComponent(lFinishTarget))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bRunForward, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                            .addComponent(bRunRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(8, 8, 8))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                                .addComponent(tfAgent, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                                .addComponent(tfStartTarget, javax.swing.GroupLayout.DEFAULT_SIZE, 40, 40)
+                                .addComponent(tfFinishTarget, javax.swing.GroupLayout.DEFAULT_SIZE, 40, 40)
+                                .addComponent(bRun)
+                                .addComponent(bRunMapCreate)))
+                .addComponent(lAutonomousNavigation, javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lMapCreation, javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lManualControl, javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(bRunForward))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(bRunLeft))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(bRunRight))));
+
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+                .createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lAgent)
-                    .addComponent(bRunLeft, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bRun, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lAgent)
+                        .addComponent(tfAgent, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(lAutonomousNavigation)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lTarget)
-                    .addComponent(tfTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bRunRight, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bRunA, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lStartTarget)
+                        .addComponent(tfStartTarget, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lStatus)
-                    .addComponent(bRunForward, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bRunB, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addComponent(lFinishTarget)
+                        .addComponent(tfFinishTarget, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(bRun, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lMapCreation)
+                .addComponent(bRunMapCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lManualControl)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(bRunForward, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bRunLeft, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bRunRight, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lStatus))));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunActionPerformed
-    	agent.sendTargetToRunner(tfAgent.getText(), tfTarget.getText());        
+    	agent.sendTargetToRunner(tfAgent.getText(), tfStartTarget.getText(), tfFinishTarget.getText());
     }//GEN-LAST:event_bRunActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -157,37 +187,47 @@ public class CustomerView extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void bRunRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunRightActionPerformed
-        agent.sendTargetToRunner(tfAgent.getText(), "r");
+        agent.sendTargetToRunner(tfAgent.getText(), null, "r");
     }//GEN-LAST:event_bRunRightActionPerformed
 
     private void bRunAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunAActionPerformed
-        agent.sendTargetToRunner(tfAgent.getText(), "A");
+        agent.sendTargetToRunner(tfAgent.getText(), null, "A");
     }//GEN-LAST:event_bRunAActionPerformed
 
     private void bRunBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunBActionPerformed
-        agent.sendTargetToRunner(tfAgent.getText(), "B");
+        agent.sendTargetToRunner(tfAgent.getText(), null, "B");
+    }//GEN-LAST:event_bRunBActionPerformed
+    
+    private void bRunMapCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunBActionPerformed
+        agent.sendTargetToRunner(tfAgent.getText(), null, "M");
     }//GEN-LAST:event_bRunBActionPerformed
 
     private void bRunLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunLeftActionPerformed
-        agent.sendTargetToRunner(tfAgent.getText(), "l");
+        agent.sendTargetToRunner(tfAgent.getText(), null, "l");
     }//GEN-LAST:event_bRunLeftActionPerformed
 
     private void bRunForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRunForwardActionPerformed
-        agent.sendTargetToRunner(tfAgent.getText(), "f");
+        agent.sendTargetToRunner(tfAgent.getText(), null, "f");
     }//GEN-LAST:event_bRunForwardActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bRun;
     private javax.swing.JButton bRunA;
     private javax.swing.JButton bRunB;
+    private javax.swing.JButton bRunMapCreate;
     private javax.swing.JButton bRunForward;
     private javax.swing.JButton bRunLeft;
     private javax.swing.JButton bRunRight;
     private javax.swing.JLabel lAgent;
     private javax.swing.JLabel lStatus;
-    private javax.swing.JLabel lTarget;
+    private javax.swing.JLabel lStartTarget;
+    private javax.swing.JLabel lFinishTarget;
+    private javax.swing.JLabel lManualControl;
+    private javax.swing.JLabel lAutonomousNavigation;
+    private javax.swing.JLabel lMapCreation;
     private javax.swing.JTextField tfAgent;
-    private javax.swing.JTextField tfTarget;
+    private javax.swing.JTextField tfStartTarget;
+    private javax.swing.JTextField tfFinishTarget;
     // End of variables declaration//GEN-END:variables
     
     CustomerAgent agent;
