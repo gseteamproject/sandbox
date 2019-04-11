@@ -44,6 +44,10 @@ public class LegoRunner implements Runner {
 		}
 		lcd.refresh();
 	}
+	
+	public void getChargeLevel() {
+        System.out.println("Battery: " + ev3.getPower().getVoltageMilliVolt() + " mV");
+	}
 
 	public void moveForward() {
 		rightMotor.setSpeed(ForwardSpeed);
@@ -405,9 +409,7 @@ public class LegoRunner implements Runner {
 	}
 
 	@Override
-	public void start() {
-        System.out.println("Battery: " + ev3.getPower().getVoltageMilliVolt() + " mV");
-	    
+	public void start() {	    
 		colorSensor = new EV3ColorSensor(ev3.getPort("S4"));
 		rgbSensor = colorSensor.getRGBMode();
 
