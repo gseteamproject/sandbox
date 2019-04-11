@@ -7,6 +7,7 @@ public class MainContainer {
 	public static void main(String args[]) {
 		String[] parameters = new String[] {
 			"-gui",
+			"-container-name", "Control System",
 			"-host", "192.168.1.65",
 //			"-host", "localhost", 
 			ArgumentBuilder.agent("map", mapRunner.map.MapAgent.class)
