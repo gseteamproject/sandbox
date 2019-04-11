@@ -24,7 +24,7 @@ public class MapAgent extends Agent {
 
 	@Override
 	protected void setup() {
-		addBehaviour(new PlanPathBehaviour());
+		addBehaviour(new CreatePathBehaviour());
 		addBehaviour(new UpdateMapBehaviour());
 		addBehaviour(new CreateMapBehaviour());
 		addBehaviour(new HandlePendingMessageBehaviour());
@@ -35,7 +35,7 @@ public class MapAgent extends Agent {
 		pathfinder.setMap(null);
 	}
 
-	class PlanPathBehaviour extends CyclicBehaviour {
+	class CreatePathBehaviour extends CyclicBehaviour {
 		private static final long serialVersionUID = -5851628986020982760L;
 
 		MessageTemplate messageTemplate = MessageTemplate.MatchConversationId(Vocabulary.CONVERSATION_ID_PATH);
@@ -44,6 +44,7 @@ public class MapAgent extends Agent {
 		public void action() {
 			ACLMessage msg = myAgent.receive(messageTemplate);
 			if (msg != null) {
+//			    System.out.println(msg);
 				ACLMessage reply = msg.createReply();
 				reply.setPerformative(ACLMessage.INFORM);
 
