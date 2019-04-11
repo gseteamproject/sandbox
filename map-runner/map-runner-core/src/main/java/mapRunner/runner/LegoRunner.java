@@ -11,7 +11,7 @@ import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.EV3IRSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
@@ -80,12 +80,12 @@ public class LegoRunner implements Runner {
 		ev3 = BrickFinder.getLocal();
 	}
 
-    LegoRunner(Brick ev3, EV3ColorSensor colorSensor, EV3GyroSensor gyroSensor, EV3IRSensor IRSensor,
+    LegoRunner(Brick ev3, EV3ColorSensor colorSensor, EV3GyroSensor gyroSensor, EV3UltrasonicSensor ultrasonicSensor,
             RegulatedMotor leftMotor, RegulatedMotor rightMotor) {
         this.ev3 = ev3;
         this.colorSensor = colorSensor;
         this.gyroSensor = gyroSensor;
-        this.IRSensor = IRSensor;
+        this.ultrasonicSensor = ultrasonicSensor;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
     }
@@ -98,7 +98,7 @@ public class LegoRunner implements Runner {
 	EV3GyroSensor gyroSensor;
 	SampleProvider angleSensor;
 	
-	EV3IRSensor IRSensor;
+	EV3UltrasonicSensor ultrasonicSensor;
 	SampleProvider distanceSensor;
 
 	RegulatedMotor leftMotor;
@@ -406,14 +406,16 @@ public class LegoRunner implements Runner {
 
 	@Override
 	public void start() {
+        System.out.println("Battery: " + ev3.getPower().getVoltageMilliVolt() + " mV");
+	    
 		colorSensor = new EV3ColorSensor(ev3.getPort("S4"));
 		rgbSensor = colorSensor.getRGBMode();
 
 		gyroSensor = new EV3GyroSensor(ev3.getPort("S1"));
 		angleSensor = gyroSensor.getAngleMode();
 		
-//        IRSensor = new EV3IRSensor(ev3.getPort("S2"));
-//        distanceSensor = IRSensor.getDistanceMode();
+//		ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S2"));
+//        distanceSensor = ultrasonicSensor.getDistanceMode();
 
 		leftMotor = new EV3LargeRegulatedMotor(ev3.getPort("D"));
 		rightMotor = new EV3LargeRegulatedMotor(ev3.getPort("A"));

@@ -21,7 +21,7 @@ import lejos.hardware.port.TachoMotorPort;
 import lejos.hardware.port.UARTPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.EV3IRSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
 
 public class LegoRunnerTest {
@@ -45,7 +45,7 @@ public class LegoRunnerTest {
 
 	EV3GyroSensor gyroSensor_mock;
 	
-	EV3IRSensor IRSensor_mock;
+	EV3UltrasonicSensor ultrasonicSensor_mock;
 
 	RegulatedMotor leftMotor_mock;
 
@@ -56,11 +56,11 @@ public class LegoRunnerTest {
 		ev3_mock = context.mock(Brick.class);
 		colorSensor_mock = context.mock(EV3ColorSensor.class);
 		gyroSensor_mock = context.mock(EV3GyroSensor.class);
-//        IRSensor_mock = context.mock(EV3IRSensor.class);
+//		ultrasonicSensor_mock = context.mock(EV3UltrasonicSensor.class);
 		leftMotor_mock = context.mock(RegulatedMotor.class, "left-motor");
 		rightMotor_mock = context.mock(RegulatedMotor.class, "right-motor");
 
-		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, IRSensor_mock, leftMotor_mock, rightMotor_mock);
+		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, ultrasonicSensor_mock, leftMotor_mock, rightMotor_mock);
 	}
 
 	@Test
