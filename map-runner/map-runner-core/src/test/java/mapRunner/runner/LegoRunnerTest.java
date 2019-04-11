@@ -21,6 +21,7 @@ import lejos.hardware.port.TachoMotorPort;
 import lejos.hardware.port.UARTPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
+import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.RegulatedMotor;
 
 public class LegoRunnerTest {
@@ -43,6 +44,8 @@ public class LegoRunnerTest {
 	EV3ColorSensor colorSensor_mock;
 
 	EV3GyroSensor gyroSensor_mock;
+	
+	EV3IRSensor IRSensor_mock;
 
 	RegulatedMotor leftMotor_mock;
 
@@ -53,16 +56,20 @@ public class LegoRunnerTest {
 		ev3_mock = context.mock(Brick.class);
 		colorSensor_mock = context.mock(EV3ColorSensor.class);
 		gyroSensor_mock = context.mock(EV3GyroSensor.class);
+//        IRSensor_mock = context.mock(EV3IRSensor.class);
 		leftMotor_mock = context.mock(RegulatedMotor.class, "left-motor");
 		rightMotor_mock = context.mock(RegulatedMotor.class, "right-motor");
 
-		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, leftMotor_mock, rightMotor_mock);
+		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, IRSensor_mock, leftMotor_mock, rightMotor_mock);
 	}
 
 	@Test
 	public void start() {
 		final Port port_S1_mock = context.mock(Port.class, "S1");
 		final UARTPort io_port_S1_mock = context.mock(UARTPort.class, "S1-io");
+		
+//        final Port port_S2_mock = context.mock(Port.class, "S2");
+//        final UARTPort io_port_S2_mock = context.mock(UARTPort.class, "S2-io");
 
 		final Port port_S4_mock = context.mock(Port.class, "S4");
 		final UARTPort io_port_S4_mock = context.mock(UARTPort.class, "S4-io");
@@ -83,8 +90,17 @@ public class LegoRunnerTest {
 				oneOf(port_S1_mock).open(UARTPort.class);
 				will(returnValue(io_port_S1_mock));
 
-				oneOf(io_port_S1_mock).setMode(0);
+				oneOf(io_port_S1_mock).setMode(3);
 				will(returnValue(true));
+				
+//                oneOf(ev3_mock).getPort("S2");
+//                will(returnValue(port_S2_mock));
+//
+//                oneOf(port_S2_mock).open(UARTPort.class);
+//                will(returnValue(io_port_S2_mock));
+//
+//                oneOf(io_port_S2_mock).setMode(0);
+//                will(returnValue(true));
 
 				oneOf(ev3_mock).getPort("S4");
 				will(returnValue(port_S4_mock));
@@ -92,7 +108,7 @@ public class LegoRunnerTest {
 				oneOf(port_S4_mock).open(UARTPort.class);
 				will(returnValue(io_port_S4_mock));
 
-				oneOf(io_port_S4_mock).setMode(3);
+				oneOf(io_port_S4_mock).setMode(0);
 				will(returnValue(true));
 
 				oneOf(ev3_mock).getPort("D");
@@ -129,6 +145,8 @@ public class LegoRunnerTest {
 				oneOf(colorSensor_mock).close();
 
 				oneOf(gyroSensor_mock).close();
+				
+//                oneOf(IRSensor_mock).close();
 
 				oneOf(leftMotor_mock).close();
 
