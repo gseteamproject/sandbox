@@ -22,6 +22,7 @@ import lejos.hardware.port.UARTPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.Color;
 import lejos.robotics.RegulatedMotor;
 
 public class LegoRunnerTest {
@@ -44,7 +45,7 @@ public class LegoRunnerTest {
 	EV3ColorSensor colorSensor_mock;
 
 	EV3GyroSensor gyroSensor_mock;
-	
+
 	EV3UltrasonicSensor ultrasonicSensor_mock;
 
 	RegulatedMotor leftMotor_mock;
@@ -60,14 +61,15 @@ public class LegoRunnerTest {
 		leftMotor_mock = context.mock(RegulatedMotor.class, "left-motor");
 		rightMotor_mock = context.mock(RegulatedMotor.class, "right-motor");
 
-		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, ultrasonicSensor_mock, leftMotor_mock, rightMotor_mock);
+		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, ultrasonicSensor_mock, leftMotor_mock,
+				rightMotor_mock);
 	}
 
 	@Test
 	public void start() {
 		final Port port_S1_mock = context.mock(Port.class, "S1");
 		final UARTPort io_port_S1_mock = context.mock(UARTPort.class, "S1-io");
-		
+
 //        final Port port_S2_mock = context.mock(Port.class, "S2");
 //        final UARTPort io_port_S2_mock = context.mock(UARTPort.class, "S2-io");
 
@@ -92,7 +94,7 @@ public class LegoRunnerTest {
 
 				oneOf(io_port_S1_mock).setMode(3);
 				will(returnValue(true));
-				
+
 //                oneOf(ev3_mock).getPort("S2");
 //                will(returnValue(port_S2_mock));
 //
@@ -145,7 +147,7 @@ public class LegoRunnerTest {
 				oneOf(colorSensor_mock).close();
 
 				oneOf(gyroSensor_mock).close();
-				
+
 //                oneOf(IRSensor_mock).close();
 
 				oneOf(leftMotor_mock).close();
@@ -282,67 +284,43 @@ public class LegoRunnerTest {
 
 	@Test
 	public void isMarker() {
-		// TODO : add color constants
-		int white = 0;
-		int black = 1;
-		int green = 2;
-		int red = 3;
-		// TODO : add "break" into switch statement
-		Assert.assertFalse(testable.isMarker(white));
-		Assert.assertTrue(testable.isMarker(black));
-		Assert.assertTrue(testable.isMarker(green));
-		Assert.assertTrue(testable.isMarker(red));
+		Assert.assertFalse(testable.isMarker(Color.WHITE));
+		Assert.assertTrue(testable.isMarker(Color.BLACK));
+		Assert.assertTrue(testable.isMarker(Color.GREEN));
+		Assert.assertTrue(testable.isMarker(Color.RED));
 	}
 
 	@Test
 	public void isActiveMarker() {
-		// TODO : add color constants
-		int white = 0;
-		int black = 1;
-		int green = 2;
-		int red = 3;
-		// TODO : add "break" into switch statement
-		Assert.assertFalse(testable.isActiveMarker(white));
-		Assert.assertTrue(testable.isActiveMarker(black));
-		Assert.assertTrue(testable.isActiveMarker(green));
-		// FIXME
-		Assert.assertFalse(testable.isActiveMarker(red));
+		Assert.assertFalse(testable.isActiveMarker(Color.WHITE));
+		Assert.assertTrue(testable.isActiveMarker(Color.BLACK));
+		Assert.assertTrue(testable.isActiveMarker(Color.GREEN));
+		Assert.assertFalse(testable.isActiveMarker(Color.RED));
 	}
 
 	@Test
 	public void isInactiveMarker() {
-		// TODO : add color constants
-		int white = 0;
-		int black = 1;
-		int green = 2;
-		int red = 3;
-		// TODO : add "break" into switch statement
-		Assert.assertFalse(testable.isInactiveMarker(white));
-		Assert.assertFalse(testable.isInactiveMarker(black));
-		Assert.assertFalse(testable.isInactiveMarker(green));
-		Assert.assertTrue(testable.isInactiveMarker(red));
+		Assert.assertFalse(testable.isInactiveMarker(Color.WHITE));
+		Assert.assertFalse(testable.isInactiveMarker(Color.BLACK));
+		Assert.assertFalse(testable.isInactiveMarker(Color.GREEN));
+		Assert.assertTrue(testable.isInactiveMarker(Color.RED));
 	}
 
 	@Test
 	public void isSignalMarker() {
-		// TODO : add color constants
-		int white = 0;
-		int black = 1;
-		int green = 2;
-		int red = 3;
-		// TODO : add "break" into switch statement
-		Assert.assertFalse(testable.isSignalMarker(white));
-		Assert.assertFalse(testable.isSignalMarker(black));
-		Assert.assertTrue(testable.isSignalMarker(green));
-		Assert.assertFalse(testable.isSignalMarker(red));
+		Assert.assertFalse(testable.isSignalMarker(Color.WHITE));
+		Assert.assertFalse(testable.isSignalMarker(Color.BLACK));
+		Assert.assertTrue(testable.isSignalMarker(Color.GREEN));
+		Assert.assertFalse(testable.isSignalMarker(Color.RED));
 	}
 
 	@Test
 	public void sortColors() {
-		final List<Integer> colors = Arrays.asList(new Integer[] { 1, 1, 2, 2, 3, 0, 2 });
+		final List<Integer> colors = Arrays.asList(new Integer[] { Color.BLACK, Color.BLACK, Color.GREEN, Color.GREEN,
+				Color.RED, Color.WHITE, Color.GREEN });
 
 		// TODO : check optimization
-		Assert.assertEquals(2, testable.sortColors(colors));
+		Assert.assertEquals(Color.GREEN, testable.sortColors(colors));
 	}
 
 	@Test
@@ -362,26 +340,22 @@ public class LegoRunnerTest {
 
 	@Test
 	public void rgbToColor_white() {
-		// TODO: add color constant
-		Assert.assertEquals(0, testable.rgbToColor(1.0f, 1.0f, 1.0f));
+		Assert.assertEquals(Color.WHITE, testable.rgbToColor(1.0f, 1.0f, 1.0f));
 	}
 
 	@Test
 	public void rgbToColor_black() {
-		// TODO: add color constant
-		Assert.assertEquals(1, testable.rgbToColor(0.10f, 0.10f, 0.10f));
+		Assert.assertEquals(Color.BLACK, testable.rgbToColor(0.10f, 0.10f, 0.10f));
 	}
 
 	@Test
 	public void rgbToColor_green() {
-		// TODO: add color constant
-		Assert.assertEquals(2, testable.rgbToColor(0.10f, 0.99f, 0.1f));
+		Assert.assertEquals(Color.GREEN, testable.rgbToColor(0.10f, 0.99f, 0.1f));
 	}
 
 	@Test
 	public void rgbToColor_red() {
-		// TODO: add color constant
-		Assert.assertEquals(3, testable.rgbToColor(0.99f, 0.10f, 0.10f));
-		Assert.assertEquals(3, testable.rgbToColor(0.125f, 0.10f, 0.10f));
+		Assert.assertEquals(Color.RED, testable.rgbToColor(0.99f, 0.10f, 0.10f));
+		Assert.assertEquals(Color.RED, testable.rgbToColor(0.125f, 0.10f, 0.10f));
 	}
 }
