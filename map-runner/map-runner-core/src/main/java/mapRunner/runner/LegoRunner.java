@@ -20,7 +20,7 @@ import mapRunner.map.structure.Road;
 
 public class LegoRunner implements Runner {
 
-	final static int ForwardSpeed = 200;
+	final static int MovementSpeed = 200;
 	final static int RotationSpeed = 100;
 
 	final static int StackSize = 5;
@@ -50,16 +50,16 @@ public class LegoRunner implements Runner {
 		System.out.println("Battery: " + ev3.getPower().getVoltageMilliVolt() + " mV");
 	}
 
-	public void moveForward() {
-		rightMotor.setSpeed(ForwardSpeed);
-		leftMotor.setSpeed(ForwardSpeed);
+	public void startMovingForward() {
+		rightMotor.setSpeed(MovementSpeed);
+		leftMotor.setSpeed(MovementSpeed);
 		rightMotor.forward();
 		leftMotor.forward();
 	}
 
-	public void moveBackwards() {
-		rightMotor.setSpeed(ForwardSpeed);
-		leftMotor.setSpeed(ForwardSpeed);
+	public void startMovingBackward() {
+		rightMotor.setSpeed(MovementSpeed);
+		leftMotor.setSpeed(MovementSpeed);
 		rightMotor.backward();
 		leftMotor.backward();
 	}
@@ -69,7 +69,7 @@ public class LegoRunner implements Runner {
 		leftMotor.stop(true);
 	}
 
-	public void turnDirection(Direction direction) {
+	public void startRotation(Direction direction) {
 		rightMotor.setSpeed(RotationSpeed);
 		leftMotor.setSpeed(RotationSpeed);
 		if (direction == Direction.LEFT) {
@@ -169,7 +169,7 @@ public class LegoRunner implements Runner {
 			recentColors.clear();
 			currentColor = Color.WHITE;
 
-			turnDirection(moveDirection);
+			startRotation(moveDirection);
 
 			while (!ev3.getKey("Escape").isDown()) {
 
@@ -228,14 +228,11 @@ public class LegoRunner implements Runner {
 		stopMoving();
 	}
 
-	/*
-	 * 0 - white 1 - black 2 - green 3 - red
-	 */
 	public int rgbToColor(float colorRed, float colorGreen, float colorBlue) {
 		int red = (int) (colorRed * 255);
 		int green = (int) (colorGreen * 255);
 		int blue = (int) (colorBlue * 255);
-		int color = 0;
+		int color = Color.WHITE;
 
 		double diff = 1.2;
 
@@ -320,8 +317,8 @@ public class LegoRunner implements Runner {
 
 	@Override
 	public void move(int signalMarkAmount) {
-		leftMotor.setSpeed(ForwardSpeed);
-		rightMotor.setSpeed(ForwardSpeed);
+		leftMotor.setSpeed(MovementSpeed);
+		rightMotor.setSpeed(MovementSpeed);
 
 		Direction lastDirection = Direction.RIGHT;
 		int rotationTime = 1000;
@@ -359,7 +356,7 @@ public class LegoRunner implements Runner {
 
 				if (isActiveMarker(currentColor)) {
 
-					moveForward();
+					startMovingForward();
 
 					rotationTime = 200;
 
@@ -374,7 +371,7 @@ public class LegoRunner implements Runner {
 					if (signalMarkCounter == 0) {
 						if (isInactiveMarker(currentColor)) {
 //							System.out.println("red point");
-							moveBackwards();
+							startMovingBackward();
 						} else {
 							currentColor = Color.WHITE;
 							turningMode = true;
@@ -389,7 +386,7 @@ public class LegoRunner implements Runner {
 
 								rotationStartTime = currentTime;
 								rotationTime += 300;
-								turnDirection(lastDirection);
+								startRotation(lastDirection);
 							}
 						}
 					}

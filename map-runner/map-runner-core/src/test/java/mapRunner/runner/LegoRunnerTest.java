@@ -176,10 +176,9 @@ public class LegoRunnerTest {
 	public void moveForward() {
 		context.checking(new Expectations() {
 			{
-				// TODO: change ForwardSpeed to MovementSpeed
-				oneOf(rightMotor_mock).setSpeed(LegoRunner.ForwardSpeed);
+				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
-				oneOf(leftMotor_mock).setSpeed(LegoRunner.ForwardSpeed);
+				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
 				oneOf(rightMotor_mock).forward();
 
@@ -187,17 +186,16 @@ public class LegoRunnerTest {
 			}
 		});
 
-		// TODO: rename method to "startMovingForward"
-		testable.moveForward();
+		testable.startMovingForward();
 	}
 
 	@Test
-	public void moveBackwards() {
+	public void startMovingBackward() {
 		context.checking(new Expectations() {
 			{
-				oneOf(rightMotor_mock).setSpeed(LegoRunner.ForwardSpeed);
+				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
-				oneOf(leftMotor_mock).setSpeed(LegoRunner.ForwardSpeed);
+				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
 				oneOf(rightMotor_mock).backward();
 
@@ -205,8 +203,7 @@ public class LegoRunnerTest {
 			}
 		});
 
-		// TODO: rename method to "startMovingBackward"
-		testable.moveBackwards();
+		testable.startMovingBackward();
 	}
 
 	@Test
@@ -248,7 +245,7 @@ public class LegoRunnerTest {
 	}
 
 	@Test
-	public void turnDirection_left() {
+	public void startRotation_left() {
 		context.checking(new Expectations() {
 			{
 				oneOf(rightMotor_mock).setSpeed(LegoRunner.RotationSpeed);
@@ -261,12 +258,11 @@ public class LegoRunnerTest {
 			}
 		});
 
-		// TODO : rename method to "startRotation"
-		testable.turnDirection(Direction.LEFT);
+		testable.startRotation(Direction.LEFT);
 	}
 
 	@Test
-	public void turnDirection_right() {
+	public void startRotation_right() {
 		context.checking(new Expectations() {
 			{
 				oneOf(rightMotor_mock).setSpeed(LegoRunner.RotationSpeed);
@@ -279,7 +275,7 @@ public class LegoRunnerTest {
 			}
 		});
 
-		testable.turnDirection(Direction.RIGHT);
+		testable.startRotation(Direction.RIGHT);
 	}
 
 	@Test
