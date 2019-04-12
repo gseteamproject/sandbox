@@ -40,8 +40,9 @@ public class LegoRunner implements Runner {
 		lcd.setFont(Font.getSmallFont());
 
 		lcd.clear();
+		int x = lcd.getWidth() / 2;
 		for (int i = 0; i < data.length; ++i) {
-			lcd.drawString(String.format("%.2f", data[i]), lcd.getWidth() / 2, i * 10, GraphicsLCD.HCENTER);
+			lcd.drawString(String.format("%.2f", data[i]), x, i * 10, GraphicsLCD.HCENTER);
 		}
 		lcd.refresh();
 	}

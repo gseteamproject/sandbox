@@ -221,19 +221,12 @@ public class LegoRunnerTest {
 
 				oneOf(graphicsLCD_mock).clear();
 
-				// TODO : calculate x position before cycle
 				oneOf(graphicsLCD_mock).getWidth();
 				will(returnValue(width));
 
 				oneOf(graphicsLCD_mock).drawString(String.format("%.2f", data[0]), width / 2, 0, GraphicsLCD.HCENTER);
 
-				oneOf(graphicsLCD_mock).getWidth();
-				will(returnValue(width));
-
 				oneOf(graphicsLCD_mock).drawString(String.format("%.2f", data[1]), width / 2, 10, GraphicsLCD.HCENTER);
-
-				oneOf(graphicsLCD_mock).getWidth();
-				will(returnValue(width));
 
 				oneOf(graphicsLCD_mock).drawString(String.format("%.2f", data[2]), width / 2, 20, GraphicsLCD.HCENTER);
 
