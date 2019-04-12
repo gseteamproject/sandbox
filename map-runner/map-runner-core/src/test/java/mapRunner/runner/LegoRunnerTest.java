@@ -295,7 +295,6 @@ public class LegoRunnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void isActiveMarker() {
 		// TODO : add color constants
 		int white = 0;
@@ -303,11 +302,11 @@ public class LegoRunnerTest {
 		int green = 2;
 		int red = 3;
 		// TODO : add "break" into switch statement
-		Assert.assertFalse(testable.isMarker(white));
-		Assert.assertTrue(testable.isMarker(black));
-		Assert.assertTrue(testable.isMarker(green));
+		Assert.assertFalse(testable.isActiveMarker(white));
+		Assert.assertTrue(testable.isActiveMarker(black));
+		Assert.assertTrue(testable.isActiveMarker(green));
 		// FIXME
-		Assert.assertFalse(testable.isMarker(red));
+		Assert.assertFalse(testable.isActiveMarker(red));
 	}
 
 	@Test
@@ -362,10 +361,9 @@ public class LegoRunnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void rgbToColor_white() {
 		// TODO: add color constant
-		Assert.assertEquals(0, testable.rgbToColor(0.0f, 0.0f, 0.0f));
+		Assert.assertEquals(0, testable.rgbToColor(1.0f, 1.0f, 1.0f));
 	}
 
 	@Test
@@ -375,16 +373,15 @@ public class LegoRunnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void rgbToColor_green() {
 		// TODO: add color constant
-		Assert.assertEquals(2, testable.rgbToColor(0.01f, 0.10f, 0.01f));
+		Assert.assertEquals(2, testable.rgbToColor(0.10f, 0.99f, 0.1f));
 	}
 
 	@Test
-	@Ignore
 	public void rgbToColor_red() {
 		// TODO: add color constant
-		Assert.assertEquals(3, testable.rgbToColor(0.10f, 0.01f, 0.01f));
+		Assert.assertEquals(3, testable.rgbToColor(0.99f, 0.10f, 0.10f));
+		Assert.assertEquals(3, testable.rgbToColor(0.125f, 0.10f, 0.10f));
 	}
 }
