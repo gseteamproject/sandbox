@@ -293,13 +293,13 @@ public class RunnerAgent extends Agent {
                     if (mapCreator.currentPointY > 0 && !mapCreator.checkedPoints
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX])) {
                         switch (location.direction) {
-                        case 1:
+                        case RunnerLocation.RIGHT:
                             runner.rotate(1, null);
                             break;
-                        case 2:
+                        case RunnerLocation.BACK:
                             runner.rotate(2, null);
                             break;
-                        case 3:
+                        case RunnerLocation.LEFT:
                             runner.rotate(-1, null);
                             break;
                         }
@@ -309,13 +309,13 @@ public class RunnerAgent extends Agent {
                     } else if (mapCreator.currentPointX < mapCreator.widthOfMap - 1 && !mapCreator.checkedPoints
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
                         switch (location.direction) {
-                        case 0:
+                        case RunnerLocation.FORWARD:
                             runner.rotate(-1, null);
                             break;
-                        case 2:
+                        case RunnerLocation.BACK:
                             runner.rotate(1, null);
                             break;
-                        case 3:
+                        case RunnerLocation.LEFT:
                             runner.rotate(2, null);
                             break;
                         }
@@ -325,13 +325,13 @@ public class RunnerAgent extends Agent {
                     } else if (mapCreator.currentPointY < mapCreator.heightOfMap - 1 && !mapCreator.checkedPoints
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
                         switch (location.direction) {
-                        case 0:
+                        case RunnerLocation.FORWARD:
                             runner.rotate(2, null);
                             break;
-                        case 1:
+                        case RunnerLocation.RIGHT:
                             runner.rotate(-1, null);
                             break;
-                        case 3:
+                        case RunnerLocation.LEFT:
                             runner.rotate(1, null);
                             break;
                         }
@@ -341,13 +341,13 @@ public class RunnerAgent extends Agent {
                     } else if (mapCreator.currentPointX > 0 && !mapCreator.checkedPoints
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
                         switch (location.direction) {
-                        case 0:
+                        case RunnerLocation.FORWARD:
                             runner.rotate(1, null);
                             break;
-                        case 1:
+                        case RunnerLocation.RIGHT:
                             runner.rotate(2, null);
                             break;
-                        case 2:
+                        case RunnerLocation.BACK:
                             runner.rotate(-1, null);
                             break;
                         }
@@ -429,43 +429,41 @@ public class RunnerAgent extends Agent {
                 runner.move(command.quantity);
                 break;
             case NavigationCommandType.ROTATE_LEFT_90_DEGREE:
-                runner.rotate(1 * command.quantity, null);
+                runner.rotate(1 * command.quantity, null);                
                 switch (location.direction) {
-                case 0:
-                    location.direction = 3;
+                case RunnerLocation.FORWARD:
+                case RunnerLocation.LEFT:
+                case RunnerLocation.BACK:
+                    location.direction += 1;
                     break;
-                case 1:
-                case 2:
-                case 3:
-                    location.direction -= 1;
+                case RunnerLocation.RIGHT:
+                    location.direction = RunnerLocation.FORWARD;
                     break;
                 }
                 break;
             case NavigationCommandType.ROTATE_RIGHT_90_DEGREE:
                 runner.rotate(-1 * command.quantity, null);
                 switch (location.direction) {
-                case 0:
-                case 1:
-                case 2:
-                    location.direction += 1;
+                case RunnerLocation.FORWARD:
+                    location.direction = RunnerLocation.RIGHT;
                     break;
-                case 3:
-                    location.direction = 0;
+                case RunnerLocation.RIGHT:
+                case RunnerLocation.BACK:
+                case RunnerLocation.LEFT:
+                    location.direction -= 1;
                     break;
                 }
                 break;
             case NavigationCommandType.ROTATE_180_DEGREE:
                 runner.rotate(2 * command.quantity, null);
                 switch (location.direction) {
-                case 0:
-                case 1:
+                case RunnerLocation.FORWARD:
+                case RunnerLocation.LEFT:
                     location.direction += 2;
                     break;
-                case 2:
-                    location.direction = 0;
-                    break;
-                case 3:
-                    location.direction = 1;
+                case RunnerLocation.BACK:
+                case RunnerLocation.RIGHT:
+                    location.direction -= 2;
                     break;
                 }
                 break;

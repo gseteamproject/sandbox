@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import mapRunner.map.RunnerLocation;
 import mapRunner.map.structure.MapStructure;
 import mapRunner.map.structure.Road;
 import mapRunner.map.structure.Roads;
@@ -20,7 +21,7 @@ public class MapCreator {
 
 	public Roads listOfRoads = new Roads();
 	
-	public int startDirection = 0;
+	public int startDirection = RunnerLocation.FORWARD;
 
 	public MapStructure makeAMap() {
 		MapStructure map = new MapStructure();
@@ -95,19 +96,19 @@ public class MapCreator {
 	public void updatePosition(int rotationCounter) {
 		if (rotationCounter != 0) {
 			switch (startDirection) {
-			case 1:
-				switch (rotationCounter) {
-				case 1:
-					rotationCounter = 4;
-					break;
-				case 2:
-				case 3:
-				case 4:
-					rotationCounter -= 1;
-					break;
-				}
-				break;
-			case 2:
+			case RunnerLocation.LEFT:
+                switch (rotationCounter) {
+                case 1:
+                case 2:
+                case 3:
+                    rotationCounter += 1;
+                    break;
+                case 4:
+                    rotationCounter = 1;
+                    break;
+                }
+                break;			
+			case RunnerLocation.BACK:
 				switch (rotationCounter) {
 				case 1:
 				case 2:
@@ -119,18 +120,18 @@ public class MapCreator {
 					break;
 				}
 				break;
-			case 3:
-				switch (rotationCounter) {
-				case 1:
-				case 2:
-				case 3:
-					rotationCounter += 1;
-					break;
-				case 4:
-					rotationCounter = 1;
-					break;
-				}
-				break;
+			case RunnerLocation.RIGHT:
+                switch (rotationCounter) {
+                case 1:
+                    rotationCounter = 4;
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    rotationCounter -= 1;
+                    break;
+                }
+                break;
 			}
 		}
 		

@@ -26,12 +26,11 @@ public class RunnerLocation implements Predicate {
 	}
 
 	// Direction robot is facing to
-	/*
-	 * 0 - forward 
-	 * 1 - right 
-	 * 2 - back 
-	 * 3 - left
-	 */
+	public static final int FORWARD = 0;
+    public static final int LEFT = 1;
+    public static final int BACK = 2;
+    public static final int RIGHT = 3;
+    
 	public int direction;
 
 	public int getDirection() {

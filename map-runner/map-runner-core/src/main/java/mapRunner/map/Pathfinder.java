@@ -75,22 +75,22 @@ public class Pathfinder {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 		} else if (targetName.equalsIgnoreCase("f")) {
 			switch (runnerLocation.direction) {
-			case 0:
+			case RunnerLocation.FORWARD:
 				if (currentPoint - widthOfMap > 0) {
 					nextPoint = Integer.toString(currentPoint - widthOfMap);
 				}
 				break;
-			case 1:
+			case RunnerLocation.RIGHT:
 				if ((currentPoint) % widthOfMap != 0) {
 					nextPoint = Integer.toString(currentPoint + 1);
 				}
 				break;
-			case 2:
+			case RunnerLocation.BACK:
 				if (currentPoint + widthOfMap <= sizeOfGraph) {
 					nextPoint = Integer.toString(currentPoint + widthOfMap);
 				}
 				break;
-			case 3:
+			case RunnerLocation.LEFT:
 				if ((currentPoint) % widthOfMap != 1) {
 					nextPoint = Integer.toString(currentPoint - 1);
 				}
@@ -218,77 +218,77 @@ public class Pathfinder {
 			// if next point is at the left side of the current one
 			if (pointWay[i] - pointWay[i - 1] == -1) {
 				switch (runnerLocation.direction) {
-				case 0:
+				case RunnerLocation.FORWARD:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
-				case 1:
+				case RunnerLocation.RIGHT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
 					break;
-				case 2:
+				case RunnerLocation.BACK:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				runnerLocation.direction = 3;
+				runnerLocation.direction = RunnerLocation.LEFT;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is at the right side of the current one
 			if (pointWay[i] - pointWay[i - 1] == 1) {
 				switch (runnerLocation.direction) {
-				case 2:
+				case RunnerLocation.BACK:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
-				case 3:
+				case RunnerLocation.LEFT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
 					break;
-				case 0:
+				case RunnerLocation.FORWARD:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				runnerLocation.direction = 1;
+				runnerLocation.direction = RunnerLocation.RIGHT;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in front of the current one
 			if (pointWay[i] - pointWay[i - 1] == -widthOfMap) {
 				switch (runnerLocation.direction) {
-				case 1:
+				case RunnerLocation.RIGHT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
-				case 2:
+				case RunnerLocation.BACK:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
 					break;
-				case 3:
+				case RunnerLocation.LEFT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				runnerLocation.direction = 0;
+				runnerLocation.direction = RunnerLocation.FORWARD;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 			// if next point is in behind of the current one
 			if (pointWay[i] - pointWay[i - 1] == widthOfMap) {
 				switch (runnerLocation.direction) {
-				case 3:
+				case RunnerLocation.LEFT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
 					break;
-				case 0:
+				case RunnerLocation.FORWARD:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, nextPoint);
 					break;
-				case 1:
+				case RunnerLocation.RIGHT:
 					path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
 					break;
 				}
-				runnerLocation.direction = 2;
+				runnerLocation.direction = RunnerLocation.BACK;
 				path.addNavigationCommand(NavigationCommandType.FORWARD, 1, Integer.toString(pointWay[i]));
 			}
 		}
 
 		switch (runnerLocation.direction) {
-		case 1:
+		case RunnerLocation.FORWARD:
 			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
-		case 2:
+		case RunnerLocation.BACK:
 			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
-		case 3:
+		case RunnerLocation.LEFT:
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, Integer.toString(pointWay[len]));
 			break;
 		}
