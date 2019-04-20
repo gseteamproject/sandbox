@@ -334,7 +334,7 @@ public class LegoRunnerTest {
 
 	@Test
 	public void rgbToColor_black() {
-		Assert.assertEquals(Color.BLACK, testable.rgbToColor(0.10f, 0.10f, 0.10f));
+		Assert.assertEquals(Color.BLACK, testable.rgbToColor(0.024f, 0.019f, 0.031f));
 	}
 
 	@Test
@@ -345,6 +345,5 @@ public class LegoRunnerTest {
 	@Test
 	public void rgbToColor_red() {
 		Assert.assertEquals(Color.RED, testable.rgbToColor(0.99f, 0.10f, 0.10f));
-		Assert.assertEquals(Color.RED, testable.rgbToColor(0.125f, 0.10f, 0.10f));
 	}
 }
