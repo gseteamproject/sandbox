@@ -33,7 +33,7 @@ public class RunnerAgent extends Agent {
 
     private boolean isBusy;
 
-    private boolean isLoaded;
+    private boolean isLoaded = true;
 
     private ACLMessage targetRequest;
 
@@ -125,31 +125,36 @@ public class RunnerAgent extends Agent {
     }
 
     private void prepareTarget(String target) {
-        String[] targets = targetRequest.getContent().split(",");
-        String destination1 = targets[0];
-        String destination2 = targets[1];
         String currentTarget = null;
+        String[] targets = targetRequest.getContent().split(",");
 
-        if (target == null) {
-            isLoaded = false;
-            if (destination1.equals(location.getPoint().getName())) {
+        if (targets.length == 1) {
+            currentTarget = targets[0];
+        } else {
+            String destination1 = targets[0];
+            String destination2 = targets[1];
+
+            if (target == null) {
+                isLoaded = false;
+                if (destination1.equals(location.getPoint().getName())) {
+                    addBehaviour(new LoadBehaviour(destination2));
+                } else {
+                    currentTarget = destination1;
+                }
+            } else if (target.equals(destination1)) {
                 addBehaviour(new LoadBehaviour(destination2));
-            } else {
-                currentTarget = destination1;
+            } else if (target.equals(destination2)) {
+                currentTarget = destination2;
             }
-        } else if (target.equals(destination1)) {
-            addBehaviour(new LoadBehaviour(destination2));
-        } else if (target.equals(destination2)) {
-            currentTarget = destination2;
         }
-        
+
         if (currentTarget != null) {
+            System.out.println("1111");
             navigationToTarget = new NavigationToTarget();
             navigationToTarget.getTarget().getDestination().setName(currentTarget);
             navigationToTarget.getTarget().setLocation(location.getPoint());
-            addBehaviour(new RequestPathBehaviour());            
+            addBehaviour(new RequestPathBehaviour());
         }
-        
     }
 
     class WaitForTargetBehaviour extends CyclicBehaviour {

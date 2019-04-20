@@ -67,7 +67,7 @@ public class Pathfinder {
 			nextPoint = Integer.toString(currentPoint);
 			path.addNavigationCommand(NavigationCommandType.FORWARD, 1, nextPoint);
 			path.addNavigationCommand(NavigationCommandType.ROTATE_RIGHT_90_DEGREE, 1, nextPoint);
-		} else if (targetName.equalsIgnoreCase("B")) {
+		} else if (targetName.equalsIgnoreCase("M")) {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_180_DEGREE, 2, "0");
 		} else if (targetName.equalsIgnoreCase("l")) {
 			path.addNavigationCommand(NavigationCommandType.ROTATE_LEFT_90_DEGREE, 1, nextPoint);
