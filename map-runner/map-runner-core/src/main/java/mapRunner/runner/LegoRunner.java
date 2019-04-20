@@ -228,43 +228,6 @@ public class LegoRunner implements Runner {
 		}
 		stopMoving();
 	}
-	
-	public float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
-        float hue, saturation, brightness;
-        if (hsbvals == null) {
-            hsbvals = new float[3];
-        }
-        int cmax = (r > g) ? r : g;
-        if (b > cmax) cmax = b;
-        int cmin = (r < g) ? r : g;
-        if (b < cmin) cmin = b;
-
-        brightness = ((float) cmax) / 255.0f;
-        if (cmax != 0)
-            saturation = ((float) (cmax - cmin)) / ((float) cmax);
-        else
-            saturation = 0;
-        if (saturation == 0)
-            hue = 0;
-        else {
-            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
-            if (r == cmax)
-                hue = bluec - greenc;
-            else if (g == cmax)
-                hue = 2.0f + redc - bluec;
-            else
-                hue = 4.0f + greenc - redc;
-            hue = hue / 6.0f;
-            if (hue < 0)
-                hue = hue + 1.0f;
-        }
-        hsbvals[0] = hue;
-        hsbvals[1] = saturation;
-        hsbvals[2] = brightness;
-        return hsbvals;
-    }
 
 	public int rgbToColor(float colorRed, float colorGreen, float colorBlue) {
 //        System.out.println("cR: " + colorRed + " cG: " + colorGreen + " cB: " + colorBlue);
@@ -273,7 +236,7 @@ public class LegoRunner implements Runner {
 		int blue = (int) (colorBlue * 255);
 		int color = Color.WHITE;
 		
-		float[] hsb = RGBtoHSB(red, green, blue, null);
+		float[] hsb = java.awt.Color.RGBtoHSB(red, green, blue, null);
 //        System.out.println("R: " + red + " G: " + green + " B: " + blue);
         
         float hue = hsb[0] * 360;
