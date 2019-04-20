@@ -23,7 +23,7 @@ public class LegoRunner implements Runner {
 	final static int MovementSpeed = 200;
 	final static int RotationSpeed = 100;
 
-	final static int StackSize = 5;
+	final static int StackSize = 4;
 	final static int ControlTime = 150;
 
 	float[] angleData;
@@ -228,41 +228,75 @@ public class LegoRunner implements Runner {
 		}
 		stopMoving();
 	}
+	
+	public float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
+        float hue, saturation, brightness;
+        if (hsbvals == null) {
+            hsbvals = new float[3];
+        }
+        int cmax = (r > g) ? r : g;
+        if (b > cmax) cmax = b;
+        int cmin = (r < g) ? r : g;
+        if (b < cmin) cmin = b;
+
+        brightness = ((float) cmax) / 255.0f;
+        if (cmax != 0)
+            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+        else
+            saturation = 0;
+        if (saturation == 0)
+            hue = 0;
+        else {
+            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+            if (r == cmax)
+                hue = bluec - greenc;
+            else if (g == cmax)
+                hue = 2.0f + redc - bluec;
+            else
+                hue = 4.0f + greenc - redc;
+            hue = hue / 6.0f;
+            if (hue < 0)
+                hue = hue + 1.0f;
+        }
+        hsbvals[0] = hue;
+        hsbvals[1] = saturation;
+        hsbvals[2] = brightness;
+        return hsbvals;
+    }
 
 	public int rgbToColor(float colorRed, float colorGreen, float colorBlue) {
+//        System.out.println("cR: " + colorRed + " cG: " + colorGreen + " cB: " + colorBlue);
 		int red = (int) (colorRed * 255);
 		int green = (int) (colorGreen * 255);
 		int blue = (int) (colorBlue * 255);
 		int color = Color.WHITE;
-
-		double diff = 1.2;
-
-		int i = 0;
-		do {
-			i++;
-			if (i > 50) {
-				break;
-			}
-		} while (red * i < 255 && green * i < 255 && blue * i < 255);
-		i--;
-
-		red = red * i + 1;
-		green = green * i + 1;
-		blue = blue * i + 1;
-
-		System.out.println("R: " + red + " G: " + green + " B: " + blue + " i: " + i);
-
-		if (red / (double) green < diff && red / (double) blue < diff && green / (double) red < diff
-				&& green / (double) blue < diff && blue / (double) red < diff && blue / (double) green < diff
-				&& i < 6) {
-			color = Color.WHITE;
-		} else if (green / (double) red > diff && green / (double) blue > diff && i < 15) {
-			color = Color.GREEN;
-		} else if (red / (double) green > diff && red / (double) blue > diff && i < 10) {
-			color = Color.RED;
-		} else {
-			color = Color.BLACK;
-		}
+		
+		float[] hsb = RGBtoHSB(red, green, blue, null);
+//        System.out.println("R: " + red + " G: " + green + " B: " + blue);
+        
+        float hue = hsb[0] * 360;
+         
+        float saturation = hsb[1] * 100;
+         
+        float brightness = hsb[2] * 1000;
+        
+//        System.out.println("H: " + hue + " S: " + saturation + " B: " + brightness);
+        
+        if (brightness > 52) {
+            if (saturation < 30) {
+                color = Color.WHITE;
+            } else {
+                if ((hue >= 0 && hue <= 30) || (hue >= 330 && hue <= 360)) {
+                    color = Color.RED;
+                } else if (hue >= 80 && hue <= 220) {
+                    color = Color.GREEN;
+                }
+            }
+        } else {
+            color = Color.BLACK;
+        }
 
 		return color;
 	}
@@ -299,7 +333,7 @@ public class LegoRunner implements Runner {
 		colorBlue = colorData[2];
 		newColor = rgbToColor(colorRed, colorGreen, colorBlue);
 		recentColors.add(newColor);
-		System.out.println("newColor: " + newColor);
+//		System.out.println("newColor: " + newColor);
 
 		// check list of recent colors at every iteration
 		if (recentColors.size() > size) {
@@ -307,7 +341,7 @@ public class LegoRunner implements Runner {
 		}
 //		System.out.println("recentColors: "+recentColors);
 		currentColor = sortColors(recentColors);
-		System.out.println("currentColor: " + currentColor);
+//		System.out.println("currentColor: " + currentColor);
 
 //		// update color every StackSize'th iteration
 //		if (recentColors.size() == size) {
@@ -316,86 +350,220 @@ public class LegoRunner implements Runner {
 //		}
 	}
 
-	@Override
-	public void move(int signalMarkAmount) {
-		leftMotor.setSpeed(MovementSpeed);
-		rightMotor.setSpeed(MovementSpeed);
+    @Override
+    public void move(int signalMarkAmount) {
+        getChargeLevel();
 
-		Direction lastDirection = Direction.RIGHT;
-		int rotationTime = 1000;
-		int moveTime = 200;
-		long currentTime = 0;
+        leftMotor.setSpeed(MovementSpeed);
+        rightMotor.setSpeed(MovementSpeed);
 
-		boolean turningMode = false;
-		long rotationStartTime = 0;
-		long signalMarkCounter = 0;
+        Direction lastDirection = Direction.RIGHT;
+        int rotationTime = 0;
+        int moveTime = 500;
+//        int searchTime = 500;
+        long currentTime = 0;
 
-		recentColors.clear();
-		currentColor = Color.BLACK;
+        boolean turningMode = false;
+        boolean searchMode = false;
+        boolean isDirectionSwitched = false;
+        boolean alarmFlag = false;
+        boolean movingForward = false;
+        long rotationStartTime = 0;
+        long moveStartTime = 0;
+        long searchStartTime = 0;
+        long signalMarkCounter = 0;
 
-		while (!ev3.getKey("Escape").isDown()) {
-			currentTime = System.currentTimeMillis();
+        recentColors.clear();
+        currentColor = Color.BLACK;
 
-			colorMode(0);
+        while (!ev3.getKey("Escape").isDown()) {
 
-//			System.out.println("currentColor: " + currentColor);
+            colorMode(0);
 
-			if (signalMarkCounter >= signalMarkAmount) {
-				Delay.msDelay(moveTime);
-//				ev3.getAudio().systemSound(1);
-				stopMoving();
-				Delay.msDelay(ControlTime);
-				break;
+//	          System.out.println("currentColor: " + currentColor);
+
+            if (signalMarkCounter >= signalMarkAmount) {
+//	              ev3.getAudio().systemSound(1);
+                stopMoving();
+                Delay.msDelay(ControlTime);
+                break;
+//	              }
+            } else {
+                currentTime = System.currentTimeMillis();
+                if (!isActiveMarker(newColor)) {
+//                  if (signalMarkCounter == 0) {
+                    if (!searchMode) {
+                        stopMoving();
+                        movingForward = false;
+                        searchMode = true;
+                        searchStartTime = currentTime;
+                        System.out.println("backward");
+                        startMovingBackward();
+                        if (turningMode) {
+                            rotationStartTime = 0;
+                        }
+                    } else {
+                      System.out.println("currentTime - searchStartTime: " + (currentTime - searchStartTime)
+                              + " searchStartTime - moveStartTime: " + (searchStartTime - moveStartTime));
+                        if (currentTime - searchStartTime > searchStartTime - moveStartTime) {
+                            System.out.println("forward but while searching");
+                            startMovingForward();
+                        }
+                    }
+                    if (!turningMode) {
+                        if (!isDirectionSwitched) {
+//                            System.out.println("switch direction");
+                            if (lastDirection == Direction.RIGHT) {
+//                                System.out.println("left");
+                                lastDirection = Direction.LEFT;
+                            } else {
+//                                System.out.println("right");
+                                lastDirection = Direction.RIGHT;
+                            }
+                            isDirectionSwitched = true;
+                        }
+                    }
+//                  }
+                } else if (isActiveMarker(currentColor)) {
+                    if (searchMode) {
+                        stopMoving();
+                    }
+                    if (searchMode || turningMode) {
+//                        System.out.println("currentTime - rotationStartTime: " + (currentTime - rotationStartTime)
+//                                + " rotationTime: " + rotationTime);
+                        if (currentTime - rotationStartTime > rotationTime) {
+                            stopMoving();
+//                            System.out.println("turningMode: " + turningMode);
+                            if (!turningMode) {
+                                rotationStartTime = currentTime;
+                                rotationTime += 100;
+                                startRotation(lastDirection);
+                                turningMode = true;
+                                searchMode = false;
+                            } else {
+                                turningMode = false;
+                                isDirectionSwitched = false;
+                                rotationStartTime = 0;
+//                                rotationTime = 0;
+                            }
+                        }
+                    } else {
+                        if (movingForward) {
+//                            System.out.println("currentTime - moveStartTime: " + (currentTime - moveStartTime)
+//                                    + " rotationTime: " + rotationTime);
+                            if ((currentTime - moveStartTime) > moveTime) {
+                                rotationTime = 0;
+                            }
+                        } else {
+                            movingForward = true;
+//                            System.out.println("forward");
+                            moveStartTime = currentTime;
+                            startMovingForward();
+                        }
+                    }
+
+                    if (isSignalMarker(currentColor)) {
+//                        System.out.println("green point");
+                        if (!alarmFlag) {
+                            ev3.getAudio().systemSound(0);
+                            signalMarkCounter++;
+                            alarmFlag = true;
+                        }
+                    } else {
+                        alarmFlag = false;
+                    }
+                }
+            }
+        }
+        stopMoving();
+    }
+
+//	@Override
+//	public void move(int signalMarkAmount) {
+//		leftMotor.setSpeed(MovementSpeed);
+//		rightMotor.setSpeed(MovementSpeed);
+//
+//		Direction lastDirection = Direction.RIGHT;
+//		int rotationTime = 1000;
+//		int moveTime = 200;
+//		long currentTime = 0;
+//
+//		boolean turningMode = false;
+//        boolean alarmFlag  = false;
+//		long rotationStartTime = 0;
+//		long signalMarkCounter = 0;
+//
+//		recentColors.clear();
+//		currentColor = Color.BLACK;
+//
+//		while (!ev3.getKey("Escape").isDown()) {
+//			currentTime = System.currentTimeMillis();
+//
+//			colorMode(0);
+//
+////			System.out.println("currentColor: " + currentColor);
+//
+//			if (signalMarkCounter >= signalMarkAmount) {
+//				Delay.msDelay(moveTime);
+////				ev3.getAudio().systemSound(1);
+//				stopMoving();
+//				Delay.msDelay(ControlTime);
+//				break;
+////				}
+//			} else {
+//				if (turningMode && isMarker(currentColor)) {
+//					stopMoving();
+//					turningMode = false;
+////					System.out.println("stop turning");
+//					currentTime = System.currentTimeMillis();
 //				}
-			} else {
-				if (turningMode && isMarker(currentColor)) {
-					stopMoving();
-					turningMode = false;
-//					System.out.println("stop turning");
-					currentTime = System.currentTimeMillis();
-				}
-
-				if (isActiveMarker(currentColor)) {
-
-					startMovingForward();
-
-					rotationTime = 200;
-
-					if (isSignalMarker(currentColor)) {
-//							System.out.println("green point");
-						ev3.getAudio().systemSound(0);
-						signalMarkCounter++;
-					}
-				}
-
-				if (!isActiveMarker(newColor)) {
-					if (signalMarkCounter == 0) {
-						if (isInactiveMarker(currentColor)) {
-//							System.out.println("red point");
-							startMovingBackward();
-						} else {
-							currentColor = Color.WHITE;
-							turningMode = true;
-							if (currentTime - rotationStartTime > rotationTime) {
-								stopMoving();
-
-								if (lastDirection == Direction.RIGHT) {
-									lastDirection = Direction.LEFT;
-								} else {
-									lastDirection = Direction.RIGHT;
-								}
-
-								rotationStartTime = currentTime;
-								rotationTime += 300;
-								startRotation(lastDirection);
-							}
-						}
-					}
-				}
-			}
-		}
-		stopMoving();
-	}
+//
+//				if (isActiveMarker(currentColor)) {
+//
+//					startMovingForward();
+//
+//					rotationTime = 200;
+//
+//                    if (isSignalMarker(currentColor)) {
+////                      System.out.println("green point");
+//                        if (!alarmFlag) {
+//                            ev3.getAudio().systemSound(0);
+//                            signalMarkCounter++;
+//                            alarmFlag = true;
+//                        }
+//                    } else {
+//                        alarmFlag = false;
+//                    }
+//				}
+//
+//				if (!isActiveMarker(newColor)) {
+//					if (signalMarkCounter == 0) {
+//						if (isInactiveMarker(currentColor)) {
+////							System.out.println("red point");
+//							startMovingBackward();
+//						} else {
+//							currentColor = Color.WHITE;
+//							turningMode = true;
+//							if (currentTime - rotationStartTime > rotationTime) {
+//								stopMoving();
+//
+//								if (lastDirection == Direction.RIGHT) {
+//									lastDirection = Direction.LEFT;
+//								} else {
+//									lastDirection = Direction.RIGHT;
+//								}
+//
+//								rotationStartTime = currentTime;
+//								rotationTime += 300;
+//								startRotation(lastDirection);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		stopMoving();
+//	}
 
 	@Override
 	public void load() {
@@ -406,7 +574,7 @@ public class LegoRunner implements Runner {
 	public void stop() {
 		colorSensor.close();
 		gyroSensor.close();
-//		IRSensor.close();
+//		ultrasonicSensor.close();
 		leftMotor.close();
 		rightMotor.close();
 	}
