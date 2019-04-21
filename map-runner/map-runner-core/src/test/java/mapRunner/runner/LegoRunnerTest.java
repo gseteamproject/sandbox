@@ -9,7 +9,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import lejos.hardware.Brick;
@@ -24,6 +23,7 @@ import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.Color;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
 
 public class LegoRunnerTest {
 
@@ -313,18 +313,62 @@ public class LegoRunnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void colorMode_move() {
-		testable.colorData = new float[] {};
+		final SampleProvider rgbSensor_mock = context.mock(SampleProvider.class);
+		final float[] colorData = new float[] { 1.0f, 1.0f, 1.0f };
+
+		context.checking(new Expectations() {
+			{
+				oneOf(rgbSensor_mock).fetchSample(colorData, 0);
+				// TODO : fill colorData as associated action
+			}
+		});
+
+		// TODO : pass sensor mock through constructor
+		testable.rgbSensor = rgbSensor_mock;
+		testable.colorData = colorData;
+
+		// TODO : move recentColors to separate class
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+		testable.recentColors.add(Color.WHITE);
+
 		// TODO : add action constants
 		testable.colorMode(0);
+		Assert.assertEquals(testable.currentColor, Color.WHITE);
 	}
 
 	@Test
-	@Ignore
 	public void colorMode_rotate() {
+		final SampleProvider rgbSensor_mock = context.mock(SampleProvider.class);
+		final float[] colorData = new float[] { 1.0f, 1.0f, 1.0f };
+
+		context.checking(new Expectations() {
+			{
+				oneOf(rgbSensor_mock).fetchSample(colorData, 0);
+				// TODO : fill colorData as associated action
+			}
+		});
+
+		// TODO : pass sensor mock through constructor
+		testable.rgbSensor = rgbSensor_mock;
+		testable.colorData = colorData;
+
 		// TODO : add action constants
 		testable.colorMode(1);
+		Assert.assertEquals(testable.currentColor, Color.WHITE);
+	}
+
+	@Test
+	public void load() {
+		testable.load();
 	}
 
 	@Test
