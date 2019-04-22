@@ -87,9 +87,10 @@ public class LegoRunner implements Runner {
 	}
 
 	LegoRunner(Brick ev3, EV3ColorSensor colorSensor, EV3GyroSensor gyroSensor, EV3UltrasonicSensor ultrasonicSensor,
-			RegulatedMotor leftMotor, RegulatedMotor rightMotor) {
+			RegulatedMotor leftMotor, RegulatedMotor rightMotor, SampleProvider rgbSensor) {
 		this.ev3 = ev3;
 		this.colorSensor = colorSensor;
+		this.rgbSensor = rgbSensor;
 		this.gyroSensor = gyroSensor;
 		this.ultrasonicSensor = ultrasonicSensor;
 		this.leftMotor = leftMotor;

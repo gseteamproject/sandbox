@@ -3,8 +3,11 @@ package mapRunner.runner;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.api.Action;
+import org.jmock.api.Invocation;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,6 +47,8 @@ public class LegoRunnerTest {
 
 	EV3ColorSensor colorSensor_mock;
 
+	SampleProvider rgbSensor_mock;
+
 	EV3GyroSensor gyroSensor_mock;
 
 	EV3UltrasonicSensor ultrasonicSensor_mock;
@@ -56,13 +61,14 @@ public class LegoRunnerTest {
 	public void setUp() {
 		ev3_mock = context.mock(Brick.class);
 		colorSensor_mock = context.mock(EV3ColorSensor.class);
+		rgbSensor_mock = context.mock(SampleProvider.class);
 		gyroSensor_mock = context.mock(EV3GyroSensor.class);
 //		ultrasonicSensor_mock = context.mock(EV3UltrasonicSensor.class);
 		leftMotor_mock = context.mock(RegulatedMotor.class, "left-motor");
 		rightMotor_mock = context.mock(RegulatedMotor.class, "right-motor");
 
 		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, ultrasonicSensor_mock, leftMotor_mock,
-				rightMotor_mock);
+				rightMotor_mock, rgbSensor_mock);
 	}
 
 	@Test
@@ -314,19 +320,22 @@ public class LegoRunnerTest {
 
 	@Test
 	public void colorMode_move() {
-		final SampleProvider rgbSensor_mock = context.mock(SampleProvider.class);
-		final float[] colorData = new float[] { 1.0f, 1.0f, 1.0f };
-
 		context.checking(new Expectations() {
 			{
-				oneOf(rgbSensor_mock).fetchSample(colorData, 0);
-				// TODO : fill colorData as associated action
+				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.colorData = new float[] { 1.0f, 1.0f, 1.0f };
+						return null;
+					}
+				});
 			}
 		});
-
-		// TODO : pass sensor mock through constructor
-		testable.rgbSensor = rgbSensor_mock;
-		testable.colorData = colorData;
 
 		// TODO : move recentColors to separate class
 		testable.recentColors.add(Color.WHITE);
@@ -347,19 +356,22 @@ public class LegoRunnerTest {
 
 	@Test
 	public void colorMode_rotate() {
-		final SampleProvider rgbSensor_mock = context.mock(SampleProvider.class);
-		final float[] colorData = new float[] { 1.0f, 1.0f, 1.0f };
-
 		context.checking(new Expectations() {
 			{
-				oneOf(rgbSensor_mock).fetchSample(colorData, 0);
-				// TODO : fill colorData as associated action
+				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.colorData = new float[] { 1.0f, 1.0f, 1.0f };
+						return null;
+					}
+				});
 			}
 		});
-
-		// TODO : pass sensor mock through constructor
-		testable.rgbSensor = rgbSensor_mock;
-		testable.colorData = colorData;
 
 		// TODO : add action constants
 		testable.colorMode(1);
