@@ -14,7 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import lejos.hardware.Audio;
 import lejos.hardware.Brick;
+import lejos.hardware.Key;
+import lejos.hardware.Power;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.MotorRegulator;
@@ -401,5 +404,235 @@ public class LegoRunnerTest {
 	@Test
 	public void rgbToColor_red() {
 		Assert.assertEquals(Color.RED, testable.rgbToColor(0.99f, 0.10f, 0.10f));
+	}
+
+	@Test
+	public void getChargeLevel() {
+		final Power power_mock = context.mock(Power.class);
+
+		context.checking(new Expectations() {
+			{
+				oneOf(ev3_mock).getPower();
+				will(returnValue(power_mock));
+
+				oneOf(power_mock).getVoltageMilliVolt();
+				will(returnValue(100));
+			}
+		});
+
+		testable.getChargeLevel();
+	}
+
+	@Test
+	public void move_signalMarkAmountReached() {
+		final Power power_mock = context.mock(Power.class);
+		final Key button_mock = context.mock(Key.class);
+
+		context.checking(new Expectations() {
+			{
+				// getChargeLevel
+				oneOf(ev3_mock).getPower();
+				will(returnValue(power_mock));
+
+				oneOf(power_mock).getVoltageMilliVolt();
+				will(returnValue(200));
+
+				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				//
+
+				oneOf(ev3_mock).getKey("Escape");
+				will(returnValue(button_mock));
+
+				oneOf(button_mock).isDown();
+				will(returnValue(false));
+
+				// TODO : signalMarkAmount should be checked before collecting samples from
+				// sensor
+
+				// colorMode
+				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.colorData = new float[] { 1.0f, 1.0f, 1.0f };
+						return null;
+					}
+				});
+
+				// stopMoving
+
+				oneOf(rightMotor_mock).stop(true);
+
+				oneOf(leftMotor_mock).stop(true);
+
+				// TODO: call stopMoving only once
+
+				// stopMoving
+
+				oneOf(rightMotor_mock).stop(true);
+
+				oneOf(leftMotor_mock).stop(true);
+			}
+		});
+
+		testable.move(0);
+	}
+
+	@Test
+	public void move() {
+		final Power power_mock = context.mock(Power.class);
+		final Key button_mock = context.mock(Key.class);
+		final Audio audio_mock = context.mock(Audio.class);
+
+		final float[] green_rgb = { 0.10f, 0.99f, 0.1f };
+		final float[] black_rgb = { 0.024f, 0.019f, 0.031f };
+
+		context.checking(new Expectations() {
+			{
+				// getChargeLevel
+				oneOf(ev3_mock).getPower();
+				will(returnValue(power_mock));
+
+				oneOf(power_mock).getVoltageMilliVolt();
+				will(returnValue(200));
+
+				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				//
+
+				oneOf(ev3_mock).getKey("Escape");
+				will(returnValue(button_mock));
+
+				oneOf(button_mock).isDown();
+				will(returnValue(false));
+
+				// TODO : signalMarkAmount should be checked before collecting samples from
+				// sensor
+
+				// colorMode
+				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.recentColors.clear();
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.colorData = black_rgb;
+						return null;
+					}
+				});
+
+				// startMoving
+
+				// TODO : setSpeed called twice before real moving
+
+				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
+
+				oneOf(rightMotor_mock).forward();
+
+				oneOf(leftMotor_mock).forward();
+
+				//
+
+				oneOf(ev3_mock).getKey("Escape");
+				will(returnValue(button_mock));
+
+				oneOf(button_mock).isDown();
+				will(returnValue(false));
+
+				// colorMode
+				oneOf(rgbSensor_mock).fetchSample(black_rgb, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.recentColors.clear();
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.recentColors.add(Color.GREEN);
+						testable.colorData = green_rgb;
+						return null;
+					}
+				});
+
+				oneOf(ev3_mock).getAudio();
+				will(returnValue(audio_mock));
+				
+				oneOf(audio_mock).systemSound(0);
+				
+				//
+				
+				oneOf(ev3_mock).getKey("Escape");
+				will(returnValue(button_mock));
+
+				oneOf(button_mock).isDown();
+				will(returnValue(false));
+				
+				// colorMode
+				oneOf(rgbSensor_mock).fetchSample(green_rgb, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description arg0) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.recentColors.clear();
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.recentColors.add(Color.BLACK);
+						testable.colorData = black_rgb;
+						return null;
+					}
+				});
+				
+				// stopMoving
+
+				oneOf(rightMotor_mock).stop(true);
+
+				oneOf(leftMotor_mock).stop(true);
+
+				// TODO: call stopMoving only once
+
+				// stopMoving
+
+				oneOf(rightMotor_mock).stop(true);
+
+				oneOf(leftMotor_mock).stop(true);
+			}
+		});
+
+		testable.move(1);
 	}
 }
