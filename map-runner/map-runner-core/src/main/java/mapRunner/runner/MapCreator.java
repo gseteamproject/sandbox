@@ -136,6 +136,16 @@ public class MapCreator {
 		}
 		
 		switch (rotationCounter) {
+        case 0: // if road to the top is found
+            if (currentPointY == 0) {
+                currentPointY += 1;
+                heightOfMap += 1;
+                updateGrid(rotationCounter);
+            }
+            listOfRoads.addRoad(
+                    pointGrid[currentPointY][currentPointX],
+                    pointGrid[currentPointY - 1][currentPointX]);
+            break;
 		case 1: // if road to the left is found
 			if (currentPointX == 0) {
 				currentPointX += 1;
@@ -163,16 +173,6 @@ public class MapCreator {
 			listOfRoads.addRoad(
 					pointGrid[currentPointY][currentPointX],
 					pointGrid[currentPointY][currentPointX + 1]);
-			break;
-		case 4: // if road to the top is found
-			if (currentPointY == 0) {
-				currentPointY += 1;
-				heightOfMap += 1;
-				updateGrid(rotationCounter);
-			}
-			listOfRoads.addRoad(
-					pointGrid[currentPointY][currentPointX],
-					pointGrid[currentPointY - 1][currentPointX]);
 			break;
 		}
 	}

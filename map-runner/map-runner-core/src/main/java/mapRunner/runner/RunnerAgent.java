@@ -70,6 +70,7 @@ public class RunnerAgent extends Agent {
         // robot starts at "5"
         location.point.setName(runnerStart);
         location.setDirection(0);
+        runner.setRunnerLocation(location);
         // "3" for A and B
     }
 
@@ -293,19 +294,19 @@ public class RunnerAgent extends Agent {
             case NavigationCommandType.ROTATE_180_DEGREE:
                 mapCreator.startDirection = location.direction;
 
-                runner.rotate(2 * command.quantity, mapCreator);
+                runner.detectRoads(mapCreator);
                 if (!mapCreator.isMapCompleted) {
                     if (mapCreator.currentPointY > 0 && !mapCreator.checkedPoints
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY - 1][mapCreator.currentPointX])) {
                         switch (location.direction) {
                         case RunnerLocation.RIGHT:
-                            runner.rotate(1, null);
+                            runner.rotate(1);
                             break;
                         case RunnerLocation.BACK:
-                            runner.rotate(2, null);
+                            runner.rotate(2);
                             break;
                         case RunnerLocation.LEFT:
-                            runner.rotate(-1, null);
+                            runner.rotate(-1);
                             break;
                         }
                         location.setDirection(0);
@@ -315,13 +316,13 @@ public class RunnerAgent extends Agent {
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX + 1])) {
                         switch (location.direction) {
                         case RunnerLocation.FORWARD:
-                            runner.rotate(-1, null);
+                            runner.rotate(-1);
                             break;
                         case RunnerLocation.BACK:
-                            runner.rotate(1, null);
+                            runner.rotate(1);
                             break;
                         case RunnerLocation.LEFT:
-                            runner.rotate(2, null);
+                            runner.rotate(2);
                             break;
                         }
                         location.setDirection(1);
@@ -331,13 +332,13 @@ public class RunnerAgent extends Agent {
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY + 1][mapCreator.currentPointX])) {
                         switch (location.direction) {
                         case RunnerLocation.FORWARD:
-                            runner.rotate(2, null);
+                            runner.rotate(2);
                             break;
                         case RunnerLocation.RIGHT:
-                            runner.rotate(-1, null);
+                            runner.rotate(-1);
                             break;
                         case RunnerLocation.LEFT:
-                            runner.rotate(1, null);
+                            runner.rotate(1);
                             break;
                         }
                         location.setDirection(2);
@@ -347,13 +348,13 @@ public class RunnerAgent extends Agent {
                             .contains(mapCreator.pointGrid[mapCreator.currentPointY][mapCreator.currentPointX - 1])) {
                         switch (location.direction) {
                         case RunnerLocation.FORWARD:
-                            runner.rotate(1, null);
+                            runner.rotate(1);
                             break;
                         case RunnerLocation.RIGHT:
-                            runner.rotate(2, null);
+                            runner.rotate(2);
                             break;
                         case RunnerLocation.BACK:
-                            runner.rotate(-1, null);
+                            runner.rotate(-1);
                             break;
                         }
                         location.setDirection(3);
@@ -434,7 +435,7 @@ public class RunnerAgent extends Agent {
                 runner.move(command.quantity);
                 break;
             case NavigationCommandType.ROTATE_LEFT_90_DEGREE:
-                runner.rotate(1 * command.quantity, null);                
+                runner.rotate(1 * command.quantity);                
                 switch (location.direction) {
                 case RunnerLocation.FORWARD:
                 case RunnerLocation.LEFT:
@@ -447,7 +448,7 @@ public class RunnerAgent extends Agent {
                 }
                 break;
             case NavigationCommandType.ROTATE_RIGHT_90_DEGREE:
-                runner.rotate(-1 * command.quantity, null);
+                runner.rotate(-1 * command.quantity);
                 switch (location.direction) {
                 case RunnerLocation.FORWARD:
                     location.direction = RunnerLocation.RIGHT;
@@ -460,7 +461,7 @@ public class RunnerAgent extends Agent {
                 }
                 break;
             case NavigationCommandType.ROTATE_180_DEGREE:
-                runner.rotate(2 * command.quantity, null);
+                runner.rotate(2 * command.quantity);
                 switch (location.direction) {
                 case RunnerLocation.FORWARD:
                 case RunnerLocation.LEFT:
