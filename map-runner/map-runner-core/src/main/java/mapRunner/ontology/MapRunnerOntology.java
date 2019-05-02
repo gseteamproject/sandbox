@@ -46,6 +46,7 @@ public class MapRunnerOntology extends Ontology {
 	public static final String RUNNER_LOCATION_RUNNER = "runner";
 	public static final String RUNNER_LOCATION_POINT = "point";
 	public static final String RUNNER_LOCATION_DIRECTION = "direction";
+    public static final String RUNNER_LOCATION_ANGLE = "angle";
 
 	public static final String MAP_STRUCTURE = "map-structure";
 	public static final String MAP_PARAMETERS = "map-parameters";
@@ -114,6 +115,7 @@ public class MapRunnerOntology extends Ontology {
 			ps.add(RUNNER_LOCATION_RUNNER, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 			ps.add(RUNNER_LOCATION_POINT, (ConceptSchema) getSchema(POINT));
 			ps.add(RUNNER_LOCATION_DIRECTION, (PrimitiveSchema) getSchema(BasicOntology.INTEGER));
+            ps.add(RUNNER_LOCATION_ANGLE, (PrimitiveSchema) getSchema(BasicOntology.FLOAT));
 			
 			ps = (PredicateSchema) getSchema(MAP_STRUCTURE);
 			ps.add(MAP_PARAMETERS, (ConceptSchema) getSchema(MAP_PARAMETERS));

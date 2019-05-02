@@ -40,4 +40,14 @@ public class RunnerLocation implements Predicate {
 	public void setDirection(int direction) {
 		this.direction = direction;
 	}
+    
+    public float angle;
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
 }
