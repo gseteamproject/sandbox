@@ -115,6 +115,7 @@ public class LegoRunner implements Runner {
     public LegoRunner() {
         ev3 = BrickFinder.getLocal();
 
+        // TODO : move this sensor initialization to start() method
         gyroSensor = new EV3GyroSensor(ev3.getPort("S1"));
         angleSensor = gyroSensor.getAngleMode();
         angleData = new float[angleSensor.sampleSize()];
@@ -122,7 +123,7 @@ public class LegoRunner implements Runner {
     }
 
     LegoRunner(Brick ev3, EV3ColorSensor colorSensor, EV3GyroSensor gyroSensor, EV3UltrasonicSensor ultrasonicSensor,
-            RegulatedMotor leftMotor, RegulatedMotor rightMotor, SampleProvider rgbSensor) {
+            RegulatedMotor leftMotor, RegulatedMotor rightMotor, SampleProvider rgbSensor, SampleProvider angleSensor) {
         this.ev3 = ev3;
         this.colorSensor = colorSensor;
         this.rgbSensor = rgbSensor;
@@ -130,6 +131,7 @@ public class LegoRunner implements Runner {
         this.ultrasonicSensor = ultrasonicSensor;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
+        this.angleSensor = angleSensor;
     }
 
     public RunnerLocation location;

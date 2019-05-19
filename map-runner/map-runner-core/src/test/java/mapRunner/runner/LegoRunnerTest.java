@@ -12,10 +12,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import lejos.hardware.Audio;
 import lejos.hardware.Brick;
 import lejos.hardware.Key;
 import lejos.hardware.Power;
@@ -61,29 +59,25 @@ public class LegoRunnerTest {
 
 	RegulatedMotor rightMotor_mock;
 
+	SampleProvider angleSensor_mock;
+
 	@Before
 	public void setUp() {
 		ev3_mock = context.mock(Brick.class);
 		colorSensor_mock = context.mock(EV3ColorSensor.class);
-		rgbSensor_mock = context.mock(SampleProvider.class);
+		rgbSensor_mock = context.mock(SampleProvider.class, "rgb-sensor");
 		gyroSensor_mock = context.mock(EV3GyroSensor.class);
 //		ultrasonicSensor_mock = context.mock(EV3UltrasonicSensor.class);
 		leftMotor_mock = context.mock(RegulatedMotor.class, "left-motor");
 		rightMotor_mock = context.mock(RegulatedMotor.class, "right-motor");
+		angleSensor_mock = context.mock(SampleProvider.class, "angle-sensor");
 
 		testable = new LegoRunner(ev3_mock, colorSensor_mock, gyroSensor_mock, ultrasonicSensor_mock, leftMotor_mock,
-				rightMotor_mock, rgbSensor_mock);
+				rightMotor_mock, rgbSensor_mock, angleSensor_mock);
 	}
-	
-	@Ignore
+
 	@Test
 	public void start() {
-		final Port port_S1_mock = context.mock(Port.class, "S1");
-		final UARTPort io_port_S1_mock = context.mock(UARTPort.class, "S1-io");
-
-//        final Port port_S2_mock = context.mock(Port.class, "S2");
-//        final UARTPort io_port_S2_mock = context.mock(UARTPort.class, "S2-io");
-
 		final Port port_S4_mock = context.mock(Port.class, "S4");
 		final UARTPort io_port_S4_mock = context.mock(UARTPort.class, "S4-io");
 
@@ -97,24 +91,6 @@ public class LegoRunnerTest {
 
 		context.checking(new Expectations() {
 			{
-				oneOf(ev3_mock).getPort("S1");
-				will(returnValue(port_S1_mock));
-
-				oneOf(port_S1_mock).open(UARTPort.class);
-				will(returnValue(io_port_S1_mock));
-
-				oneOf(io_port_S1_mock).setMode(3);
-				will(returnValue(true));
-
-//                oneOf(ev3_mock).getPort("S2");
-//                will(returnValue(port_S2_mock));
-//
-//                oneOf(port_S2_mock).open(UARTPort.class);
-//                will(returnValue(io_port_S2_mock));
-//
-//                oneOf(io_port_S2_mock).setMode(0);
-//                will(returnValue(true));
-
 				oneOf(ev3_mock).getPort("S4");
 				will(returnValue(port_S4_mock));
 
@@ -150,17 +126,12 @@ public class LegoRunnerTest {
 
 		testable.start();
 	}
-	
-	@Ignore
+
 	@Test
 	public void stop() {
 		context.checking(new Expectations() {
 			{
 				oneOf(colorSensor_mock).close();
-
-				oneOf(gyroSensor_mock).close();
-
-//                oneOf(IRSensor_mock).close();
 
 				oneOf(leftMotor_mock).close();
 
@@ -425,94 +396,34 @@ public class LegoRunnerTest {
 
 		testable.getChargeLevel();
 	}
-	
-	@Ignore
-	@Test
-	public void move_signalMarkAmountReached() {
-		final Power power_mock = context.mock(Power.class);
-		final Key button_mock = context.mock(Key.class);
 
-		context.checking(new Expectations() {
-			{
-				// getChargeLevel
-				oneOf(ev3_mock).getPower();
-				will(returnValue(power_mock));
-
-				oneOf(power_mock).getVoltageMilliVolt();
-				will(returnValue(200));
-
-				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
-
-				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
-
-				//
-
-				oneOf(ev3_mock).getKey("Escape");
-				will(returnValue(button_mock));
-
-				oneOf(button_mock).isDown();
-				will(returnValue(false));
-
-				// TODO : signalMarkAmount should be checked before collecting samples from
-				// sensor
-
-				// colorMode
-				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
-				will(new Action() {
-					@Override
-					public void describeTo(Description arg0) {
-					}
-
-					@Override
-					public Object invoke(Invocation invocation) throws Throwable {
-						testable.colorData = new float[] { 1.0f, 1.0f, 1.0f };
-						return null;
-					}
-				});
-
-				// stopMoving
-
-				oneOf(rightMotor_mock).stop(true);
-
-				oneOf(leftMotor_mock).stop(true);
-
-				// TODO: call stopMoving only once
-
-				// stopMoving
-
-				oneOf(rightMotor_mock).stop(true);
-
-				oneOf(leftMotor_mock).stop(true);
-			}
-		});
-
-		testable.move(0);
-	}
-
-	@Ignore
 	@Test
 	public void move() {
 		final Power power_mock = context.mock(Power.class);
 		final Key button_mock = context.mock(Key.class);
-		final Audio audio_mock = context.mock(Audio.class);
 
 		final float[] green_rgb = { 0.10f, 0.99f, 0.1f };
 		final float[] black_rgb = { 0.024f, 0.019f, 0.031f };
 
+		final float[] zero_angle = { 0.0f };
+
 		context.checking(new Expectations() {
 			{
-				// getChargeLevel
+				// --> getChargeLevel
+
 				oneOf(ev3_mock).getPower();
 				will(returnValue(power_mock));
 
 				oneOf(power_mock).getVoltageMilliVolt();
 				will(returnValue(200));
 
+				// <-- getChargeLevel
+
 				oneOf(leftMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
 				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
-				//
+				// while
 
 				oneOf(ev3_mock).getKey("Escape");
 				will(returnValue(button_mock));
@@ -523,7 +434,8 @@ public class LegoRunnerTest {
 				// TODO : signalMarkAmount should be checked before collecting samples from
 				// sensor
 
-				// colorMode
+				// --> colorMode
+
 				oneOf(rgbSensor_mock).fetchSample(testable.colorData, 0);
 				will(new Action() {
 					@Override
@@ -545,9 +457,28 @@ public class LegoRunnerTest {
 					}
 				});
 
-				// startMoving
+				// <-- colorMode
+
+				// --> updateAngle
+
+				oneOf(angleSensor_mock).fetchSample(testable.angleData, 0);
+				will(new Action() {
+					@Override
+					public void describeTo(Description description) {
+					}
+
+					@Override
+					public Object invoke(Invocation invocation) throws Throwable {
+						testable.angleData = zero_angle;
+						return null;
+					}
+				});
+
+				// <-- updateAngle
 
 				// TODO : setSpeed called twice before real moving
+
+				// --> startMovingForward
 
 				oneOf(rightMotor_mock).setSpeed(LegoRunner.MovementSpeed);
 
@@ -557,7 +488,9 @@ public class LegoRunnerTest {
 
 				oneOf(leftMotor_mock).forward();
 
-				//
+				// <-- startMovingForward
+
+				// while
 
 				oneOf(ev3_mock).getKey("Escape");
 				will(returnValue(button_mock));
@@ -565,7 +498,8 @@ public class LegoRunnerTest {
 				oneOf(button_mock).isDown();
 				will(returnValue(false));
 
-				// colorMode
+				// --> colorMode
+
 				oneOf(rgbSensor_mock).fetchSample(black_rgb, 0);
 				will(new Action() {
 					@Override
@@ -587,54 +521,42 @@ public class LegoRunnerTest {
 					}
 				});
 
-				oneOf(ev3_mock).getAudio();
-				will(returnValue(audio_mock));
-				
-				oneOf(audio_mock).systemSound(0);
-				
-				//
-				
-				oneOf(ev3_mock).getKey("Escape");
-				will(returnValue(button_mock));
+				// <-- colorMode
 
-				oneOf(button_mock).isDown();
-				will(returnValue(false));
-				
-				// colorMode
-				oneOf(rgbSensor_mock).fetchSample(green_rgb, 0);
+				// --> updateAngle
+
+				oneOf(angleSensor_mock).fetchSample(zero_angle, 0);
 				will(new Action() {
 					@Override
-					public void describeTo(Description arg0) {
+					public void describeTo(Description description) {
 					}
 
 					@Override
 					public Object invoke(Invocation invocation) throws Throwable {
-						testable.recentColors.clear();
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.recentColors.add(Color.BLACK);
-						testable.colorData = black_rgb;
+						testable.angleData = zero_angle;
 						return null;
 					}
 				});
-				
-				// stopMoving
+
+				// <-- updateAngle
+
+				// --> stopMoving
 
 				oneOf(rightMotor_mock).stop(true);
 
 				oneOf(leftMotor_mock).stop(true);
+
+				// <-- stopMoving
 
 				// TODO: call stopMoving only once
 
-				// stopMoving
+				// --> stopMoving
 
 				oneOf(rightMotor_mock).stop(true);
 
 				oneOf(leftMotor_mock).stop(true);
+
+				// <-- stopMoving
 			}
 		});
 
