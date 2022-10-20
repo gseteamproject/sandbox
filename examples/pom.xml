@@ -11,10 +11,6 @@
 	<name>examples</name>
 	<repositories>
 		<repository>
-			<id>central</id>
-			<url>http://central.maven.org/maven2/</url>
-		</repository>
-		<repository>
 			<id>tilab</id>
 			<url>https://jade.tilab.com/maven/</url>
 		</repository>
