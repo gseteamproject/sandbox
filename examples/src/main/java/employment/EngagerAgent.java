@@ -274,7 +274,7 @@ public class EngagerAgent extends Agent {
 		representedCompany.setName("CSELT");
 		Address a = new Address();
 		a.setStreet("\"Via Reiss Romoli\"");
-		a.setNumber(new Long(274));
+		a.setNumber(Long.valueOf(274));
 		a.setCity("Turin");
 		representedCompany.setAddress(a);
 

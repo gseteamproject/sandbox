@@ -323,7 +323,7 @@ public class RequesterAgent extends Agent {
 			System.out.print("    Street ------> ");
 			a.setStreet(buff.readLine());
 			System.out.print("    Number ------> ");
-			a.setNumber(new Long(buff.readLine()));
+			a.setNumber(Long.valueOf(buff.readLine()));
 			System.out.print("    City   ------> ");
 			a.setCity(buff.readLine());
 			targetCompany.setAddress(a);

@@ -43,7 +43,7 @@ public class GreenLightTimeCountBehaviour extends TickerBehaviour {
     private List<String> getAllAgentsNames(){
         try {
             SearchConstraints c = new SearchConstraints();
-            c.setMaxResults(new Long(-1));
+            c.setMaxResults(Long.valueOf(-1));
             AMSAgentDescription[] agents = AMSService.search(myAgent, new AMSAgentDescription(), c);
             List<String> names = new ArrayList<>();
             for (AMSAgentDescription agentDescription : agents){

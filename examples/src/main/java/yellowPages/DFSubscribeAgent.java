@@ -57,7 +57,7 @@ public class DFSubscribeAgent extends Agent {
 
 		SearchConstraints sc = new SearchConstraints();
 		// We want to receive 10 results at most
-		sc.setMaxResults(new Long(10));
+		sc.setMaxResults(Long.valueOf(10));
 
 		addBehaviour(new SubscriptionInitiator(this,
 				DFService.createSubscriptionMessage(this, getDefaultDF(), template, sc)) {

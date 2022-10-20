@@ -56,7 +56,7 @@ public class DFSearchAgent extends Agent {
 
 			SearchConstraints sc = new SearchConstraints();
 			// We want to receive 10 results at most
-			sc.setMaxResults(new Long(10));
+			sc.setMaxResults(Long.valueOf(10));
 
 			DFAgentDescription[] results = DFService.search(this, template, sc);
 			if (results.length > 0) {

@@ -80,12 +80,12 @@ public class Person implements Predicate {
 			System.out.print("  Person name --> ");
 			setName(buff.readLine());
 			System.out.print("  Person age ---> ");
-			setAge(new Long(buff.readLine()));
+			setAge(Long.valueOf(buff.readLine()));
 			System.out.println("  Person address");
 			System.out.print("    Street -----> ");
 			address.setStreet(buff.readLine());
 			System.out.print("    Number -----> ");
-			address.setNumber(new Long(buff.readLine()));
+			address.setNumber(Long.valueOf(buff.readLine()));
 			System.out.print("    City   -----> ");
 			address.setCity(buff.readLine());
 			setAddress(address);
